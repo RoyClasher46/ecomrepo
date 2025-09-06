@@ -7,16 +7,68 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const upload = require("./config/multer-config");
-
-
-
+const dotenv =require("dotenv");
+const {GoogleGenerativeAI} =require ("@google/generative-ai");
+const cors = require("cors");
+dotenv.config();
+app.use(express.json());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended:true})); 
 
-const cors = require("cors");
 const orderModel = require("./models/order-model");
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+// ✅ Gemini setup
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// 🔹 Store chat history (in-memory for now)
+let chatHistory = [
+  {
+    role: "system",
+    content:
+      "You are a shopping cart negotiation bot. You should ONLY talk about the total cart value. \
+      Never mention specific products like sneakers. Respond politely to offers. \
+      Encourage the user to make an offer and negotiate discounts on the total cart amount.",
+  },
+];
+
+
+// 🔹 Chat endpoint with memory
+app.post("/chat", async (req, res) => {
+  try {
+    if (!req.body || !req.body.message) {
+      return res.status(400).json({ reply: "⚠️ No message provided." });
+    }
+
+    const { message } = req.body;
+
+    // keep track of chat
+    chatHistory.push({ role: "user", content: message });
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const historyPrompt = chatHistory
+      .map((m) => `${m.role}: ${m.content}`)
+      .join("\n");
+
+    const result = await model.generateContent(historyPrompt);
+    const reply = result.response.text();
+
+    chatHistory.push({ role: "assistant", content: reply });
+
+    res.json({ reply });
+  } catch (err) {
+    console.error("Backend Error:", err);
+    res.status(500).json({ reply: "⚠️ Something went wrong." });
+  }
+});
+
+
+
+
+
+
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/Ecommerce")
@@ -196,7 +248,7 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // Update order status (Admin only)
-  app.put('/api/orders/:id/status', async (req, res) => {
+app.put('/api/orders/:id/status', async (req, res) => {
     try {
       const { status } = req.body; // "Accepted" or "Rejected"
 
@@ -216,7 +268,7 @@ app.get('/api/orders', async (req, res) => {
       console.error(err);
       res.status(500).json({ message: "Server error" });
     }
-  });
+});
 
 //delete product(Admin only)
 app.delete("/products/:id", async (req, res) => {
@@ -252,6 +304,93 @@ app.put("/products/:id", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+//add to cart
+app.post("/api/add-to-cart", isLoggedIn, async (req, res) => {
+  const userId = req.user.userid;
+  const { productId } = req.body;
+
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const existingItem = user.cart.find(
+      item => item.product.toString() === productId
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      user.cart.push({ product: productId, quantity: 1 });
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Item added to cart" });
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+//get cart after refresh
+app.get("/api/get-cart", isLoggedIn, async (req, res) => {
+  try {
+    const user = await userModel
+      .findById(req.user.userid)
+      .populate("cart.product");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const cartItems = user.cart.map(item => ({
+      _id: item.product._id,
+      name: item.product.name,
+      price: item.product.price,
+      image: item.product.image.toString("base64"),
+      quantity: item.quantity
+    }));
+
+    res.status(200).json({ cart: cartItems });
+  } catch (err) {
+    console.error("Error fetching cart:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+//remove cart
+app.post("/api/remove-to-cart", isLoggedIn, async (req, res) => {
+  const userId = req.user.userid;
+  const { productId } = req.body;
+
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const itemIndex = user.cart.findIndex(
+      item => item.product.toString() === productId
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    if (user.cart[itemIndex].quantity > 1) {
+      user.cart[itemIndex].quantity -= 1;
+    } else {
+      // Remove the item completely
+      user.cart.splice(itemIndex, 1);
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Item removed from cart" });
+  } catch (err) {
+    console.error("Error removing from cart:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 

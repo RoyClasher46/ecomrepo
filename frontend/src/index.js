@@ -11,6 +11,7 @@ import AdminLogin from "./components/adminlogin";
 import AdminMain from "./admin/components/adminmain";
 import Dashboard from "./admin/components/dashboard";
 import MyOrders from "./components/myorder";
+import UserCart from "./components/usercart";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -23,7 +24,9 @@ root.render(
       <Route path="/signup" element={<Signup />} />
       <Route path="/adminlogin" element={<AdminLogin />} />
       {/* <Route path="/admindashboard" element={<Dashboard />} /> */}
-      <Route path="/myorders" element={<MyOrders />} />
+      <Route path="/myorders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+      <Route path="/usercart" element={<ProtectedRoute><UserCart /></ProtectedRoute>} />
+      
     </Routes>
   </Router>
 );
