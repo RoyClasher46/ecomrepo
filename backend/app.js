@@ -406,7 +406,7 @@ app.post('/api/adminlogin', async(req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await userModel.findOne({ email , isadmin:true});
+        const user = await userModel.findOne({ email , isAdmin:true});
         if (!user) return res.status(400).json({ message: "Email or password is incorrect" });
 
         const isMatch = await bcrypt.compare(password, user.password);
