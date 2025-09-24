@@ -6,7 +6,7 @@ const ManageProducts = ( {selectedProduct} ) => {
 
   // For editing
   const [editingProduct, setEditingProduct] = useState(null); // product currently being edited
-  const [formData, setFormData] = useState({ name: "", price: "" });
+  const [formData, setFormData] = useState({ name: "", price: "", description:"" });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch products from backend
@@ -63,7 +63,7 @@ const ManageProducts = ( {selectedProduct} ) => {
   // Open Edit Modal
   const handleEdit = (product) => {
     setEditingProduct(product);
-    setFormData({ name: product.name, price: product.price });
+    setFormData({ name: product.name, price: product.price, description: product.description });
     setIsModalOpen(true);
   };
 
@@ -109,6 +109,7 @@ const ManageProducts = ( {selectedProduct} ) => {
                 <th className="py-2 px-4 text-left">ID</th>
                 <th className="py-2 px-4 text-left">Name</th>
                 <th className="py-2 px-4 text-left">Price</th>
+                <th className="py-2 px-4 text-left">Description</th>
                 <th className="py-2 px-4 text-left">Action</th>
               </tr>
             </thead>
@@ -129,6 +130,7 @@ const ManageProducts = ( {selectedProduct} ) => {
                   <td className="py-2 px-4 text-indigo-600 font-semibold">
                     ${product.price}
                   </td>
+                  <td className="py-2 px-4">{product.description}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => handleEdit(product)}
@@ -164,11 +166,20 @@ const ManageProducts = ( {selectedProduct} ) => {
               className="w-full p-2 border rounded mb-4"
             />
 
+
             <label className="block mb-2 font-medium">Price:</label>
             <input
               type="number"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              className="w-full p-2 border rounded mb-4"
+            />
+
+            <label className="block mb-2 font-medium">Description:</label>
+            <input
+              type="text"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full p-2 border rounded mb-4"
             />
 

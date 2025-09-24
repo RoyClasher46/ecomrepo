@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, MessageSquare } from "lucide-react";
 import Chatbot from "./chatbot";
+import Navbar from "./navbar";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -57,9 +58,18 @@ export default function CartPage() {
           body: JSON.stringify({ productId: item._id, quantity: item.quantity }),
         })
       );
+      
       await Promise.all(orderPromises);
+      
+      const clearCartRes = await fetch("http://localhost:5000/api/clear-cart", {
+        method: "POST",
+        credentials: "include",
+      });
+      setCartItems([]);
+
       alert(`Order placed! Total price: ₹${finalPrice}`);
-      navigate("/");
+      navigate("/myorders");
+
     } catch (err) {
       console.error(err);
       alert("Failed to place order");
@@ -67,6 +77,8 @@ export default function CartPage() {
   };
 
   return (
+    <>  
+    <Navbar />
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-6 relative">
       <h1 className="text-4xl font-extrabold text-center text-indigo-700 mb-10 drop-shadow-lg">
         Your Shopping Cart
@@ -82,14 +94,14 @@ export default function CartPage() {
           ) : (
             cartItems.map((item) => (
               <div
-                key={item._id}
-                className="bg-white rounded-2xl shadow-xl p-4 flex items-center justify-between gap-4"
+              key={item._id}
+              className="bg-white rounded-2xl shadow-xl p-4 flex items-center justify-between gap-4"
               >
                 <img
                   src={`data:image/jpeg;base64,${item.image}`}
                   alt={item.name}
                   className="w-24 h-24 object-cover rounded-lg border border-gray-200"
-                />
+                  />
                 <div className="flex-1">
                   <h2 className="text-xl font-semibold text-gray-800">
                     {item.name}
@@ -103,7 +115,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeFromCart(item._id)}
                   className="text-red-500 hover:text-red-700"
-                >
+                  >
                   <X size={24} />
                 </button>
               </div>
@@ -118,7 +130,7 @@ export default function CartPage() {
               <button
                 onClick={handleOrderNow}
                 className="w-full py-4 text-white font-bold rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600 shadow-lg transition duration-300"
-              >
+                >
                 Order Now
               </button>
             </div>
@@ -130,7 +142,7 @@ export default function CartPage() {
       <div
         className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition z-50"
         onClick={() => setShowChat(!showChat)}
-      >
+        >
         <MessageSquare size={28} />
       </div>
 
@@ -142,7 +154,7 @@ export default function CartPage() {
             <button
               onClick={() => setShowChat(false)}
               className="text-gray-500 hover:text-red-500"
-            >
+              >
               <X size={20} />
             </button>
           </div>
@@ -152,5 +164,6 @@ export default function CartPage() {
         </div>
       )}
     </div>
+    </>
   );
 }
