@@ -1,6 +1,8 @@
 // src/pages/Signup.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -35,7 +37,7 @@ export default function Signup() {
       if (res.ok) {
         navigate("/login");
       } else {
-        alert(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (err) {
       console.error(err);

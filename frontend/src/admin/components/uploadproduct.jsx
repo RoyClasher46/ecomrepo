@@ -6,6 +6,7 @@ const UploadProduct = () => {
     name: "",
     description: "",
     price: "",
+    category: "Self",
     image: null,
   });  
   const [preview, setPreview] = useState(null);
@@ -24,11 +25,23 @@ const UploadProduct = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    // Normalize category: first letter capital, rest lowercase
+    const normalizeCategory = (c) => {
+      if (!c) return "Self";
+      const t = c.trim();
+      if (t.length === 0) return "Self";
+      return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+    };
+
+    const normalizedCategory = normalizeCategory(product.category);
+    // Update UI with normalized value before submitting
+    setProduct((prev) => ({ ...prev, category: normalizedCategory }));
 
     const formData = new FormData();
         formData.append("name", product.name);
         formData.append("description", product.description);
         formData.append("price", product.price);
+        formData.append("category", normalizedCategory || "Self");
         formData.append("image", product.image);
 
     const res = await fetch("http://localhost:5000/api/uploadproduct", {
@@ -91,6 +104,21 @@ const UploadProduct = () => {
               className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
               placeholder="Enter product price"
             />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Category</label>
+            <input
+              type="text"
+              name="category"
+              value={product.category}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
+              placeholder="Enter or create category (e.g., Eco dishes, Gift sets)"
+            />
+            <p className="text-xs text-gray-500 mt-1">If new, it will be created automatically.</p>
           </div>
 
           {/* Image Upload */}

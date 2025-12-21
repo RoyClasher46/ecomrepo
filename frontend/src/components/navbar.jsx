@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -16,7 +18,7 @@ const Navbar = () => {
       credentials: "include",
     });
     if (res.ok) {
-      alert("Logout successfully!");
+      toast.success("Logout successfully!");
       navigate("/");
     }
   };

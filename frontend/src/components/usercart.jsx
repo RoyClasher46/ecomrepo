@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { X, MessageSquare } from "lucide-react";
 import Chatbot from "./chatbot";
 import Navbar from "./navbar";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -67,12 +69,12 @@ export default function CartPage() {
       });
       setCartItems([]);
 
-      alert(`Order placed! Total price: ₹${finalPrice}`);
+      toast.success(`Order placed! Total price: ₹${finalPrice}`);
       navigate("/myorders");
 
     } catch (err) {
       console.error(err);
-      alert("Failed to place order");
+      toast.error("Failed to place order");
     }
   };
 

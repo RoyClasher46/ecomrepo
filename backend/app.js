@@ -7,17 +7,15 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const upload = require("./config/multer-config");
-const dotenv =require("dotenv");
+const dotenv =require("dotenv").config({path :"./backend/.env"});
 const {GoogleGenerativeAI} =require ("@google/generative-ai");
 const cors = require("cors");
-dotenv.config();
-app.use(express.json());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended:true})); 
 
 const orderModel = require("./models/order-model");
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 // ✅ Gemini setup
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -71,7 +69,7 @@ app.post("/chat", async (req, res) => {
 
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/Ecommerce")
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log("DB Error: ", err));
 
@@ -86,7 +84,7 @@ app.post('/api/login',async(req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
 
-        const token = jwt.sign({ email: user.email, userid: user._id }, "jpjpjp");
+        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
 
         // Set cookie correctly
         res.cookie("token", token, {
@@ -112,7 +110,10 @@ app.get("/products", async (req, res) => {
             name: p.name,
             description: p.description,
             price: p.price,
-            image: p.image.toString("base64"), // buffer → base64
+            category: p.category || "Self",
+            isPopular: p.isPopular || false,
+            createdAt: p.createdAt,
+            image: p.image.toString("base64"),
     }));
         res.status(200).json(formattedProducts);   // only products, no login message
     } catch (err) {
@@ -169,13 +170,24 @@ app.post('/api/signup', async (req, res) => {
 });
 
 app.post('/api/uploadproduct', upload.single("image"), async (req, res) => {
-    const { name,description,price} = req.body;
+    const { name,description,price, category, isPopular } = req.body;
 
     try {
         // Use async/await for create
-        const newProduct = await productModel.create({ name, description, price,
-            image: req.file.buffer,
+        const normalizeCategory = (c) => {
+          if (!c) return "Self";
+          const t = String(c).trim();
+          if (t.length === 0) return "Self";
+          return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+        };
 
+        const newProduct = await productModel.create({
+          name,
+          description,
+          price,
+          category: normalizeCategory(category),
+          isPopular: isPopular === "true" || isPopular === true,
+          image: req.file.buffer,
         });
         res.status(200).json({ message: "product uploaded" });
     } catch (err) {
@@ -192,6 +204,9 @@ app.get("/api/products", async (req, res) => {
     const updatedProducts = products.map((p) => ({
       ...p._doc,
       image: p.image.toString("base64"),
+      category: p.category || "Self",
+      isPopular: p.isPopular || false,
+      createdAt: p.createdAt,
     }));
 
     res.json(updatedProducts);
@@ -200,6 +215,63 @@ app.get("/api/products", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const product = await productModel.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({
+      _id: product._id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category || "Self",
+      isPopular: product.isPopular || false,
+      image: `data:image/jpeg;base64,${product.image.toString("base64")}`,
+    });
+  } catch (err) {
+    console.error("Fetch single product error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//reviews send by user
+app.post("/api/products/:id/reviews", async (req, res) => {
+  try {
+    const { user, rating, comment } = req.body;
+    const product = await productModel.findById(req.params.id);
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const newReview = { user, rating, comment };
+    product.reviews.push(newReview);
+
+    await product.save();
+    res.json({ message: "Review added successfully", reviews: product.reviews });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// review fetch
+app.get("/api/products/:id/reviews", async (req, res) => {
+  try {
+    const product = await productModel.findById(req.params.id);
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    res.json(product.reviews);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
 
 app.post('/api/order', isLoggedIn, async (req, res) => {
 
@@ -289,10 +361,22 @@ app.delete("/products/:id", async (req, res) => {
 // Update product
 app.put("/products/:id", async (req, res) => {
   try {
-    const { name, price } = req.body;
+    const { name, price, description, category, isPopular } = req.body;
+    const normalizeCategory = (c) => {
+      if (!c) return "Self";
+      const t = String(c).trim();
+      if (t.length === 0) return "Self";
+      return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+    };
     const updatedProduct = await productModel.findByIdAndUpdate(
       req.params.id,
-      { name, price },
+      {
+        name,
+        price,
+        description,
+        category: normalizeCategory(category),
+        isPopular: isPopular !== undefined ? isPopular : undefined,
+      },
       { new: true, runValidators: true }
     );
 
@@ -304,6 +388,23 @@ app.put("/products/:id", async (req, res) => {
   } catch (err) {
     console.error("Product Update Error:", err.message);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Toggle popular flag
+app.put("/products/:id/popular", async (req, res) => {
+  try {
+    const { isPopular } = req.body;
+    const updated = await productModel.findByIdAndUpdate(
+      req.params.id,
+      { isPopular: !!isPopular },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: "Product not found" });
+    res.json(updated);
+  } catch (err) {
+    console.error("Popular toggle error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -461,11 +562,29 @@ app.get("/api/admin/checkauth", isLoggedIn, (req, res) => {
 function isLoggedIn(req, res, next) {
     if(req.cookies.token==="") res.send("You must be logged in");
     else{
-        let data = jwt.verify(req.cookies.token, "jpjpjp");
+        let data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
         req.user = data;
     }
     next();
 }
 
 
-app.listen(5000);
+
+
+const path = require("path");
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, "../client/build", "index.html")
+    );
+  });
+}
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, X } from "lucide-react";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Main() {
   const [products, setProducts] = useState([]);
@@ -46,13 +48,13 @@ export default function Main() {
       if (res.ok) {
         await loadCart();
         setShowCartPopup(true);
-        alert("Item added to cart");
+        toast.error("Item added to cart");
       } else {
-        alert(data.message || "Failed to add item to cart");
+        toast.error(data.message || "Failed to add item to cart");
       }
     } catch (err) {
       console.error("Add to cart failed", err);
-      alert("An error occurred while adding to cart");
+      toast.error("An error occurred while adding to cart");
     }
   };
 
@@ -70,13 +72,13 @@ export default function Main() {
       if (res.ok) {
         await loadCart();
         setShowCartPopup(true);
-        alert("Item removed from cart");
+        toast.error("Item removed from cart");
       } else {
-        alert(data.message || "Failed to remove item from cart");
+        toast.error(data.message || "Failed to remove item from cart");
       }
     } catch (err) {
       console.error("Remove from cart failed", err);
-      alert("An error occurred while removing item from cart");
+      toast.error("An error occurred while removing item from cart");
     }
   };
 

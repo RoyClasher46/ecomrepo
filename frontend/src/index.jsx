@@ -12,10 +12,15 @@ import AdminMain from "./admin/components/adminmain";
 import Dashboard from "./admin/components/dashboard";
 import MyOrders from "./components/myorder";
 import UserCart from "./components/usercart";
+import ProductPage from "./components/selectedprod";
+import CategoryPage from "./components/category";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Router>
+      <ToastContainer position="top-right" autoClose={3000} />
     <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/adminmain" element={<ProtectedRoute><AdminMain /></ProtectedRoute>}  />
@@ -26,6 +31,8 @@ root.render(
       {/* <Route path="/admindashboard" element={<Dashboard />} /> */}
       <Route path="/myorders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
       <Route path="/usercart" element={<ProtectedRoute><UserCart /></ProtectedRoute>} />
+      <Route path="/product/:id" element={<ProductPage />} />
+      <Route path="/category/:name" element={<CategoryPage />} />
       
     </Routes>
   </Router>

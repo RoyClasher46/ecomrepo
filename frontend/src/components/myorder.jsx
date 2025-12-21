@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./navbar";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -17,7 +19,7 @@ const MyOrders = () => {
           const validOrders = data.filter((order) => order.productId !== null);
           setOrders(validOrders);
         } else {
-          alert(data.message || "Failed to load orders");
+          toast.error(data.message || "Failed to load orders");
         }
       } catch (err) {
         console.error(err);

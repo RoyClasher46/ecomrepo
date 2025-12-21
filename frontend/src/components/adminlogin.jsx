@@ -1,7 +1,8 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
-
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 export default function AdminLogin() {
@@ -33,10 +34,10 @@ export default function AdminLogin() {
 
       const data = await res.json();
       if (res.ok) {
-         alert("login successfully!");
+         toast.success("login successfully!");
          navigate("/adminmain"); // redirect to login page
       } else {
-        alert(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (err) {
       console.error(err);

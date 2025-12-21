@@ -1,6 +1,8 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -30,10 +32,10 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Login successfully!");
+        toast.success("Login successfully!");
         navigate("/home");
       } else {
-        alert(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (err) {
       console.error(err);
