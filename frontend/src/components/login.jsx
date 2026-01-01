@@ -43,9 +43,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800">
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-2xl shadow-2xl w-96 border border-gray-700">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white drop-shadow-lg">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+      <div className="modern-card p-8 rounded-lg shadow-large w-full max-w-md">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-900">
           Login
         </h2>
 
@@ -56,7 +56,7 @@ export default function Login() {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-600 text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-400 transition duration-200"
+            className="modern-input"
             required
           />
           <input
@@ -65,31 +65,31 @@ export default function Login() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-600 text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-400 transition duration-200"
+            className="modern-input"
             required
           />
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-2 rounded-xl hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 transition duration-300 shadow-lg hover:shadow-pink-500/40"
+            className="w-full modern-button py-3 rounded-lg"
           >
             Login
           </button>
         </form>
 
-        <p className="text-center mt-4 text-sm text-gray-400">
-          Don’t have an account?{" "}
+        <p className="text-center mt-4 text-sm text-gray-600">
+          Don't have an account?{" "}
           <Link
             to="/signup"
-            className="text-indigo-400 font-semibold hover:underline hover:text-pink-400 transition"
+            className="text-primary font-semibold hover:text-primary-dark transition underline"
           >
             Register
           </Link>
         </p>
-        <p className="mt-2 text-center text-gray-400">
+        <p className="mt-2 text-center text-gray-600 text-sm">
           Are you an admin?{" "}
           <Link
             to="/adminlogin"
-            className="text-red-500 font-semibold hover:underline hover:text-red-400 transition"
+            className="text-primary font-semibold hover:text-primary-dark transition underline"
           >
             Admin Login
           </Link>

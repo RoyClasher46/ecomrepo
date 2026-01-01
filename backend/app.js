@@ -7,7 +7,10 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const upload = require("./config/multer-config");
-const dotenv =require("dotenv").config({path :"./backend/.env"});
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+
 const {GoogleGenerativeAI} =require ("@google/generative-ai");
 const cors = require("cors");
 app.use(express.json());
@@ -70,7 +73,17 @@ app.post("/chat", async (req, res) => {
 
 
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
+.then(async () => {
+  console.log("MongoDB Connected");
+  try {
+    await orderModel.collection.dropIndex('deliveryPartner.trackingId_1');
+  } catch (err) {
+  }
+  try {
+    await orderModel.collection.dropIndex('trackingNumber_1');
+  } catch (err) {
+  }
+})
 .catch(err => console.log("DB Error: ", err));
 
 
@@ -91,6 +104,7 @@ app.post('/api/login',async(req, res) => {
             httpOnly: true,
             secure: false,
             sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({ message: "Login Successfully"});
@@ -99,6 +113,83 @@ app.post('/api/login',async(req, res) => {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
+});
+
+app.put('/api/orders/:id/assign-delivery', async (req, res) => {
+  try {
+    const { deliveryPartnerName, deliveryPartnerPhone, estimatedDelivery } = req.body;
+    if (!deliveryPartnerName || String(deliveryPartnerName).trim().length < 2) {
+      return res.status(400).json({ message: "Delivery partner name is required" });
+    }
+    if (!deliveryPartnerPhone || String(deliveryPartnerPhone).trim().length < 6) {
+      return res.status(400).json({ message: "Delivery partner phone is required" });
+    }
+
+    const trackingId = `TRK-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    const defaultEstimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    const estimatedDeliveryDate = estimatedDelivery ? new Date(estimatedDelivery) : null;
+    if (estimatedDeliveryDate) {
+      if (isNaN(estimatedDeliveryDate.getTime())) {
+        return res.status(400).json({ message: "Invalid estimated delivery date" });
+      }
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      if (estimatedDeliveryDate < startOfToday) {
+        return res.status(400).json({ message: "Estimated delivery date cannot be in the past" });
+      }
+    }
+
+    const order = await orderModel.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (order.status !== "Accepted" && order.status !== "Assigned") {
+      return res.status(400).json({ message: "Order must be Accepted before assigning delivery" });
+    }
+
+    order.deliveryPartnerName = String(deliveryPartnerName).trim();
+    order.deliveryPartnerPhone = String(deliveryPartnerPhone).trim();
+    order.trackingId = order.trackingId || trackingId;
+    if (!order.estimatedDelivery) {
+      order.estimatedDelivery = estimatedDeliveryDate && !isNaN(estimatedDeliveryDate.getTime())
+        ? estimatedDeliveryDate
+        : defaultEstimatedDelivery;
+    }
+    if (order.status === "Accepted") order.status = "Assigned";
+
+    await order.save();
+
+    const populated = await orderModel
+      .findById(order._id)
+      .populate("productId", "name price")
+      .populate("userId", "name email");
+
+    res.json(populated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get('/api/admin/stats', async (req, res) => {
+  try {
+    const totalProducts = await productModel.countDocuments({});
+    const totalOrders = await orderModel.countDocuments({});
+
+    const statuses = ["Pending", "Accepted", "Rejected", "Assigned", "Delivered"]; 
+    const statusCounts = {};
+    for (const s of statuses) {
+      statusCounts[s] = await orderModel.countDocuments({ status: s });
+    }
+
+    res.json({
+      totalProducts,
+      totalOrders,
+      statusCounts,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // In your app.js or routes file
@@ -113,7 +204,7 @@ app.get("/products", async (req, res) => {
             category: p.category || "Self",
             isPopular: p.isPopular || false,
             createdAt: p.createdAt,
-            image: p.image.toString("base64"),
+            image: p.image ? p.image.toString("base64") : "",
     }));
         res.status(200).json(formattedProducts);   // only products, no login message
     } catch (err) {
@@ -150,14 +241,14 @@ app.post('/api/signup', async (req, res) => {
                 // Use async/await for create
                 const newUser = await userModel.create({ name, email, password: hash });
 
-                const token = jwt.sign({ email: newUser.email, userid: newUser._id }, "jpjpjp");
+                const token = jwt.sign({ email: newUser.email, userid: newUser._id }, process.env.JWT_SECRET);
 
                 // Set cookie
                 res.cookie("token", token, {
                     httpOnly: true,
                     secure: false,
                     sameSite: "lax",
-                    expires: new Date(0)
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
                 });
 
                 res.status(200).json({ message: "User registered successfully" });
@@ -275,18 +366,62 @@ app.get("/api/products/:id/reviews", async (req, res) => {
 
 app.post('/api/order', isLoggedIn, async (req, res) => {
 
-    const { productId, quantity } = req.body;
+    const {
+        productId,
+        quantity,
+        addressLine,
+        area,
+        city,
+        state,
+        pincode,
+        deliveryPhone,
+    } = req.body;
 
     try {
         const user = await userModel.findById(req.user.userid);
         if (!user) return res.status(400).json({ message: "User not found" });
 
-        
-        const newOrder = await orderModel.create({ productId, quantity, status: "Pending",userId: req.user.userid});
-        user.orders.push(newOrder);
+        if (!addressLine || String(addressLine).trim().length < 5) {
+            return res.status(400).json({ message: "Address is required" });
+        }
+        if (!city || String(city).trim().length < 2) {
+            return res.status(400).json({ message: "City is required" });
+        }
+        if (!state || String(state).trim().length < 2) {
+            return res.status(400).json({ message: "State is required" });
+        }
+        if (!pincode || String(pincode).trim().length < 4) {
+            return res.status(400).json({ message: "Pincode is required" });
+        }
+        if (!deliveryPhone || String(deliveryPhone).trim().length < 6) {
+            return res.status(400).json({ message: "Mobile number is required" });
+        }
+
+        const fullAddress = [
+            String(addressLine).trim(),
+            area ? String(area).trim() : "",
+            String(city).trim(),
+            String(state).trim(),
+            String(pincode).trim(),
+        ].filter(Boolean).join(", ");
+
+        const newOrder = await orderModel.create({
+            productId,
+            quantity,
+            status: "Pending",
+            userId: req.user.userid,
+            addressLine: String(addressLine).trim(),
+            area: area ? String(area).trim() : "",
+            city: String(city).trim(),
+            state: String(state).trim(),
+            pincode: String(pincode).trim(),
+            deliveryAddress: fullAddress,
+            deliveryPhone: String(deliveryPhone).trim(),
+        });
+        user.orders.push(newOrder._id);
         await user.save();
 
-        res.status(200).json({ message: "Order placed successfully" });
+        res.status(200).json({ message: "Order placed successfully", orderId: newOrder._id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
@@ -297,7 +432,7 @@ app.get('/api/myorders', isLoggedIn, async (req, res) => {
   try {
     const orders = await orderModel
       .find({ userId: req.user.userid })  // fetch orders for logged-in user
-      .populate("productId", "name price"); // also get product info
+      .populate("productId", "name price image description"); // also get product info
 
     res.status(200).json(orders);
   } catch (err) {
@@ -312,7 +447,7 @@ app.get('/api/orders', async (req, res) => {
     const orders = await orderModel
       .find()
       .populate("productId", "name price")
-      .populate("userId", "username email"); // show who placed the order
+      .populate("userId", "name email"); // show who placed the order
 
     res.status(200).json(orders);
   } catch (err) {
@@ -529,13 +664,14 @@ app.post('/api/adminlogin', async(req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
 
-        const token = jwt.sign({ email: user.email, userid: user._id }, "jpjpjp");
+        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
 
         // Set cookie correctly
         res.cookie("token", token, {
             httpOnly: true,
             secure: false,
             sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({ message: "Login Successfully" });
@@ -560,18 +696,21 @@ app.get("/api/admin/checkauth", isLoggedIn, (req, res) => {
 
 
 function isLoggedIn(req, res, next) {
-    if(req.cookies.token==="") res.send("You must be logged in");
-    else{
-        let data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+    try {
+        const token = req.cookies?.token;
+        if (!token) {
+            return res.status(401).json({ message: "You must be logged in" });
+        }
+
+        const data = jwt.verify(token, process.env.JWT_SECRET);
         req.user = data;
+        return next();
+    } catch (err) {
+        return res.status(401).json({ message: "Invalid or expired token" });
     }
-    next();
 }
 
 
-
-
-const path = require("path");
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));

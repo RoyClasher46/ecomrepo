@@ -14,6 +14,8 @@ import MyOrders from "./components/myorder";
 import UserCart from "./components/usercart";
 import ProductPage from "./components/selectedprod";
 import CategoryPage from "./components/category";
+import About from "./components/about";
+import Checkout from "./components/checkout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,6 +27,8 @@ root.render(
       <Route path="/" element={<Home/>} />
       <Route path="/adminmain" element={<ProtectedRoute><AdminMain /></ProtectedRoute>}  />
       <Route path="/home" element={<ProtectedRoute><Main /></ProtectedRoute>} />
+      <Route path="/about" element={<About />} />
+      <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/adminlogin" element={<AdminLogin />} />

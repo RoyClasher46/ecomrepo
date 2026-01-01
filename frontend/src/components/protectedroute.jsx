@@ -26,7 +26,13 @@ export default function ProtectedRoute({ children }) {
         });
     }, [navigate]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="modern-card p-8 rounded-lg">
+                <p className="text-gray-600">Loading...</p>
+            </div>
+        </div>
+    );
 
     return isAuth ? children : null;
 }

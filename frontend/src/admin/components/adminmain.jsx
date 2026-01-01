@@ -24,9 +24,9 @@ const App = () => {
   
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="min-h-screen bg-gray-50" style={{ display: "flex" }}>
       <Sidebar setPage={setPage} />
-      <div style={{ padding: "20px", flex: 1 }}>
+      <div className="flex-1 p-6">
         {renderPage()}
       </div>
     </div>

@@ -1,15 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --sand: #f4ebdd;
-  --sand-deep: #e9ddc9;
-  --olive: #4e402f;
-  --accent: #b18a46;
-  --leaf: #6e8c62;
+  --primary: #1e40af;
+  --primary-dark: #1e3a8a;
+  --primary-light: #3b82f6;
+  --secondary: #64748b;
+  --accent: #0ea5e9;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --dark: #0f172a;
+  --dark-light: #1e293b;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
 }
 
 * {
@@ -18,13 +33,15 @@
 
 body {
   margin: 0;
-  background: var(--sand);
-  color: var(--olive);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+  background: #ffffff;
+  color: #1e293b;
+  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
 code {
@@ -32,61 +49,132 @@ code {
     monospace;
 }
 
-.eco-heading {
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.2px;
+/* Professional Card */
+.modern-card {
+  background: #ffffff;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
 }
 
-.eco-paper {
-  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7), transparent 30%),
-    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.55), transparent 25%),
-    radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.55), transparent 30%),
-    var(--sand);
+.modern-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: var(--gray-300);
 }
 
-.eco-card {
-  background: #fffaf1;
-  border: 1px solid rgba(78, 64, 47, 0.08);
-  box-shadow: 0 18px 35px rgba(78, 64, 47, 0.08);
+/* Professional Button */
+.modern-button {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  font-size: 0.875rem;
 }
 
-.eco-soft-button {
-  background: #c7a267;
-  color: #fff9f0;
-  transition: transform 150ms ease, box-shadow 150ms ease;
-}
-
-.eco-soft-button:hover {
+.modern-button:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(177, 138, 70, 0.35);
 }
 
-.eco-pill {
-  background: rgba(177, 138, 70, 0.15);
-  color: #7a5d28;
+.modern-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.eco-badge {
-  background: rgba(110, 140, 98, 0.1);
-  color: #4c6c52;
+/* Secondary Button */
+.modern-button-secondary {
+  background: white;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
 }
 
-.eco-border {
-  border: 1px solid rgba(78, 64, 47, 0.1);
+.modern-button-secondary:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+  color: var(--gray-900);
 }
 
-.eco-slide-left {
-  animation: eco-slide-left 260ms ease;
+/* Professional Input */
+.modern-input {
+  background: white;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-900);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-size: 0.875rem;
 }
 
-.eco-slide-right {
-  animation: eco-slide-right 260ms ease;
+.modern-input::placeholder {
+  color: var(--gray-400);
 }
 
-@keyframes eco-slide-left {
+.modern-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.modern-input:hover {
+  border-color: var(--gray-400);
+}
+
+/* Professional Text */
+.gradient-text {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.gradient-text-alt {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Professional Background */
+.glass-bg {
+  background: white;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Professional Badge */
+.modern-badge {
+  background: var(--primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Slide Animations */
+.slide-left {
+  animation: slide-left 0.3s ease;
+}
+
+.slide-right {
+  animation: slide-right 0.3s ease;
+}
+
+@keyframes slide-left {
   0% {
     opacity: 0;
-    transform: translateX(24px);
+    transform: translateX(30px);
   }
   100% {
     opacity: 1;
@@ -94,13 +182,56 @@ code {
   }
 }
 
-@keyframes eco-slide-right {
+@keyframes slide-right {
   0% {
     opacity: 0;
-    transform: translateX(-24px);
+    transform: translateX(-30px);
   }
   100% {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Modern Badge */
+.modern-badge {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
 }

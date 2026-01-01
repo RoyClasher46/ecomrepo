@@ -1,8 +1,11 @@
 // src/pages/ProductPage.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
+import { toast } from "react-toastify";
 
 export default function ProductPage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -39,89 +42,139 @@ export default function ProductPage() {
     setNewReview({ user: "", rating: 5, comment: "" });
   };
 
-  if (!product) return <p className="text-white text-center">Loading...</p>;
+  const handleAddToCart = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/add-to-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ productId: product._id }),
+      });
+      if (res.ok) {
+        toast.success("Item added to cart!");
+        navigate("/usercart");
+      } else {
+        toast.error("Please sign in to add items to cart");
+        navigate("/login");
+      }
+    } catch (err) {
+      toast.error("Please sign in to add items to cart");
+      navigate("/login");
+    }
+  };
+
+  if (!product) return (
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="modern-card p-8 rounded-lg">
+          <p className="text-gray-600 text-center">Loading...</p>
+        </div>
+      </div>
+    </>
+  );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 p-6">
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-8 rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-700">
-        
-        {/* Product Info */}
-        <div className="mb-10">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-64 object-cover rounded-xl mb-6"
-          />
-          <h2 className="text-3xl font-bold text-white mb-2">{product.name}</h2>
-          <p className="text-gray-300 mb-4">{product.description}</p>
-          <p className="text-xl font-semibold text-pink-400 mb-6">
-            ₹ {product.price}
-          </p>
-          <button className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-2 rounded-xl hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 transition duration-300 shadow-lg hover:shadow-pink-500/40">
-            Buy Now
-          </button>
-        </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="modern-card p-8 rounded-lg">
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Product Image */}
+              <div>
+                <img
+                  src={product.image?.startsWith('data:') ? product.image : `data:image/jpeg;base64,${product.image}`}
+                  alt={product.name}
+                  className="w-full h-96 object-cover rounded-lg border border-gray-200"
+                />
+              </div>
+              
+              {/* Product Info */}
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{product.name}</h2>
+                  <p className="text-2xl font-bold text-primary mb-4">
+                    ${product.price}
+                  </p>
+                  <p className="text-gray-600 leading-relaxed">{product.description}</p>
+                </div>
+                
+                <div className="pt-6 border-t border-gray-200">
+                  <button 
+                    onClick={handleAddToCart}
+                    className="w-full modern-button py-3 rounded-lg text-base font-semibold"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Reviews Section */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-semibold text-white mb-4">Customer Reviews</h3>
-          {reviews.length === 0 ? (
-            <p className="text-gray-400">No reviews yet. Be the first to review!</p>
-          ) : (
-            <ul className="space-y-4">
-              {reviews.map((r, i) => (
-                <li
-                  key={i}
-                  className="bg-gray-800 border border-gray-700 p-4 rounded-xl shadow"
+          {/* Reviews Section */}
+          <div className="mt-12 modern-card p-8 rounded-lg">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-6">Customer Reviews</h3>
+            {reviews.length === 0 ? (
+              <p className="text-gray-600">No reviews yet. Be the first to review!</p>
+            ) : (
+              <ul className="space-y-4 mb-8">
+                {reviews.map((r, i) => (
+                  <li
+                    key={i}
+                    className="bg-gray-50 border border-gray-200 p-4 rounded-lg"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <p className="text-sm font-semibold text-gray-900">{r.user}</p>
+                      <span className="text-warning">⭐ {r.rating}</span>
+                    </div>
+                    <p className="text-gray-700">{r.comment}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Add Review Form */}
+            <div className="pt-6 border-t border-gray-200">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h4>
+              <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder={currentUser?.name || "Your Name"}
+                  value={newReview.user}
+                  onChange={(e) => setNewReview({ ...newReview, user: e.target.value })}
+                  className="modern-input"
+                  required
+                />
+                <select
+                  value={newReview.rating}
+                  onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
+                  className="modern-input"
                 >
-                  <p className="text-sm text-gray-400">{r.user} • ⭐ {r.rating}</p>
-                  <p className="text-white mt-1">{r.comment}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <option key={num} value={num}>
+                      {num} Star{num > 1 ? "s" : ""}
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  placeholder="Write your review..."
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  className="modern-input min-h-[100px]"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="w-full modern-button py-3 rounded-lg"
+                >
+                  Submit Review
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-
-        {/* Add Review Form */}
-        <div>
-          <h3 className="text-2xl font-semibold text-white mb-4">Write a Review</h3>
-          <form onSubmit={handleReviewSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder={currentUser?.name || "Your Name"}
-              value={newReview.user}
-              onChange={(e) => setNewReview({ ...newReview, user: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-pink-500"
-              required
-            />
-            <select
-              value={newReview.rating}
-              onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-pink-500"
-            >
-              {[1, 2, 3, 4, 5].map((num) => (
-                <option key={num} value={num}>
-                  {num} Star{num > 1 ? "s" : ""}
-                </option>
-              ))}
-            </select>
-            <textarea
-              placeholder="Write your review..."
-              value={newReview.comment}
-              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-pink-500"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-2 rounded-xl hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 transition duration-300 shadow-lg hover:shadow-pink-500/40"
-            >
-              Submit Review
-            </button>
-          </form>
-        </div>
-
       </div>
-    </div>
+    </>
   );
 }

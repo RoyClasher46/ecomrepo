@@ -56,9 +56,9 @@ const UploadProduct = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
-      <div className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="w-full max-w-lg modern-card rounded-lg p-8 shadow-large">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
           Upload Product
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
@@ -71,14 +71,14 @@ const UploadProduct = () => {
               value={product.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
+              className="modern-input"
               placeholder="Enter product name"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-white/90 font-medium mb-1">
               Description
             </label>
             <textarea
@@ -87,43 +87,43 @@ const UploadProduct = () => {
               onChange={handleChange}
               required
               rows="4"
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
+              className="modern-input min-h-[100px]"
               placeholder="Enter product description"
             />
           </div>
 
           {/* Price */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Price</label>
+            <label className="block text-white/90 font-medium mb-1">Price</label>
             <input
               type="number"
               name="price"
               value={product.price}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
+              className="modern-input"
               placeholder="Enter product price"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Category</label>
+            <label className="block text-white/90 font-medium mb-1">Category</label>
             <input
               type="text"
               name="category"
               value={product.category}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition duration-200"
-              placeholder="Enter or create category (e.g., Eco dishes, Gift sets)"
+              className="modern-input"
+              placeholder="Enter or create category (e.g., Electronics, Fashion)"
             />
             <p className="text-xs text-gray-500 mt-1">If new, it will be created automatically.</p>
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-white/90 font-medium mb-1">
               Product Image
             </label>
             <input
@@ -131,17 +131,17 @@ const UploadProduct = () => {
               name="image"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 
+              className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
               file:rounded-lg file:border-0 file:text-sm file:font-semibold 
-              file:bg-indigo-50 file:text-indigo-600 
-              hover:file:bg-indigo-100 cursor-pointer"
+              file:bg-primary file:text-white 
+              hover:file:bg-primary-dark cursor-pointer"
             />
             {preview && (
               <div className="mt-3">
                 <img
                   src={preview}
                   alt="Preview"
-                  className="w-32 h-32 object-cover rounded-lg border shadow-md"
+                  className="w-32 h-32 object-cover rounded-lg border border-gray-200 shadow-medium"
                 />
               </div>
             )}
@@ -150,7 +150,7 @@ const UploadProduct = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-md hover:bg-indigo-700 transition duration-300 transform hover:scale-105"
+            className="w-full py-3 modern-button font-semibold rounded-lg"
           >
             Upload Product
           </button>

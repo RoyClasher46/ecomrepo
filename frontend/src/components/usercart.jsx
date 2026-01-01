@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, MessageSquare } from "lucide-react";
-import Chatbot from "./chatbot";
+import { X } from "lucide-react";
 import Navbar from "./navbar";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -9,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [finalPrice, setFinalPrice] = useState(0);
-  const [showChat, setShowChat] = useState(false);
   const navigate = useNavigate();
 
   const loadCart = async () => {
@@ -50,121 +48,107 @@ export default function CartPage() {
     }
   };
 
-  const handleOrderNow = async () => {
-    try {
-      const orderPromises = cartItems.map((item) =>
-        fetch("http://localhost:5000/api/order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ productId: item._id, quantity: item.quantity }),
-        })
-      );
-      
-      await Promise.all(orderPromises);
-      
-      const clearCartRes = await fetch("http://localhost:5000/api/clear-cart", {
-        method: "POST",
-        credentials: "include",
-      });
-      setCartItems([]);
-
-      toast.success(`Order placed! Total price: ₹${finalPrice}`);
-      navigate("/myorders");
-
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to place order");
-    }
+  const handleOrderNow = () => {
+    navigate("/checkout");
   };
 
   return (
     <>  
     <Navbar />
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-6 relative">
-      <h1 className="text-4xl font-extrabold text-center text-indigo-700 mb-10 drop-shadow-lg">
-        Your Shopping Cart
-      </h1>
+    <div className="min-h-screen p-6 relative bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-10">
+          Your Shopping Cart
+        </h1>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-6">
-          {cartItems.length === 0 ? (
-            <p className="text-gray-500 text-lg">
-              Your cart is empty. Start shopping now!
-            </p>
-          ) : (
-            cartItems.map((item) => (
-              <div
-              key={item._id}
-              className="bg-white rounded-2xl shadow-xl p-4 flex items-center justify-between gap-4"
-              >
-                <img
-                  src={`data:image/jpeg;base64,${item.image}`}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded-lg border border-gray-200"
-                  />
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    {item.name}
-                  </h2>
-                  <p className="text-gray-500">{item.description}</p>
-                  <p className="mt-1 text-indigo-600 font-bold text-lg">
-                    ₹{item.price} × {item.quantity} = ₹
-                    {item.price * item.quantity}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-6">
+            {cartItems.length === 0 ? (
+              <div className="modern-card p-8 rounded-lg text-center">
+                <p className="text-gray-600 text-lg">
+                  Your cart is empty. Start shopping now!
+                </p>
+              </div>
+            ) : (
+              cartItems.map((item) => (
+                <div
+                key={item._id}
+                className="modern-card rounded-lg p-4 flex items-center justify-between gap-4"
+                >
+                  <img
+                    src={`data:image/jpeg;base64,${item.image}`}
+                    alt={item.name}
+                    className="w-24 h-24 object-cover rounded-lg border border-gray-200"
+                    />
+                  <div className="flex-1">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-1">
+                      {item.name}
+                    </h2>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.description}</p>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 border border-gray-300 rounded-lg">
+                        <button
+                          onClick={async () => {
+                            await removeFromCart(item._id);
+                            toast.info("Quantity decreased");
+                          }}
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={item.quantity <= 1}
+                        >
+                          −
+                        </button>
+                        <span className="px-4 py-1 text-gray-900 font-medium min-w-[3rem] text-center">{item.quantity}</span>
+                        <button
+                          onClick={async () => {
+                            await fetch("http://localhost:5000/api/add-to-cart", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              credentials: "include",
+                              body: JSON.stringify({ productId: item._id }),
+                            });
+                            await loadCart();
+                            toast.success("Quantity increased");
+                          }}
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg transition"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-primary font-bold text-lg">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFromCart(item._id)}
+                    className="text-error hover:text-error-dark transition p-2 hover:bg-gray-50 rounded-lg"
+                    >
+                    <X size={24} />
+                  </button>
+                </div>
+              ))
+            )}
+
+            {cartItems.length > 0 && (
+              <div className="space-y-4">
+                <div className="modern-card p-4 rounded-lg">
+                  <p className="text-right text-gray-900 font-bold text-2xl">
+                    Total Price: <span className="text-primary">${finalPrice}</span>
                   </p>
                 </div>
                 <button
-                  onClick={() => removeFromCart(item._id)}
-                  className="text-red-500 hover:text-red-700"
+                  onClick={handleOrderNow}
+                  className="w-full py-4 text-white font-bold rounded-lg modern-button shadow-large"
                   >
-                  <X size={24} />
+                  Order Now
                 </button>
               </div>
-            ))
-          )}
-
-          {cartItems.length > 0 && (
-            <div className="space-y-4">
-              <p className="text-right text-indigo-700 font-bold text-xl">
-                Total Price: ₹{finalPrice}
-              </p>
-              <button
-                onClick={handleOrderNow}
-                className="w-full py-4 text-white font-bold rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600 shadow-lg transition duration-300"
-                >
-                Order Now
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Chatbot Icon */}
-      <div
-        className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition z-50"
-        onClick={() => setShowChat(!showChat)}
-        >
-        <MessageSquare size={28} />
-      </div>
-
-      {/* Chatbot Box */}
-      {showChat && (
-        <div className="fixed bottom-20 right-6 w-96 h-[60vh] bg-white rounded-2xl shadow-2xl flex flex-col z-50">
-          <div className="flex justify-between items-center p-3 border-b border-gray-200">
-            <h2 className="font-semibold text-gray-800">Chatbot</h2>
-            <button
-              onClick={() => setShowChat(false)}
-              className="text-gray-500 hover:text-red-500"
-              >
-              <X size={20} />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            <Chatbot totalPrice={finalPrice} />
-          </div>
-        </div>
-      )}
     </div>
     </>
   );

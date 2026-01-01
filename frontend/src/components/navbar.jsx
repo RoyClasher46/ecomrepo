@@ -24,60 +24,65 @@ const Navbar = () => {
   };
 
   const handleclick = () => {
-    const hero = document.getElementById("hero");
-    if (hero) {
-      hero.scrollIntoView({ behavior: "smooth" });
-    }
+    navigate("/home");
+    setTimeout(() => {
+      const hero = document.getElementById("hero");
+      if (hero) {
+        hero.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 50);
   };
 
   return (
     <div>
-      <nav className="relative z-50 flex justify-between items-center px-10 py-5 bg-black/80 border-b border-gray-800 backdrop-blur-md">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-200 via-gray-400 to-white bg-clip-text text-transparent">
+      <nav className="relative z-50 flex justify-between items-center px-6 md:px-10 py-4 bg-white border-b border-gray-200 shadow-sm">
+        <h1 className="text-2xl md:text-3xl font-bold gradient-text">
           ShopEase
         </h1>
 
-        <div className="flex items-center gap-6 relative">
+        <div className="flex items-center gap-4 md:gap-6 relative">
           <Link
             to="/home"
-            className="hover:text-white transition hover:scale-110"
+            className="text-gray-700 hover:text-primary transition-colors font-medium text-sm"
           >
             Home
           </Link>
           <Link
             onClick={handleclick}
-            className="hover:text-white transition hover:scale-110"
+            className="text-gray-700 hover:text-primary transition-colors font-medium text-sm"
           >
             Products
           </Link>
           <Link
             to="/about"
-            className="hover:text-white transition hover:scale-110"
+            className="text-gray-700 hover:text-primary transition-colors font-medium text-sm"
           >
             About
           </Link>
 
           <div className="relative">
             <User
-              className="w-6 h-6 text-gray-400 hover:text-white cursor-pointer transition"
+              className="w-6 h-6 text-gray-600 hover:text-primary cursor-pointer transition-colors"
               onClick={handleUserClick}
             />
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-40 bg-black border border-gray-800 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-48 modern-card rounded-lg shadow-large z-50 overflow-hidden">
                 <button
-                  className="w-full px-4 py-2 text-left text-gray-300 font-medium hover:bg-white hover:text-black hover:border-transparent hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-all duration-200 rounded-md"
+                  className="w-full px-4 py-3 text-left text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm"
                   onClick={() => navigate("/myorders")}
                 >
                   My Orders
                 </button>
                 <button
-                  className="w-full px-4 py-2 text-left text-gray-300 font-medium hover:bg-white hover:text-black hover:border-transparent hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-all duration-200 rounded-md"
+                  className="w-full px-4 py-3 text-left text-gray-700 font-medium hover:bg-gray-50 transition-colors border-t border-gray-100 text-sm"
                   onClick={() => navigate("/usercart")}
                 >
                   View Cart
                 </button>
                 <button
-                  className="w-full px-4 py-2 text-left text-gray-300 font-medium hover:bg-white hover:text-black hover:border-transparent hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-all duration-200 rounded-md"
+                  className="w-full px-4 py-3 text-left text-gray-700 font-medium hover:bg-gray-50 transition-colors border-t border-gray-100 text-sm"
                   onClick={handleLogout}
                 >
                   Logout

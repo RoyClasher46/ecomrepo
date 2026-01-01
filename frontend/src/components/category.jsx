@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
+import { toast } from "react-toastify";
 
 export default function CategoryPage() {
+  const navigate = useNavigate();
   const { name } = useParams();
   const decodedName = decodeURIComponent(name || "");
   const [products, setProducts] = useState([]);
@@ -65,29 +68,36 @@ export default function CategoryPage() {
     ? "Browse all popular products." 
     : `Products in the "${decodedName}" category.`;
 
+  const handleAddToCart = (productId) => {
+    toast.error("Please sign in to add items to your cart.");
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen eco-paper text-[#4e402f]">
-      <div className="max-w-5xl mx-auto px-4 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-sm text-[#7a6952]">Category</p>
-            <h1 className="eco-heading text-3xl">{heading}</h1>
-            <p className="text-sm text-[#6f5c46] mt-1">{subtext}</p>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Category</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{heading}</h1>
+              <p className="text-sm text-gray-600 mt-2">{subtext}</p>
+            </div>
+            <Link
+              to="/"
+              className="text-sm text-gray-600 hover:text-primary transition modern-button-secondary px-4 py-2 rounded-lg"
+            >
+              ← Back to home
+            </Link>
           </div>
-          <Link
-            to="/"
-            className="text-sm text-[#b18a46] hover:text-[#a1793d]"
-          >
-            ← Back to home
-          </Link>
-        </div>
 
         {loading ? (
-          <div className="text-sm text-[#6f5c46]">Loading products...</div>
+          <div className="text-sm text-gray-600 modern-card p-4 rounded-lg text-center">Loading products...</div>
         ) : isAll ? (
           grouped.length === 0 ? (
-            <div className="eco-card rounded-3xl p-6">
-              <p className="text-[#6f5c46]">
+            <div className="modern-card rounded-lg p-6 text-center">
+              <p className="text-gray-600">
                 No products found yet.
               </p>
             </div>
@@ -96,8 +106,8 @@ export default function CategoryPage() {
               {grouped.map(([cat, items]) => (
                 <div key={cat} className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 className="eco-heading text-2xl">{cat}</h2>
-                    <span className="text-xs text-[#6f5c46]">
+                    <h2 className="text-2xl font-bold text-gray-900">{cat}</h2>
+                    <span className="text-xs text-gray-600 modern-badge">
                       {items.length} item{items.length > 1 ? "s" : ""}
                     </span>
                   </div>
@@ -105,7 +115,7 @@ export default function CategoryPage() {
                     {items.map((item) => (
                       <div
                         key={item._id}
-                        className="eco-card rounded-3xl overflow-hidden flex flex-col border border-white min-h-[260px]"
+                        className="modern-card rounded-lg overflow-hidden flex flex-col min-h-[260px]"
                       >
                         <div className="relative h-44">
                           <img
@@ -115,15 +125,18 @@ export default function CategoryPage() {
                           />
                         </div>
                         <div className="p-4 flex flex-col gap-3 h-full">
-                          <p className="text-[#4e402f] font-semibold text-base">
+                          <p className="text-gray-900 font-semibold text-base">
                             {item.name}
                           </p>
-                          <p className="text-[#6f5c46] text-sm min-h-[38px] overflow-hidden">
+                          <p className="text-gray-600 text-sm min-h-[38px] overflow-hidden">
                             {item.description}
                           </p>
                           <div className="flex items-center justify-between mt-auto">
-                            <p className="text-[#4e402f] font-bold">${item.price}</p>
-                            <button className="text-xs font-semibold px-4 py-2 rounded-full bg-[#b18a46] text-white hover:bg-[#a1793d] transition-colors">
+                            <p className="text-gray-900 font-bold text-lg">${item.price}</p>
+                            <button 
+                              onClick={() => handleAddToCart(item._id)}
+                              className="text-xs font-semibold px-4 py-2 rounded-lg modern-button"
+                            >
                               Add to cart
                             </button>
                           </div>
@@ -136,8 +149,8 @@ export default function CategoryPage() {
             </div>
           )
         ) : filtered.length === 0 ? (
-          <div className="eco-card rounded-3xl p-6">
-            <p className="text-[#6f5c46]">
+          <div className="modern-card rounded-lg p-6 text-center">
+            <p className="text-gray-600">
               No products found in this category yet.
             </p>
           </div>
@@ -147,7 +160,7 @@ export default function CategoryPage() {
             {displayed.map((item) => (
               <div
                 key={item._id}
-                className="eco-card rounded-3xl overflow-hidden flex flex-col border border-white min-h-[260px]"
+                className="modern-card rounded-lg overflow-hidden flex flex-col min-h-[260px]"
               >
                 <div className="relative h-44">
                   <img
@@ -157,15 +170,18 @@ export default function CategoryPage() {
                   />
                 </div>
                 <div className="p-4 flex flex-col gap-3 h-full">
-                  <p className="text-[#4e402f] font-semibold text-base">
+                  <p className="text-gray-900 font-semibold text-base">
                     {item.name}
                   </p>
-                  <p className="text-[#6f5c46] text-sm min-h-[38px] overflow-hidden">
+                  <p className="text-gray-600 text-sm min-h-[38px] overflow-hidden">
                     {item.description}
                   </p>
                   <div className="flex items-center justify-between mt-auto">
-                    <p className="text-[#4e402f] font-bold">${item.price}</p>
-                    <button className="text-xs font-semibold px-4 py-2 rounded-full bg-[#b18a46] text-white hover:bg-[#a1793d] transition-colors">
+                    <p className="text-gray-900 font-bold text-lg">${item.price}</p>
+                    <button 
+                      onClick={() => handleAddToCart(item._id)}
+                      className="text-xs font-semibold px-4 py-2 rounded-lg modern-button"
+                    >
                       Add to cart
                     </button>
                   </div>
@@ -178,7 +194,7 @@ export default function CategoryPage() {
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => setShowAll((s) => !s)}
-                className="text-xs text-[#b18a46] hover:text-[#a07a3e]"
+                className="text-xs text-gray-600 hover:text-primary transition modern-button-secondary px-4 py-2 rounded-lg"
               >
                 {showAll ? "Show less" : "View all popular products"}
               </button>
@@ -186,8 +202,9 @@ export default function CategoryPage() {
           )}
           </>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

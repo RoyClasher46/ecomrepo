@@ -199,213 +199,329 @@ const ManageProducts = ({ selectedProduct }) => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Manage Products
-      </h2>
+    <div className="p-6 min-h-screen bg-gray-50">
+      <div className="mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">
+          Manage Products
+        </h2>
+        <p className="text-gray-600">View, edit, and manage all your products</p>
+      </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          Search Box:<input
-            type="text"
-            placeholder="Search name or description..."
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="p-2 border rounded w-64"
-          />
-        </div>
+      <div className="modern-card p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="modern-input w-full"
+            />
+          </div>
 
-        <div className="flex items-center gap-3">
-          <label>Category:</label>
-          <select
-            value={categoryFilter}
-            onChange={(e) => {
-              setCategoryFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="p-2 border rounded"
-          >
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c === "all" ? "All" : c}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="modern-input w-full"
+            >
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c === "all" ? "All Categories" : c}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="flex items-center gap-3">
-          <label>Sort:</label>
-          <select
-            value={sortOption}
-            onChange={(e) => {
-              setSortOption(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="p-2 border rounded"
-          >
-            <option value="none">None</option>
-            <option value="price_low">Price Low → High</option>
-            <option value="price_high">Price High → Low</option>
-            <option value="new">Newest First</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+            <select
+              value={sortOption}
+              onChange={(e) => {
+                setSortOption(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="modern-input w-full"
+            >
+              <option value="none">Default</option>
+              <option value="price_low">Price: Low to High</option>
+              <option value="price_high">Price: High to Low</option>
+              <option value="new">Newest First</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Product Table */}
       {currentItems.length === 0 ? (
-        <p>No products found.</p>
+        <div className="modern-card p-12 rounded-lg text-center">
+          <p className="text-gray-600 text-lg">No products found.</p>
+          <p className="text-gray-500 text-sm mt-2">Try adjusting your filters or add new products.</p>
+        </div>
       ) : (
         <>
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="py-2 px-4 text-left">ID</th>
-                <th className="py-2 px-4 text-left">Category</th>
-                <th className="py-2 px-4 text-left">Name</th>
-                <th className="py-2 px-4 text-left">Price</th>
-                <th className="py-2 px-4 text-left">Description</th>
-                <th className="py-2 px-4 text-left">Popular</th>
-                <th className="py-2 px-4 text-left">Action</th>
-              </tr>
-            </thead>
+          <div className="modern-card rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Image</th>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Name</th>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Category</th>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price</th>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Popular</th>
+                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              {currentItems.map((product, index) => (
-                <tr
-                  key={product._id}
-                  className={
-                    highlightedId === product._id
-                      ? "bg-yellow-100 animate-pulse"
-                      : index % 2 === 0
-                      ? "bg-white"
-                      : "bg-gray-50"
-                  }
-                >
-                  <td className="py-2 px-4">{indexOfFirst + index + 1}</td>
-                  <td className="py-2 px-4">{normalizeCategory(product.category)}</td>
-                  <td className="py-2 px-4">{product.name}</td>
-                  <td className="py-2 px-4">${product.price}</td>
-                  <td className="py-2 px-4">{product.description}</td>
-
-                  <td className="py-2 px-4">
-                    <input
-                      className="w-5 h-5 cursor-pointer" 
-                      type="checkbox"
-                      checked={product.isPopular}
-                      onChange={(e) =>
-                        togglePopular(product._id, e.target.checked)
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentItems.map((product, index) => (
+                    <tr
+                      key={product._id}
+                      className={
+                        highlightedId === product._id
+                          ? "bg-blue-50 border-l-4 border-primary"
+                          : "hover:bg-gray-50"
                       }
-                    />
-                  </td>
-
-                  <td className="py-2 px-4 flex gap-2">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="px-3 py-1 bg-yellow-500 text-white rounded"
                     >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(product._id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <td className="py-3 px-4">
+                        <img
+                          src={`data:image/jpeg;base64,${product.image}`}
+                          alt={product.name}
+                          className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                        />
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="text-sm font-semibold text-gray-900">{product.name}</div>
+                        <div className="text-xs text-gray-500 mt-1 line-clamp-2 max-w-xs">{product.description}</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
+                          {normalizeCategory(product.category)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm font-bold text-primary">${product.price}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={product.isPopular}
+                            onChange={(e) => togglePopular(product._id, e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="px-3 py-1.5 bg-primary hover:bg-primary-dark text-white text-sm rounded-lg transition font-medium"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product._id)}
+                            className="px-3 py-1.5 bg-error hover:bg-error-dark text-white text-sm rounded-lg transition font-medium"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           {/* Pagination */}
-          <div className="mt-6 flex justify-center gap-3">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                Showing {indexOfFirst + 1} to {Math.min(indexOfLast, displayedProducts.length)} of {displayedProducts.length} products
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-lg modern-button-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                        currentPage === pageNum
+                          ? "modern-button"
+                          : "modern-button-secondary"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-lg modern-button-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
 
       {/* Edit Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h3 className="text-xl font-bold mb-4">Edit Product</h3>
+      {isModalOpen && editingProduct && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="modern-card p-6 rounded-lg shadow-large w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">Edit Product</h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                ×
+              </button>
+            </div>
 
-            <label>Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              className="w-full p-2 border rounded mb-3"
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column - Image Preview */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
+                  {editingProduct.image ? (
+                    <img
+                      src={`data:image/jpeg;base64,${editingProduct.image}`}
+                      alt="Product preview"
+                      className="max-w-full max-h-64 object-contain rounded-lg"
+                    />
+                  ) : (
+                    <div className="text-gray-400 text-sm">No image available</div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Note: Image cannot be changed here. Upload a new product to change the image.</p>
+              </div>
 
-            <label>Price</label>
-            <input
-              type="number"
-              value={formData.price}
-              className="w-full p-2 border rounded mb-3"
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
-            />
+              {/* Right Column - Form Fields */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    className="modern-input"
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
 
-            <label>Description</label>
-            <input
-              type="text"
-              value={formData.description}
-              className="w-full p-2 border rounded mb-3"
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  description: e.target.value,
-                })
-              }
-            />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price ($) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.price}
+                    className="modern-input"
+                    onChange={(e) =>
+                      setFormData({ ...formData, price: e.target.value })
+                    }
+                    required
+                  />
+                </div>
 
-            <label>Category</label>
-            <input
-              type="text"
-              value={formData.category}
-              className="w-full p-2 border rounded mb-4"
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  category: e.target.value,
-                })
-              }
-            />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    className="modern-input"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        category: e.target.value,
+                      })
+                    }
+                    placeholder="e.g., Electronics, Fashion"
+                    required
+                  />
+                </div>
 
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded mr-2"
-              onClick={handleSave}
-            >
-              {saving ? "Saving..." : "Save"}
-            </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                  <textarea
+                    value={formData.description}
+                    className="modern-input min-h-[100px] resize-none"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        description: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
 
-            <button
-              className="px-4 py-2 bg-gray-300 rounded"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </button>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPopular}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isPopular: e.target.checked })
+                    }
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  />
+                  <label className="text-sm font-medium text-gray-700">Mark as Popular</label>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                className="flex-1 modern-button py-2.5 rounded-lg"
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+              <button
+                className="flex-1 modern-button-secondary py-2.5 rounded-lg"
+                onClick={() => setIsModalOpen(false)}
+                disabled={saving}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

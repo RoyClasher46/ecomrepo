@@ -46,9 +46,9 @@ export default function AdminLogin() {
 
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-96">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">Login</h2>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+      <div className="modern-card p-8 rounded-lg shadow-large w-full max-w-md">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-900">Admin Login</h2>
         
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
@@ -57,7 +57,8 @@ export default function AdminLogin() {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500"
+            className="modern-input"
+            required
           />
           <input
             type="password"
@@ -65,11 +66,12 @@ export default function AdminLogin() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500"
+            className="modern-input"
+            required
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition duration-200"
+            className="w-full modern-button py-3 rounded-lg"
           >
             Login
           </button>

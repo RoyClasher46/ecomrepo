@@ -17,14 +17,14 @@ const Sidebar = ({ setPage }) => {
       }
 }
   return (
-    <div className="w-64 bg-gray-800 text-white p-6">
-      <h1 className="text-indigo-400">Admin Panel</h1>
+    <div className="w-64 bg-white text-gray-700 p-6 min-h-screen border-r border-gray-200 shadow-sm">
+      <h1 className="text-2xl font-bold gradient-text mb-6">Admin Panel</h1>
       <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
-        <li className="hover:bg-gray-700" style={{ margin: "15px 0", cursor: "pointer" }} onClick={() => setPage("dashboard")}>Dashboard</li>
-        <li className="hover:bg-gray-700" style={{ margin: "15px 0", cursor: "pointer" }} onClick={() => setPage("upload")}>Upload Product</li>
-        <li className="hover:bg-gray-700" style={{ margin: "15px 0", cursor: "pointer" }} onClick={() => setPage("manage")}>Manage Products</li>
-        <li className="hover:bg-gray-700" style={{ margin: "15px 0", cursor: "pointer" }} onClick={() => setPage("orders")}>Orders</li>
-        <button className="w-full text-left text-red-700 hover:bg-gray-700" onClick={handleLogout}>Logout</button>
+        <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("dashboard")}>📊 Dashboard</li>
+        <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("upload")}>📤 Upload Product</li>
+        <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("manage")}>⚙️ Manage Products</li>
+        <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("orders")}>📦 Orders</li>
+        <button className="w-full text-left text-error hover:bg-gray-50 rounded-lg transition px-4 py-3 mt-4 text-sm font-medium" onClick={handleLogout}>🚪 Logout</button>
       </ul>
     </div>
   );
