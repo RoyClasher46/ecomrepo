@@ -159,7 +159,7 @@ export default function ProductPage() {
   if (!product) return (
     <>
       <Navbar />
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
         <div className="modern-card p-8 rounded-lg">
           <p className="text-gray-600 text-center">Loading...</p>
         </div>
@@ -170,7 +170,7 @@ export default function ProductPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 py-8 pt-24 md:pt-28">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           {/* Product Details Section */}
           <div className="modern-card p-8 rounded-lg mb-8">

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import "./index.css";
 import HomeWrapper from "./components/homewrapper";
 import Login from "./components/login";
@@ -19,14 +20,16 @@ import About from "./components/about";
 import Contact from "./components/Contact";
 import Checkout from "./components/checkout";
 import ReturnOrder from "./components/returnorder";
+import Profile from "./components/profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Router>
-      <ToastContainer position="top-right" autoClose={3000} />
-    <Routes>
+  <ThemeProvider>
+    <Router>
+        <ToastContainer position="top-right" autoClose={3000} />
+      <Routes>
       <Route path="/" element={<HomeWrapper />} />
       <Route path="/adminmain" element={<ProtectedRoute><AdminMain /></ProtectedRoute>}  />
       <Route path="/about" element={<About />} />
@@ -38,11 +41,13 @@ root.render(
       <Route path="/adminlogin" element={<AdminLogin />} />
       {/* <Route path="/admindashboard" element={<Dashboard />} /> */}
       <Route path="/myorders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/return-order/:orderId" element={<ProtectedRoute><ReturnOrder /></ProtectedRoute>} />
       <Route path="/usercart" element={<ProtectedRoute><UserCart /></ProtectedRoute>} />
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/category/:name" element={<CategoryPage />} />
       
-    </Routes>
-  </Router>
+      </Routes>
+    </Router>
+  </ThemeProvider>
 );

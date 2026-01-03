@@ -1,28 +1,50 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ArrowRight, Sparkles, TrendingUp, Star, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import Navbar from "./navbar";
+import Footer from "./Footer";
 import "react-toastify/dist/ReactToastify.css";
-import Footer from "./Footer";   
-
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [stats, setStats] = useState({
+    totalUsers: "0",
+    totalProducts: "0",
+    averageRating: "4.5"
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesExpanded, setCategoriesExpanded] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const navigate = useNavigate();
-
-
-
 
   useEffect(() => {
     fetch("/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error(err));
+    
+    // Fetch homepage statistics
+    fetch("/api/home-stats")
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("Failed to fetch stats");
+      })
+      .then((data) => {
+        setStats({
+          totalUsers: data.totalUsersFormatted || data.totalUsers?.toString() || "0",
+          totalProducts: data.totalProductsFormatted || data.totalProducts?.toString() || "0",
+          averageRating: data.averageRating?.toString() || "4.5"
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load stats:", err);
+        // Keep default values
+      });
   }, []);
 
-  // Get unique products for each section
   const featured = useMemo(() => {
     const popular = products.filter((p) => p.isPopular);
     return popular.slice(0, 6);
@@ -45,7 +67,6 @@ export default function Home() {
   }, [products]);
 
   const heroProduct = useMemo(() => {
-    // Use a different product for hero (not in featured)
     const featuredIds = new Set(featured.map(p => p._id));
     const available = products.filter(p => !featuredIds.has(p._id));
     return available.find((p) => p.isPopular) || available[0] || products[0];
@@ -66,7 +87,7 @@ export default function Home() {
     if (heroSlides.length <= 1) return;
     const id = setInterval(() => {
       setHeroSlideIndex((i) => (i + 1) % heroSlides.length);
-    }, 3500);
+    }, 5000);
     return () => clearInterval(id);
   }, [heroSlides.length]);
 
@@ -108,208 +129,214 @@ export default function Home() {
     : categoriesList.slice(0, 4);
 
   const handleOrder = (productId) => {
-    // Navigate to product page instead of directly adding to cart
     navigate(`/product/${productId}`);
   };
   const goCatalog = () => navigate("/category/all");
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 pt-4 pb-8 lg:pt-8">
-        {/* Navigation Bar */}
-        <nav className="hidden xl:flex items-center justify-between rounded-lg px-6 py-4 modern-card mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-xl font-semibold text-white">
-              🛍️
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-gray-500">
-                Premium Store
-              </p>
-              <p className="text-lg font-semibold gradient-text">ShopEase</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-6 text-sm text-gray-700">
-            <Link to="/" className="hover:text-primary transition-colors font-medium">
-              Home
-            </Link>
-            <a href="#popular" className="hover:text-primary transition-colors font-medium">
-              Products
-            </a>
-            <Link to="/login" className="hover:text-primary transition-colors font-medium">
-              Sign In
-            </Link>
-            <Link
-              to="/signup"
-              className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
-            >
-              Create account
-            </Link>
-          </div>
-        </nav>
-
-        {/* Mobile Navigation */}
-        <div className="block xl:hidden mb-6">
-          <MobilePanel
-            heroProduct={heroDisplay}
-            featured={featured}
-            categories={categoriesList}
-            categoriesExpanded={categoriesExpanded}
-            setCategoriesExpanded={setCategoriesExpanded}
-            handleOrder={handleOrder}
-            mobileMenuOpen={mobileMenuOpen}
-            setMobileMenuOpen={setMobileMenuOpen}
-            goCatalog={goCatalog}
-          />
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950">
+        {/* Hero Section */}
+        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
         </div>
 
-        {/* Hero Section */}
-        <section className="mb-12">
-          <div className="modern-card rounded-lg p-8 md:p-12">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              <div className="space-y-6">
-                <div>
-                  <span className="inline-flex items-center gap-2 modern-badge px-3 py-1 rounded-full text-xs font-semibold mb-4">
-                    Welcome to ShopEase
-                  </span>
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
-                    Discover Amazing Products
-                  </h1>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    Explore our curated collection of premium products. From fashion to electronics, 
-                    find everything you need with fast delivery and exceptional quality.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    onClick={goCatalog}
-                    className="px-6 py-3 rounded-lg modern-button text-sm font-semibold"
-                  >
-                    Shop Now
-                  </button>
-                  <Link
-                    to="/login"
-                    className="px-6 py-3 rounded-lg modern-button-secondary text-sm font-semibold"
-                  >
-                    Sign In
-                  </Link>
-                </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8 animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-green-900/40 dark:to-emerald-900/40 border border-indigo-200/50 dark:border-green-700/50">
+                <Sparkles className="w-4 h-4 text-indigo-600 dark:text-green-400" />
+                <span className="text-sm font-semibold text-indigo-700 dark:text-green-300">Welcome to ShopEase</span>
               </div>
-              <div className="relative overflow-hidden rounded-lg h-80 bg-gray-100 flex items-center justify-center">
-                {heroDisplay ? (
-                  <>
-                    <img
-                      src={`data:image/jpeg;base64,${heroDisplay.image}`}
-                      alt={heroDisplay.name}
-                      className="w-full h-full object-cover"
-                    />
-                    {newProducts.length > 0 && (
-                      <span className="absolute top-3 left-3 modern-badge px-3 py-1 rounded-full text-xs font-semibold">
-                        New
-                      </span>
-                    )}
-                    {heroSlides.length > 1 && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={heroPrev}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-900 shadow flex items-center justify-center"
-                          aria-label="Previous"
-                        >
-                          ‹
-                        </button>
-                        <button
-                          type="button"
-                          onClick={heroNext}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-900 shadow flex items-center justify-center"
-                          aria-label="Next"
-                        >
-                          ›
-                        </button>
-                        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-                          {heroSlides.map((_, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => setHeroSlideIndex(idx)}
-                              className={`w-2.5 h-2.5 rounded-full ${
-                                idx === heroSlideIndex ? "bg-primary" : "bg-white/70"
-                              }`}
-                              aria-label={`Slide ${idx + 1}`}
-                            />
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <div className="text-gray-500">Loading new items...</div>
-                )}
+              
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Discover
+                </span>
+                <br />
+                <span className="text-gray-900 dark:text-gray-100">Amazing Products</span>
+              </h1>
+              
+              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
+                Explore our curated collection of premium products. From fashion to electronics, 
+                find everything you need with fast delivery and exceptional quality.
+              </p>
+              
+              <div className="flex flex-wrap gap-4">
+                <button
+                  onClick={goCatalog}
+                  className="group px-8 py-4 rounded-xl modern-button text-base font-semibold flex items-center gap-2"
+                >
+                  <span>Shop Now</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <Link
+                  to="/login"
+                  className="px-8 py-4 rounded-xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-indigo-300 dark:hover:border-green-500 hover:text-indigo-600 dark:hover:text-green-400 font-semibold transition-all text-base"
+                >
+                  Sign In
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-6 md:gap-8 pt-4 flex-wrap">
+                <div className="flex-1 min-w-[120px]">
+                  <div className="text-3xl md:text-4xl font-bold gradient-text">{stats.totalUsers}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Happy Customers</div>
+                </div>
+                <div className="flex-1 min-w-[120px]">
+                  <div className="text-3xl md:text-4xl font-bold gradient-text dark:text-green-400">{stats.totalProducts}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Products</div>
+                </div>
+                <div className="flex-1 min-w-[120px]">
+                  <div className="text-3xl md:text-4xl font-bold gradient-text dark:text-green-400 flex items-center gap-1">
+                    {stats.averageRating}
+                    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* Main Content Grid */}
+            {/* Right Hero Image */}
+            <div className="relative">
+              {heroDisplay ? (
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+                  <img
+                    src={`data:image/jpeg;base64,${heroDisplay.image}`}
+                    alt={heroDisplay.name}
+                    className="w-full h-[500px] object-cover"
+                  />
+                  {newProducts.length > 0 && (
+                    <div className="absolute top-6 left-6 z-20">
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-sm font-semibold text-indigo-600 shadow-lg">
+                        <TrendingUp className="w-4 h-4" />
+                        New Arrival
+                      </span>
+                    </div>
+                  )}
+                  {heroSlides.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={heroPrev}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white text-gray-900 shadow-xl flex items-center justify-center transition-all hover:scale-110"
+                        aria-label="Previous"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={heroNext}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white text-gray-900 shadow-xl flex items-center justify-center transition-all hover:scale-110"
+                        aria-label="Next"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                        {heroSlides.map((_, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setHeroSlideIndex(idx)}
+                            className={`h-2 rounded-full transition-all ${
+                              idx === heroSlideIndex 
+                                ? "w-8 bg-white" 
+                                : "w-2 bg-white/50 hover:bg-white/75"
+                            }`}
+                            aria-label={`Slide ${idx + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  <div className="absolute bottom-6 left-6 z-20 text-white">
+                    <h3 className="text-2xl font-bold mb-1">{heroDisplay.name}</h3>
+                    <p className="text-lg font-semibold">₹{heroDisplay.price}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full h-[500px] rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
+                  <div className="text-gray-400">Loading...</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="grid xl:grid-cols-[2fr_1fr] gap-8">
-          <div className="space-y-12">
-            <Section
-              id="popular"
-              title="Popular Products"
-              description="Best selling items"
-              products={featured}
-              handleOrder={handleOrder}
-            />
+          {/* Products Section */}
+          <div className="space-y-16">
+            {featured.length > 0 && (
+              <Section
+                id="popular"
+                title="Popular Products"
+                description="Best selling items this week"
+                products={featured}
+                handleOrder={handleOrder}
+                icon={<TrendingUp className="w-6 h-6" />}
+              />
+            )}
 
             {arrivalsAll.length > 0 && (
               <Section
                 id="new-items"
                 title="Discover All Products"
-                description="All products in our store"
+                description="Explore our complete collection"
                 products={arrivalsAll}
                 handleOrder={handleOrder}
+                icon={<Sparkles className="w-6 h-6" />}
               />
             )}
           </div>
 
           {/* Sidebar */}
           <aside className="space-y-6 hidden xl:block">
-            <div className="modern-card rounded-lg p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-xl font-bold text-gray-900">Shop by Category</p>
+            <div className="modern-card rounded-2xl p-6 space-y-4 sticky top-24">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold gradient-text flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5" />
+                  Categories
+                </h3>
                 <Link
                   to="/category/all"
-                  className="text-xs text-primary hover:text-primary-dark transition font-medium"
+                  className="text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-medium transition-colors"
                 >
                   View all
                 </Link>
               </div>
-              <div className={`grid grid-cols-2 gap-3 ${categoriesExpanded ? "" : "max-h-64 overflow-hidden"}`}>
+              <div className={`grid grid-cols-2 gap-3 ${categoriesExpanded ? "" : "max-h-80 overflow-hidden"}`}>
                 {visibleCategories.map((item) => (
                   <Link
                     to={`/category/${encodeURIComponent(item.name)}`}
                     key={item._id}
-                    className="relative rounded-lg overflow-hidden modern-card hover:shadow-medium transition group"
+                    className="group relative rounded-xl overflow-hidden modern-card hover:shadow-xl transition-all"
                   >
                     <img
                       src={`data:image/jpeg;base64,${item.image}`}
                       alt={item.name}
-                      className="w-full h-20 object-cover group-hover:scale-105 transition-transform"
+                      className="w-full h-24 object-cover group-hover:scale-110 transition-transform duration-300"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <p className="absolute bottom-2 left-2 text-white text-sm font-semibold drop-shadow">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                    <p className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold drop-shadow-lg">
                       {item.name}
                     </p>
                   </Link>
                 ))}
-                {categoriesList.length === 0 && (
-                  <div className="text-sm text-gray-600 col-span-2">Loading categories...</div>
-                )}
               </div>
               {categoriesList.length > 4 && (
                 <button
                   onClick={() => setCategoriesExpanded((s) => !s)}
-                  className="text-xs text-primary hover:text-primary-dark transition font-medium w-full text-center"
+                  className="w-full text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-medium transition-colors py-2"
                 >
                   {categoriesExpanded ? "Show less" : "View all categories"}
                 </button>
@@ -318,202 +345,116 @@ export default function Home() {
           </aside>
         </div>
       </div>
-      <Footer />
-    </div>
+
+        <Footer />
+
+        <style>{`
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+      `}</style>
+      </div>
+    </>
   );
 }
 
-function Section({ id, title, description, products, handleOrder, badge }) {
+function Section({ id, title, description, products, handleOrder, icon }) {
   if (products.length === 0) return null;
 
   return (
-    <section id={id} className="space-y-6">
+    <section id={id} className="space-y-6 animate-fade-in-up">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900">{title}</h3>
+          <div className="flex items-center gap-3 mb-2">
+            {icon}
+            <h3 className="text-3xl md:text-4xl font-bold gradient-text">{title}</h3>
+          </div>
           {description && (
-            <p className="text-sm text-gray-600 mt-1">{description}</p>
+            <p className="text-gray-600 dark:text-gray-300">{description}</p>
           )}
         </div>
         <Link
           to={`/category/${id === "popular" ? "popular" : "all"}`}
-          className="text-sm text-primary hover:text-primary-dark transition font-medium"
+          className="hidden md:flex items-center gap-2 text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-semibold transition-colors"
         >
-          View all →
+          View all
+          <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((item) => (
-          <div
-            key={item._id}
-            className="modern-card rounded-lg overflow-hidden flex flex-col min-h-[280px] hover:shadow-medium transition"
-          >
-            <div className="relative h-48">
-              {item.image && (
-                <img
-                  src={`data:image/jpeg;base64,${item.image}`}
-                  alt={item.name || "Product"}
-                  className="w-full h-full object-cover"
-                />
-              )}
-              {badge && (
-                <span className="absolute top-3 left-3 modern-badge px-3 py-1 rounded-full text-xs font-semibold">
-                  {badge}
-                </span>
-              )}
-            </div>
-            <div className="p-5 flex flex-col gap-3 h-full">
-              <h4 className="text-lg font-semibold text-gray-900 line-clamp-2">
-                {item.name || "Unnamed Product"}
-              </h4>
-              <p className="text-gray-600 text-sm line-clamp-2 flex-1">
-                {item.description || "No description available"}
-              </p>
-              <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                <p className="text-gray-900 font-bold text-xl">₹{item.price || "0.00"}</p>
-                <button
-                  onClick={() => handleOrder(item._id)}
-                  className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
-                >
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
+        {products.map((item, idx) => (
+          <ProductCard key={item._id} item={item} handleOrder={handleOrder} delay={idx * 100} />
         ))}
       </div>
     </section>
   );
 }
 
-function MobilePanel({
-  heroProduct,
-  featured,
-  categories = [],
-  handleOrder,
-  mobileMenuOpen,
-  setMobileMenuOpen,
-  goCatalog,
-  categoriesExpanded,
-  setCategoriesExpanded,
-}) {
-  const categoryItems = categories.length
-    ? categoriesExpanded
-      ? categories.slice(0, 8)
-      : categories.slice(0, 4)
-    : featured;
-
+function ProductCard({ item, handleOrder, delay = 0 }) {
   return (
-    <div className="modern-card rounded-lg overflow-hidden relative">
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setMobileMenuOpen((o) => !o)}
-            className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-200 transition"
-            aria-label="Toggle menu"
-          >
-            ≡
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-xl text-white">
-              🛍️
-            </div>
-            <span className="text-sm font-semibold gradient-text">ShopEase</span>
-          </div>
-        </div>
-        <Link
-          to="/usercart"
-          className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition"
-        >
-          🛒 Cart
-        </Link>
-      </div>
-      <div className="p-5 space-y-6">
-        <div className="space-y-3">
-          <p className="text-2xl font-bold text-gray-900 leading-snug">
-            Discover Amazing Products
-          </p>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            Welcome to ShopEase, your premium shopping destination.
-            Discover a curated collection of quality products with fast delivery.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <p className="text-xl font-bold text-gray-900">Shop by Category</p>
-          <div className="grid grid-cols-2 gap-3">
-            {categoryItems.map((item) => (
-              <Link
-                to={`/category/${encodeURIComponent(item.name)}`}
-                key={item._id}
-                className="relative rounded-lg overflow-hidden modern-card hover:shadow-medium transition group"
-              >
-                <img
-                  src={`data:image/jpeg;base64,${item.image}`}
-                  alt={item.name}
-                  className="w-full h-24 object-cover group-hover:scale-105 transition-transform"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <p className="absolute bottom-2 left-2 text-white text-sm font-semibold drop-shadow">
-                  {item.name}
-                </p>
-              </Link>
-            ))}
-            {categoryItems.length === 0 && (
-              <div className="text-sm text-gray-600 col-span-2">Loading...</div>
-            )}
-          </div>
-          <Link
-            to="/category/all"
-            className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg modern-button-secondary text-sm font-semibold"
-          >
-            View All Categories
-          </Link>
-        </div>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex">
-          <div className="w-64 modern-card h-full shadow-large p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold gradient-text">Menu</span>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition"
-                aria-label="Close menu"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="flex flex-col gap-3 text-sm text-gray-700">
-              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition">
-                Home
-              </Link>
-              <a
-                href="#popular"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-primary transition"
-              >
-                Products
-              </a>
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition">
-                Sign In
-              </Link>
-              <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition">
-                Create account
-              </Link>
-              <Link to="/usercart" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition">
-                Cart
-              </Link>
-            </div>
-          </div>
-          <button
-            className="flex-1"
-            aria-label="Close menu overlay"
-            onClick={() => setMobileMenuOpen(false)}
+    <div
+      className="group modern-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 animate-fade-in-up"
+      style={{ animationDelay: `${delay}ms` }}
+      onClick={() => handleOrder(item._id)}
+    >
+      <div className="relative h-56 overflow-hidden">
+        {item.image && (
+          <img
+            src={`data:image/jpeg;base64,${item.image}`}
+            alt={item.name || "Product"}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+            <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+          </div>
         </div>
-      )}
+      </div>
+      <div className="p-5 space-y-3">
+        <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-green-400 transition-colors">
+          {item.name || "Unnamed Product"}
+        </h4>
+        <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
+          {item.description || "No description available"}
+        </p>
+        <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-shrink-0">
+              <p className="text-xl md:text-2xl font-bold gradient-text whitespace-nowrap">
+                ₹{item.price || "0.00"}
+              </p>
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOrder(item._id);
+              }}
+              className="px-4 md:px-5 py-2 md:py-2.5 rounded-xl modern-button text-xs md:text-sm font-semibold flex items-center gap-1.5 md:gap-2 flex-shrink-0 hover:scale-105 transition-transform"
+            >
+              <ShoppingBag className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Add to Cart</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

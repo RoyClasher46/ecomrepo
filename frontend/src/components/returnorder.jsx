@@ -117,7 +117,7 @@ const ReturnOrder = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
           <div className="text-gray-600">Loading order details...</div>
         </div>
       </>
@@ -128,7 +128,7 @@ const ReturnOrder = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
           <div className="text-gray-600">Order not found</div>
         </div>
       </>
@@ -141,7 +141,7 @@ const ReturnOrder = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 p-6 pt-24 md:pt-28">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => navigate("/myorders")}

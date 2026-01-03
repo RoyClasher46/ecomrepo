@@ -8,9 +8,9 @@ export default function About() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 flex flex-col pt-24 md:pt-28">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary to-primary-dark text-white">
+        <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
           <div className="max-w-7xl mx-auto px-6 md:px-10 py-16">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">About ShopEase</h1>

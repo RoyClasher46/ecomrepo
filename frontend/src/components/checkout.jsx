@@ -47,7 +47,37 @@ export default function Checkout() {
       }
     };
 
+    const loadProfile = async () => {
+      try {
+        const res = await fetch("/api/profile", {
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (res.ok && data.user) {
+          // Pre-fill form with profile data
+          if (data.user.mobile) {
+            setForm(prev => ({ ...prev, phone: data.user.mobile }));
+          }
+          // Pre-fill with home address if available
+          if (data.user.homeAddress && data.user.homeAddress.street) {
+            setForm(prev => ({
+              ...prev,
+              addressLine: data.user.homeAddress.street || "",
+              city: data.user.homeAddress.city || "",
+              state: data.user.homeAddress.state || "",
+              pincode: data.user.homeAddress.zipCode || "",
+              area: data.user.homeAddress.city || "",
+            }));
+          }
+        }
+      } catch (err) {
+        // Profile not loaded, user can fill manually
+        console.log("Profile not loaded, user can fill manually");
+      }
+    };
+
     loadCart();
+    loadProfile();
   }, []);
 
   const totalPrice = useMemo(() => {
@@ -188,7 +218,7 @@ export default function Checkout() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
           <div className="modern-card p-8 rounded-lg">Loading checkout...</div>
         </div>
       </>
@@ -198,7 +228,7 @@ export default function Checkout() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 p-6 pt-24 md:pt-28">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 modern-card rounded-lg p-6">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Checkout</h1>

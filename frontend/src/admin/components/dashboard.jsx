@@ -1,84 +1,160 @@
   import React,{ useState,useEffect } from "react";
   import { toast } from "react-toastify";
+  import { Package, ShoppingCart, Clock, CheckCircle, Truck, XCircle, RotateCcw, TrendingUp, Settings } from "lucide-react";
   import "react-toastify/dist/ReactToastify.css";
 
   const Dashboard = () => {
     const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       fetch("/api/admin/stats")
         .then((res) => res.json())
-        .then((data) => setStats(data))
-        .catch((err) => console.error(err));
+        .then((data) => {
+          setStats(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
     }, []);
     
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-96">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      );
+    }
+
+    if (!stats) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-600">Failed to load statistics</p>
+        </div>
+      );
+    }
+    
     return (
-      <div className="min-h-screen">
-        {stats && (
-          <section className="px-6 md:px-10 pt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Total Products</div>
-                <div className="text-3xl font-bold text-gray-900">{stats.totalProducts}</div>
-              </div>
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Total Orders</div>
-                <div className="text-3xl font-bold text-gray-900">{stats.totalOrders}</div>
-              </div>
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Pending</div>
-                <div className="text-3xl font-bold text-gray-900">{stats.statusCounts?.Pending || 0}</div>
-              </div>
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Accepted</div>
-                <div className="text-3xl font-bold text-gray-900">{stats.statusCounts?.Accepted || 0}</div>
-              </div>
-            </div>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">Dashboard Overview</h1>
+          <p className="text-gray-600">Monitor your store's performance and statistics</p>
+        </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Assigned</div>
-                <div className="text-2xl font-bold text-gray-900">{stats.statusCounts?.Assigned || 0}</div>
-              </div>
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Rejected</div>
-                <div className="text-2xl font-bold text-gray-900">{stats.statusCounts?.Rejected || 0}</div>
-              </div>
-              <div className="modern-card p-5 rounded-lg">
-                <div className="text-gray-600 text-sm">Delivered</div>
-                <div className="text-2xl font-bold text-gray-900">{stats.statusCounts?.Delivered || 0}</div>
-              </div>
-            </div>
+        {/* Main Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            icon={Package}
+            label="Total Products"
+            value={stats.totalProducts}
+            color="from-blue-500 to-blue-600"
+            bgColor="bg-blue-50"
+          />
+          <StatCard
+            icon={ShoppingCart}
+            label="Total Orders"
+            value={stats.totalOrders}
+            color="from-purple-500 to-purple-600"
+            bgColor="bg-purple-50"
+          />
+          <StatCard
+            icon={Clock}
+            label="Pending Orders"
+            value={stats.statusCounts?.Pending || 0}
+            color="from-yellow-500 to-orange-500"
+            bgColor="bg-yellow-50"
+          />
+          <StatCard
+            icon={CheckCircle}
+            label="Accepted"
+            value={stats.statusCounts?.Accepted || 0}
+            color="from-green-500 to-green-600"
+            bgColor="bg-green-50"
+          />
+        </div>
 
-            {/* Return Policy Section */}
-            <ReturnPolicySection />
-            
-            {/* Return Statistics */}
-            {stats.returnCounts && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                <div className="modern-card p-5 rounded-lg border-l-4 border-orange-500">
-                  <div className="text-gray-600 text-sm">Return Requests</div>
-                  <div className="text-2xl font-bold text-orange-600">{stats.returnCounts?.requested || 0}</div>
-                </div>
-                <div className="modern-card p-5 rounded-lg border-l-4 border-blue-500">
-                  <div className="text-gray-600 text-sm">Approved Returns</div>
-                  <div className="text-2xl font-bold text-blue-600">{stats.returnCounts?.approved || 0}</div>
-                </div>
-                <div className="modern-card p-5 rounded-lg border-l-4 border-green-500">
-                  <div className="text-gray-600 text-sm">Completed Returns</div>
-                  <div className="text-2xl font-bold text-green-600">{stats.returnCounts?.completed || 0}</div>
-                </div>
-              </div>
-            )}
-          </section>
+        {/* Order Status Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <StatCard
+            icon={Truck}
+            label="Assigned"
+            value={stats.statusCounts?.Assigned || 0}
+            color="from-indigo-500 to-indigo-600"
+            bgColor="bg-indigo-50"
+            size="medium"
+          />
+          <StatCard
+            icon={XCircle}
+            label="Rejected"
+            value={stats.statusCounts?.Rejected || 0}
+            color="from-red-500 to-red-600"
+            bgColor="bg-red-50"
+            size="medium"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="Delivered"
+            value={stats.statusCounts?.Delivered || 0}
+            color="from-emerald-500 to-emerald-600"
+            bgColor="bg-emerald-50"
+            size="medium"
+          />
+        </div>
+
+        {/* Return Policy Section */}
+        <ReturnPolicySection />
+
+        {/* Return Statistics */}
+        {stats.returnCounts && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <StatCard
+              icon={RotateCcw}
+              label="Return Requests"
+              value={stats.returnCounts?.requested || 0}
+              color="from-orange-500 to-orange-600"
+              bgColor="bg-orange-50"
+              size="medium"
+            />
+            <StatCard
+              icon={CheckCircle}
+              label="Approved Returns"
+              value={stats.returnCounts?.approved || 0}
+              color="from-blue-500 to-blue-600"
+              bgColor="bg-blue-50"
+              size="medium"
+            />
+            <StatCard
+              icon={TrendingUp}
+              label="Completed Returns"
+              value={stats.returnCounts?.completed || 0}
+              color="from-green-500 to-green-600"
+              bgColor="bg-green-50"
+              size="medium"
+            />
+          </div>
         )}
+      </div>
+    );
+  };
 
-
-
-        {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 py-6 mt-16 text-center text-gray-600 text-sm">
-          © {new Date().getFullYear()} ShopEase. All rights reserved.
-        </footer>
+  // StatCard Component
+  const StatCard = ({ icon: Icon, label, value, color, bgColor, size = "large" }) => {
+    return (
+      <div className={`modern-card rounded-2xl p-6 hover:shadow-xl transition-all duration-300 ${bgColor}`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
+            <Icon className="w-6 h-6 text-white" />
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
+          <p className={`font-bold gradient-text ${size === "large" ? "text-3xl" : "text-2xl"}`}>
+            {value}
+          </p>
+        </div>
       </div>
     );
   };
@@ -129,25 +205,26 @@
     };
 
     return (
-      <div className="modern-card p-6 rounded-lg mt-4">
-        <div className="flex items-center justify-between mb-4">
+      <div className="modern-card rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Return Policy Settings</h3>
-            <p className="text-sm text-gray-600 mt-1">Configure how many days users can return products after delivery</p>
+            <h3 className="text-2xl font-bold gradient-text mb-2">Return Policy Settings</h3>
+            <p className="text-gray-600">Configure how many days users can return products after delivery</p>
           </div>
           {!editMode && (
             <button
               onClick={() => setEditMode(true)}
-              className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
+              className="px-6 py-3 rounded-xl modern-button text-sm font-semibold flex items-center gap-2"
             >
+              <Settings className="w-4 h-4" />
               Edit
             </button>
           )}
         </div>
         {editMode ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Return Period (Days)
               </label>
               <input
@@ -156,36 +233,48 @@
                 max="365"
                 value={newReturnDays}
                 onChange={(e) => setNewReturnDays(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900"
+                className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
               />
-              <p className="text-xs text-gray-500 mt-1">Users can return products within this many days after delivery</p>
+              <p className="text-xs text-gray-500 mt-2">Users can return products within this many days after delivery</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
+                className="px-6 py-3 rounded-xl modern-button text-sm font-semibold flex items-center gap-2 disabled:opacity-50"
               >
-                {loading ? "Saving..." : "Save"}
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
               <button
                 onClick={() => {
                   setEditMode(false);
                   setNewReturnDays(returnPolicy.returnDays);
                 }}
-                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold"
+                className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold transition-all"
               >
                 Cancel
               </button>
             </div>
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-gray-700">
-              <span className="font-semibold">Current Return Period:</span>{" "}
-              <span className="text-primary font-bold">{returnPolicy.returnDays} days</span>
-            </p>
-            <p className="text-sm text-gray-600 mt-2">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm mb-1">Current Return Period</p>
+                <p className="text-3xl font-bold gradient-text">{returnPolicy.returnDays} days</p>
+              </div>
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <CheckCircle className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mt-4">
               Users can request returns within {returnPolicy.returnDays} days of delivery.
             </p>
           </div>

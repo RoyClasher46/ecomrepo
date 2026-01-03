@@ -56,7 +56,7 @@ export default function CartPage() {
   return (
     <>  
     <Navbar />
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 flex flex-col pt-24 md:pt-28">
       <div className="flex-grow p-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-10">

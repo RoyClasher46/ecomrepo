@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Package, Plus, Edit } from "lucide-react";
 
 const ListedProducts = ({ setPage, setSelectedProduct }) => {
   const [products, setProducts] = useState([]);
@@ -27,78 +28,94 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="px-6 md:px-10 pt-6 mb-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Listed Products</h2>
-        <p className="text-gray-600">View and manage all your listed products</p>
+    <div className="w-full space-y-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold gradient-text">Listed Products</h1>
+              <p className="text-gray-600 mt-1">View and manage all your listed products</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setPage("upload")}
+            className="px-6 py-3 rounded-xl modern-button font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+          >
+            <Plus className="w-5 h-5" />
+            Upload Product
+          </button>
+        </div>
       </div>
 
       {products.length === 0 ? (
-        <div className="modern-card p-12 rounded-lg text-center mx-6">
-          <p className="text-gray-600 text-lg mb-2">No products listed yet.</p>
+        <div className="modern-card rounded-2xl p-12 text-center">
+          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-700 text-lg font-semibold mb-2">No products listed yet.</p>
+          <p className="text-gray-500 text-sm mb-6">Get started by uploading your first product</p>
           <button
             onClick={() => setPage("upload")}
-            className="mt-4 px-6 py-3 rounded-lg modern-button text-sm font-semibold"
+            className="px-8 py-4 rounded-xl modern-button text-base font-semibold flex items-center gap-2 mx-auto shadow-lg hover:shadow-xl transition-all"
           >
+            <Plus className="w-5 h-5" />
             Upload Your First Product
           </button>
         </div>
       ) : (
-        <section className="px-6 md:px-10 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((item) => (
-              <div
-                key={item._id}
-                className="modern-card rounded-lg overflow-hidden cursor-pointer hover:shadow-medium transition"
-                onClick={() => {
-                  setSelectedProduct(item);
-                  setPage("manage");
-                }}
-              >
-                <div className="w-full h-48 overflow-hidden bg-gray-100">
-                  <img
-                    src={`data:image/jpeg;base64,${item.image}`}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((item) => (
+            <div
+              key={item._id}
+              className="group modern-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300"
+              onClick={() => {
+                setSelectedProduct(item);
+                setPage("manage");
+              }}
+            >
+              <div className="relative w-full h-56 overflow-hidden bg-gray-100">
+                <img
+                  src={`data:image/jpeg;base64,${item.image}`}
+                  alt={item.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute top-4 right-4">
+                  <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold shadow-lg ${
+                    item.isPopular 
+                      ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-white" 
+                      : "bg-white/90 text-gray-700"
+                  }`}>
+                    {item.isPopular ? "⭐ Popular" : "Regular"}
+                  </span>
                 </div>
-                <div className="p-4">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.name}</h4>
-                  <p className="text-primary font-bold text-xl mb-2">₹{item.price}</p>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                      item.isPopular 
-                        ? "bg-green-100 text-green-700" 
-                        : "bg-gray-100 text-gray-600"
-                    }`}>
-                      {item.isPopular ? "Popular" : "Regular"}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {item.category || "Self"}
-                    </span>
-                  </div>
+              </div>
+              <div className="p-5 space-y-3">
+                <h4 className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-indigo-600 transition-colors">{item.name}</h4>
+                <p className="text-2xl font-bold gradient-text">₹{item.price}</p>
+                <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                  <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200">
+                    {item.category || "Self"}
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedProduct(item);
                       setPage("manage");
                     }}
-                    className="w-full mt-4 px-4 py-2 modern-button rounded-lg text-sm font-semibold"
+                    className="px-4 py-2 rounded-xl modern-button text-sm font-semibold flex items-center gap-2"
                   >
-                    Manage Product
+                    <Edit className="w-4 h-4" />
+                    Manage
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          ))}
+        </div>
       )}
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6 mt-16 text-center text-gray-600 text-sm">
-        © {new Date().getFullYear()} ShopEase. All rights reserved.
-      </footer>
     </div>
   );
 };

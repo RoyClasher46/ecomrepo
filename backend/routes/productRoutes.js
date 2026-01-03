@@ -10,7 +10,8 @@ const {
     deleteProduct,
     togglePopular,
     addReview,
-    getReviews
+    getReviews,
+    getHomeStats
 } = require("../controllers/productController");
 
 // Get all products (legacy endpoint)
@@ -45,6 +46,9 @@ router.post("/api/products/:id/reviews", addReview);
 
 // Get reviews for a product
 router.get("/api/products/:id/reviews", getReviews);
+
+// Get homepage statistics
+router.get("/api/home-stats", getHomeStats);
 
 module.exports = router;
 

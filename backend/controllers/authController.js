@@ -314,8 +314,17 @@ const logout = (req, res) => {
 /**
  * Check authentication status
  */
-const checkAuth = (req, res) => {
-    res.status(200).json({ message: 'User authenticated', user: req.user });
+const checkAuth = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.userid).select("name email mobile");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ message: 'User authenticated', user: { ...req.user, name: user.name, email: user.email, mobile: user.mobile } });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
 /**
@@ -458,6 +467,53 @@ const checkEmailConfig = (req, res) => {
     }
 };
 
+/**
+ * Get user profile
+ */
+const getProfile = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.userid).select("-password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Update user profile
+ */
+const updateProfile = async (req, res) => {
+    try {
+        const { name, mobile, homeAddress, workAddress } = req.body;
+        const userId = req.user.userid;
+
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (mobile !== undefined) updateData.mobile = mobile;
+        if (homeAddress) updateData.homeAddress = homeAddress;
+        if (workAddress) updateData.workAddress = workAddress;
+
+        const user = await userModel.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).select("-password");
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Profile updated successfully", user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 module.exports = {
     login,
     sendSignupOTP,
@@ -471,6 +527,8 @@ module.exports = {
     adminDashboard,
     adminCheckAuth,
     testEmail,
-    checkEmailConfig
+    checkEmailConfig,
+    getProfile,
+    updateProfile
 };
 

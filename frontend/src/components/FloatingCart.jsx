@@ -64,13 +64,13 @@ export default function FloatingCart() {
     <>
       {/* Floating Cart Icon */}
       <div
-        className="fixed bottom-6 right-6 bg-white text-gray-700 p-4 rounded-full shadow-large cursor-pointer 
-                   hover:bg-gray-50 hover:shadow-xl transition-all z-50 border border-gray-200"
+        className="fixed bottom-6 right-6 bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-2xl shadow-2xl cursor-pointer 
+                   hover:shadow-glow-lg hover:scale-110 transition-all z-50 border border-white/20 backdrop-blur-sm"
         onClick={() => setShowCartPopup(!showCartPopup)}
       >
         <ShoppingCart size={24} />
         {totalItems > 0 && (
-          <span className="absolute top-0 right-0 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white">
             {totalItems}
           </span>
         )}
@@ -78,33 +78,36 @@ export default function FloatingCart() {
 
       {/* Cart Popup */}
       {showCartPopup && (
-        <div className="fixed bottom-20 right-6 w-80 modern-card rounded-lg shadow-large z-50">
-          <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-            <h4 className="font-bold text-lg text-gray-900">Cart</h4>
+        <div className="fixed bottom-24 right-6 w-80 modern-card rounded-2xl shadow-2xl z-50 animate-scale-in">
+          <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-t-2xl">
+            <h4 className="font-bold text-lg gradient-text">Shopping Cart</h4>
             <X
-              className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer transition"
+              className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer transition hover:rotate-90"
               onClick={() => setShowCartPopup(false)}
             />
           </div>
-          <div className="max-h-60 overflow-y-auto px-4 py-2">
+          <div className="max-h-60 overflow-y-auto px-4 py-3">
             {cartItems.length === 0 ? (
-              <p className="text-sm text-gray-600 py-4">Your cart is empty.</p>
+              <div className="text-center py-8">
+                <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-sm text-gray-600">Your cart is empty.</p>
+              </div>
             ) : (
               cartItems.map((item) => (
                 <div
                   key={item._id}
-                  className="flex justify-between items-center mb-3 p-2 bg-gray-50 rounded-lg"
+                  className="flex justify-between items-center mb-3 p-3 bg-gradient-to-r from-gray-50 to-indigo-50/30 rounded-xl hover:shadow-md transition-all"
                 >
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{item.name}</p>
-                    <p className="text-xs text-gray-600">
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900 text-sm">{item.name}</p>
+                    <p className="text-xs text-gray-600 mt-1">
                       ₹{item.price} × {item.quantity}
-                      {item.size && <span className="ml-1">({item.size})</span>}
+                      {item.size && <span className="ml-1 text-indigo-600">({item.size})</span>}
                     </p>
                   </div>
                   <button
                     onClick={() => removeFromCart(item._id)}
-                    className="text-xs text-error hover:text-error-dark transition px-2 py-1 rounded"
+                    className="text-xs text-red-600 hover:text-red-700 hover:bg-red-50 transition px-3 py-1.5 rounded-lg font-medium"
                   >
                     Remove
                   </button>
@@ -113,12 +116,13 @@ export default function FloatingCart() {
             )}
           </div>
           {cartItems.length > 0 && (
-            <div className="px-4 py-3 border-t border-gray-200">
+            <div className="px-4 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
               <button
                 onClick={handleCart}
-                className="w-full px-4 py-2 rounded-lg modern-button font-semibold text-sm"
+                className="w-full px-4 py-3 rounded-xl modern-button font-semibold text-sm flex items-center justify-center gap-2"
               >
-                View Cart
+                <ShoppingCart className="w-4 h-4" />
+                View Full Cart
               </button>
             </div>
           )}

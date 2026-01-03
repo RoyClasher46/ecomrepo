@@ -6,15 +6,33 @@ const userSchema = new mongoose.Schema({
   password: String,
   picture: String,
   isAdmin: {
-  type: Boolean,
-  default: false,
-},
-
+    type: Boolean,
+    default: false,
+  },
+  // Profile fields
+  mobile: {
+    type: String,
+    default: "",
+  },
+  homeAddress: {
+    street: { type: String, default: "" },
+    city: { type: String, default: "" },
+    state: { type: String, default: "" },
+    zipCode: { type: String, default: "" },
+    country: { type: String, default: "" },
+  },
+  workAddress: {
+    street: { type: String, default: "" },
+    city: { type: String, default: "" },
+    state: { type: String, default: "" },
+    zipCode: { type: String, default: "" },
+    country: { type: String, default: "" },
+  },
   cart: [
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "product", // use the correct model name (usually lowercase if that's what you used)
+        ref: "product",
       },
       quantity: {
         type: Number,
@@ -22,15 +40,14 @@ const userSchema = new mongoose.Schema({
       },
       size: {
         type: String,
-        default: "", // Product size if applicable
+        default: "",
       },
     },
   ],
-
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "order", // optional: if you store order references
+      ref: "order",
     },
   ],
 });

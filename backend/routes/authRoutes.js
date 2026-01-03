@@ -14,7 +14,9 @@ const {
     adminDashboard,
     adminCheckAuth,
     testEmail,
-    checkEmailConfig
+    checkEmailConfig,
+    getProfile,
+    updateProfile
 } = require("../controllers/authController");
 
 // User authentication routes
@@ -35,6 +37,10 @@ router.get("/api/admin/checkauth", isLoggedIn, adminCheckAuth);
 // Test email configuration (for debugging)
 router.post("/api/test-email", testEmail);
 router.get("/api/check-email-config", checkEmailConfig);
+
+// User profile routes
+router.get("/api/profile", isLoggedIn, getProfile);
+router.put("/api/profile", isLoggedIn, updateProfile);
 
 module.exports = router;
 

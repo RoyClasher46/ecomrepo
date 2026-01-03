@@ -1,4 +1,5 @@
 const productModel = require("../models/product-model");
+const userModel = require("../models/user-model");
 const { normalizeCategory } = require("../utils/categoryNormalizer");
 
 /**
@@ -255,6 +256,60 @@ const getReviews = async (req, res) => {
     }
 };
 
+/**
+ * Get homepage statistics
+ */
+const getHomeStats = async (req, res) => {
+    try {
+        // Get total users (excluding admins)
+        const totalUsers = await userModel.countDocuments({ isAdmin: { $ne: true } });
+        
+        // Get total products
+        const totalProducts = await productModel.countDocuments();
+        
+        // Calculate average rating from all products
+        const products = await productModel.find({ "reviews.rating": { $exists: true } });
+        let totalRating = 0;
+        let totalReviews = 0;
+        
+        products.forEach(product => {
+            if (product.reviews && product.reviews.length > 0) {
+                product.reviews.forEach(review => {
+                    if (review.rating) {
+                        totalRating += review.rating;
+                        totalReviews++;
+                    }
+                });
+            }
+        });
+        
+        const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "4.5";
+        
+        // Format numbers
+        const formatNumber = (num) => {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + "K+";
+            }
+            return num.toString();
+        };
+        
+        res.status(200).json({
+            totalUsers: totalUsers,
+            totalUsersFormatted: formatNumber(totalUsers),
+            totalProducts: totalProducts,
+            totalProductsFormatted: formatNumber(totalProducts),
+            averageRating: parseFloat(averageRating),
+            totalReviews: totalReviews
+        });
+    } catch (err) {
+        console.error("Error fetching stats:", err);
+        res.status(500).json({ 
+            message: "Failed to fetch statistics",
+            error: err.message 
+        });
+    }
+};
+
 module.exports = {
     getAllProducts,
     getProducts,
@@ -264,6 +319,7 @@ module.exports = {
     deleteProduct,
     togglePopular,
     addReview,
-    getReviews
+    getReviews,
+    getHomeStats
 };
 

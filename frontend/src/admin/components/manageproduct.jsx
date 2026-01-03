@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { Settings, Search, Filter, Edit, Trash2, Star, Package } from "lucide-react";
 
 const ManageProducts = ({ selectedProduct }) => {
   const [products, setProducts] = useState([]);
@@ -266,40 +267,53 @@ const ManageProducts = ({ selectedProduct }) => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <div className="mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">
-          Manage Products
-        </h2>
-        <p className="text-gray-600">View, edit, and manage all your products</p>
+    <div className="w-full space-y-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <Settings className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold gradient-text">Manage Products</h1>
+            <p className="text-gray-600 mt-1">View, edit, and manage all your products</p>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="modern-card p-4 mb-6">
+      <div className="modern-card rounded-2xl p-6 shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="w-5 h-5 text-indigo-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Filters & Search</h3>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <Search className="w-4 h-4" />
+              Search Products
+            </label>
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search by name or description..."
               value={searchText}
               onChange={(e) => {
                 setSearchText(e.target.value);
                 setCurrentPage(1);
               }}
-              className="modern-input w-full"
+              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
             <select
               value={categoryFilter}
               onChange={(e) => {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="modern-input w-full"
+              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>
@@ -310,14 +324,14 @@ const ManageProducts = ({ selectedProduct }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Sort By</label>
             <select
               value={sortOption}
               onChange={(e) => {
                 setSortOption(e.target.value);
                 setCurrentPage(1);
               }}
-              className="modern-input w-full"
+              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
             >
               <option value="none">Default</option>
               <option value="price_low">Price: Low to High</option>
@@ -330,23 +344,24 @@ const ManageProducts = ({ selectedProduct }) => {
 
       {/* Product Table */}
       {currentItems.length === 0 ? (
-        <div className="modern-card p-12 rounded-lg text-center">
-          <p className="text-gray-600 text-lg">No products found.</p>
-          <p className="text-gray-500 text-sm mt-2">Try adjusting your filters or add new products.</p>
+        <div className="modern-card rounded-2xl p-12 text-center">
+          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-700 text-lg font-semibold mb-2">No products found.</p>
+          <p className="text-gray-500 text-sm">Try adjusting your filters or add new products.</p>
         </div>
       ) : (
         <>
-          <div className="modern-card rounded-lg overflow-hidden">
+          <div className="modern-card rounded-2xl overflow-hidden shadow-lg">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gradient-to-r from-indigo-50 to-purple-50">
                   <tr>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Image</th>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Category</th>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Price</th>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Popular</th>
-                    <th className="py-3 px-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Image</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Name</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Category</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Price</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Popular</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
@@ -356,30 +371,30 @@ const ManageProducts = ({ selectedProduct }) => {
                       key={product._id}
                       className={
                         highlightedId === product._id
-                          ? "bg-blue-50 border-l-4 border-primary"
-                          : "hover:bg-gray-50"
+                          ? "bg-indigo-50 border-l-4 border-indigo-600"
+                          : "hover:bg-indigo-50/50 transition-colors"
                       }
                     >
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-4">
                         <img
                           src={`data:image/jpeg;base64,${product.image}`}
                           alt={product.name}
-                          className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                          className="w-20 h-20 object-cover rounded-xl border-2 border-gray-200 shadow-md"
                         />
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="text-sm font-semibold text-gray-900">{product.name}</div>
+                      <td className="py-4 px-4">
+                        <div className="text-sm font-bold text-gray-900">{product.name}</div>
                         <div className="text-xs text-gray-500 mt-1 line-clamp-2 max-w-xs">{product.description}</div>
                       </td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
+                      <td className="py-4 px-4">
+                        <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 rounded-lg border border-indigo-200">
                           {normalizeCategory(product.category)}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
-                        <span className="text-sm font-bold text-primary">₹{product.price}</span>
+                      <td className="py-4 px-4">
+                        <span className="text-lg font-bold gradient-text">₹{product.price}</span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-4">
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
@@ -387,21 +402,26 @@ const ManageProducts = ({ selectedProduct }) => {
                             onChange={(e) => togglePopular(product._id, e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-indigo-600 peer-checked:to-purple-600"></div>
+                          {product.isPopular && (
+                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 ml-2" />
+                          )}
                         </label>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-4 px-4">
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEdit(product)}
-                            className="px-3 py-1.5 bg-primary hover:bg-primary-dark text-white text-sm rounded-lg transition font-medium"
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-xl transition-all font-semibold flex items-center gap-1.5 shadow-md hover:shadow-lg"
                           >
+                            <Edit className="w-4 h-4" />
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(product._id)}
-                            className="px-3 py-1.5 bg-error hover:bg-error-dark text-white text-sm rounded-lg transition font-medium"
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded-xl transition-all font-semibold flex items-center gap-1.5 shadow-md hover:shadow-lg"
                           >
+                            <Trash2 className="w-4 h-4" />
                             Delete
                           </button>
                         </div>
