@@ -6,7 +6,7 @@ const Sidebar = ({ setPage }) => {
    const navigate = useNavigate();
 
     const handleLogout = async() => {
-    const res= await fetch("http://localhost:5000/api/logout", {
+    const res= await fetch("/api/logout", {
       method: "GET",
       credentials: "include"
     });
@@ -21,6 +21,7 @@ const Sidebar = ({ setPage }) => {
       <h1 className="text-2xl font-bold gradient-text mb-6">Admin Panel</h1>
       <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
         <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("dashboard")}>📊 Dashboard</li>
+        <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("listed")}>📋 Listed Products</li>
         <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("upload")}>📤 Upload Product</li>
         <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("manage")}>⚙️ Manage Products</li>
         <li className="hover:bg-gray-50 rounded-lg transition px-4 py-3 cursor-pointer mb-2 text-sm font-medium" onClick={() => setPage("orders")}>📦 Orders</li>

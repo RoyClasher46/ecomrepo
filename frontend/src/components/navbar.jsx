@@ -13,27 +13,21 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    const res = await fetch("http://localhost:5000/api/logout", {
+    setShowDropdown(false);
+    const res = await fetch("/api/logout", {
       method: "GET",
       credentials: "include",
     });
     if (res.ok) {
       toast.success("Logout successfully!");
       navigate("/");
+      // Delay reload to allow toast to display
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
 
-  const handleclick = () => {
-    navigate("/home");
-    setTimeout(() => {
-      const hero = document.getElementById("hero");
-      if (hero) {
-        hero.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }, 50);
-  };
 
   return (
     <div>
@@ -44,13 +38,13 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4 md:gap-6 relative">
           <Link
-            to="/home"
+            to="/"
             className="text-gray-700 hover:text-primary transition-colors font-medium text-sm"
           >
             Home
           </Link>
           <Link
-            onClick={handleclick}
+            to="/category/all"
             className="text-gray-700 hover:text-primary transition-colors font-medium text-sm"
           >
             Products
@@ -62,6 +56,7 @@ const Navbar = () => {
             About
           </Link>
 
+          {/* Profile menu for logged-in users */}
           <div className="relative">
             <User
               className="w-6 h-6 text-gray-600 hover:text-primary cursor-pointer transition-colors"

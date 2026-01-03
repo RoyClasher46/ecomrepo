@@ -1,91 +1,27 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Navbar from "./navbar";
+import Footer from "./Footer";
+import FloatingCart from "./FloatingCart";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, X } from "lucide-react";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Main() {
   const [products, setProducts] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
-  const [showCartPopup, setShowCartPopup] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const [categoriesExpanded, setCategoriesExpanded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch("/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error(err));
-
-    loadCart();
   }, []);
 
-  const loadCart = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/get-cart", {
-        credentials: "include",
-      });
-      const data = await res.json();
-      if (res.ok && data.cart) {
-        setCartItems(data.cart);
-      }
-    } catch (err) {
-      console.error("Failed to load cart:", err);
-    }
-  };
-
-  const handleOrder = async (productId) => {
-    try {
-      const res = await fetch("http://localhost:5000/api/add-to-cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ productId }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        await loadCart();
-        setShowCartPopup(true);
-        toast.success("Item added to cart");
-      } else {
-        toast.error(data.message || "Failed to add item to cart");
-      }
-    } catch (err) {
-      console.error("Add to cart failed", err);
-      toast.error("An error occurred while adding to cart");
-    }
-  };
-
-  const removeFromCart = async (id) => {
-    try {
-      const res = await fetch("http://localhost:5000/api/remove-to-cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ productId: id }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        await loadCart();
-        setShowCartPopup(true);
-        toast.success("Item removed from cart");
-      } else {
-        toast.error(data.message || "Failed to remove item from cart");
-      }
-    } catch (err) {
-      console.error("Remove from cart failed", err);
-      toast.error("An error occurred while removing item from cart");
-    }
-  };
-
-  const handleCart = () => {
-    navigate("/usercart");
+  const handleOrder = (productId) => {
+    // Navigate to product page instead of directly adding to cart
+    navigate(`/product/${productId}`);
   };
 
   // Get unique products for different sections
@@ -312,70 +248,8 @@ export default function Main() {
         </div>
       </section>
 
-      {/* Floating Cart Icon */}
-      <div
-        className="fixed bottom-6 right-6 bg-white text-gray-700 p-4 rounded-full shadow-large cursor-pointer 
-                   hover:bg-gray-50 hover:shadow-xl transition-all z-50 border border-gray-200"
-        onClick={() => setShowCartPopup(!showCartPopup)}
-      >
-        <ShoppingCart size={24} />
-        {cartItems.length > 0 && (
-          <span className="absolute top-0 right-0 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-            {cartItems.length}
-          </span>
-        )}
-      </div>
-
-      {/* Cart Popup */}
-      {showCartPopup && (
-        <div className="fixed bottom-20 right-6 w-80 modern-card rounded-lg shadow-large z-50">
-          <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-            <h4 className="font-bold text-lg text-gray-900">Cart</h4>
-            <X
-              className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer transition"
-              onClick={() => setShowCartPopup(false)}
-            />
-          </div>
-          <div className="max-h-60 overflow-y-auto px-4 py-2">
-            {cartItems.length === 0 ? (
-              <p className="text-sm text-gray-600 py-4">Your cart is empty.</p>
-            ) : (
-              cartItems.map((item) => (
-                <div
-                  key={item._id}
-                  className="flex justify-between items-center mb-3 p-2 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{item.name}</p>
-                    <p className="text-xs text-gray-600">
-                      ${item.price} × {item.quantity}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => removeFromCart(item._id)}
-                    className="text-xs text-error hover:text-error-dark transition px-2 py-1 rounded"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-          <div className="px-4 py-3 border-t border-gray-200">
-            <button
-              onClick={handleCart}
-              className="w-full px-4 py-2 rounded-lg modern-button font-semibold text-sm"
-            >
-              View Cart
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6 mt-16 text-center text-gray-600 text-sm">
-        © {new Date().getFullYear()} ShopEase. All rights reserved.
-      </footer>
+      <FloatingCart />
+      <Footer />
     </div>
   );
 }
@@ -417,7 +291,7 @@ function MainSection({ id, title, description, products, onAdd }) {
               <h4 className="text-lg font-semibold text-gray-900 line-clamp-2">{item.name || "Unnamed Product"}</h4>
               <p className="text-gray-600 text-sm line-clamp-2 flex-1">{item.description || "No description available"}</p>
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                <p className="text-gray-900 font-bold text-xl">${item.price || "0.00"}</p>
+                <p className="text-gray-900 font-bold text-xl">₹{item.price || "0.00"}</p>
                 <button
                   onClick={() => onAdd(item._id)}
                   className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"

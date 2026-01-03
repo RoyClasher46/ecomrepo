@@ -1,0 +1,476 @@
+const userModel = require("../models/user-model");
+const otpModel = require("../models/otp-model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { sendOTPEmail } = require("../utils/emailService");
+
+/**
+ * User login
+ */
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(400).json({ message: "Email or password is incorrect" });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
+
+        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({ message: "Login Successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Send OTP for signup
+ */
+const sendSignupOTP = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        // Validate input
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Check if user already exists
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Delete any existing OTP for this email and purpose
+        await otpModel.deleteMany({ email, purpose: "signup" });
+
+        // Save OTP to database
+        await otpModel.create({
+            email,
+            otp,
+            purpose: "signup",
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        });
+
+        // Send OTP email
+        const emailResult = await sendOTPEmail(email, otp, "signup");
+        if (!emailResult.success) {
+            // Delete the OTP record if email failed
+            await otpModel.deleteMany({ email, purpose: "signup" });
+            return res.status(500).json({ 
+                message: emailResult.error || "Failed to send OTP email. Please check your email configuration." 
+            });
+        }
+
+        res.status(200).json({ message: "OTP sent to your email" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Verify OTP and complete signup
+ */
+const verifySignupOTP = async (req, res) => {
+    try {
+        const { name, email, password, otp } = req.body;
+
+        // Validate input
+        if (!name || !email || !password || !otp) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Find OTP record
+        const otpRecord = await otpModel.findOne({
+            email,
+            otp,
+            purpose: "signup",
+            verified: false,
+        });
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        // Check if OTP is expired
+        if (new Date() > otpRecord.expiresAt) {
+            await otpModel.deleteOne({ _id: otpRecord._id });
+            return res.status(400).json({ message: "OTP has expired" });
+        }
+
+        // Mark OTP as verified
+        otpRecord.verified = true;
+        await otpRecord.save();
+
+        // Check if user already exists (double check)
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        // Hash password and create user
+        bcrypt.genSalt(12, (err, salt) => {
+            if (err) return res.status(500).json({ message: "Something went wrong" });
+
+            bcrypt.hash(password, salt, async (err, hash) => {
+                if (err) return res.status(500).json({ message: "Something went wrong" });
+
+                const newUser = await userModel.create({ name, email, password: hash });
+
+                const token = jwt.sign({ email: newUser.email, userid: newUser._id }, process.env.JWT_SECRET);
+
+                res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: "lax",
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                });
+
+                // Delete used OTP
+                await otpModel.deleteOne({ _id: otpRecord._id });
+
+                res.status(200).json({ message: "User registered successfully" });
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Send OTP for forgot password
+ */
+const sendForgotPasswordOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        // Check if user exists
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Delete any existing OTP for this email and purpose
+        await otpModel.deleteMany({ email, purpose: "forgot-password" });
+
+        // Save OTP to database
+        await otpModel.create({
+            email,
+            otp,
+            purpose: "forgot-password",
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        });
+
+        // Send OTP email
+        const emailResult = await sendOTPEmail(email, otp, "forgot-password");
+        if (!emailResult.success) {
+            // Delete the OTP record if email failed
+            await otpModel.deleteMany({ email, purpose: "forgot-password" });
+            return res.status(500).json({ 
+                message: emailResult.error || "Failed to send OTP email. Please check your email configuration." 
+            });
+        }
+
+        res.status(200).json({ message: "OTP sent to your email" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Verify OTP for forgot password
+ */
+const verifyForgotPasswordOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ message: "Email and OTP are required" });
+        }
+
+        // Find OTP record
+        const otpRecord = await otpModel.findOne({
+            email,
+            otp,
+            purpose: "forgot-password",
+            verified: false,
+        });
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        // Check if OTP is expired
+        if (new Date() > otpRecord.expiresAt) {
+            await otpModel.deleteOne({ _id: otpRecord._id });
+            return res.status(400).json({ message: "OTP has expired" });
+        }
+
+        // Mark OTP as verified
+        otpRecord.verified = true;
+        await otpRecord.save();
+
+        res.status(200).json({ message: "OTP verified successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Reset password after OTP verification
+ */
+const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Find verified OTP record
+        const otpRecord = await otpModel.findOne({
+            email,
+            otp,
+            purpose: "forgot-password",
+            verified: true,
+        });
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Invalid or expired OTP. Please request a new one." });
+        }
+
+        // Check if OTP is expired
+        if (new Date() > otpRecord.expiresAt) {
+            await otpModel.deleteOne({ _id: otpRecord._id });
+            return res.status(400).json({ message: "OTP has expired. Please request a new one." });
+        }
+
+        // Find user
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        // Hash new password
+        bcrypt.genSalt(12, (err, salt) => {
+            if (err) return res.status(500).json({ message: "Something went wrong" });
+
+            bcrypt.hash(newPassword, salt, async (err, hash) => {
+                if (err) return res.status(500).json({ message: "Something went wrong" });
+
+                // Update user password
+                user.password = hash;
+                await user.save();
+
+                // Delete used OTP
+                await otpModel.deleteOne({ _id: otpRecord._id });
+
+                res.status(200).json({ message: "Password reset successfully" });
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * User logout
+ */
+const logout = (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(0)
+    });
+    res.json({ message: 'Logged out successfully' });
+};
+
+/**
+ * Check authentication status
+ */
+const checkAuth = (req, res) => {
+    res.status(200).json({ message: 'User authenticated', user: req.user });
+};
+
+/**
+ * Admin login
+ */
+const adminLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await userModel.findOne({ email, isAdmin: true });
+        if (!user) return res.status(400).json({ message: "Email or password is incorrect" });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
+
+        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({ message: "Login Successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+/**
+ * Admin dashboard check
+ */
+const adminDashboard = (req, res) => {
+    res.json({ message: "Welcome to Admin Dashboard" });
+};
+
+/**
+ * Admin check auth
+ */
+const adminCheckAuth = (req, res) => {
+    res.json({ authenticated: true });
+};
+
+/**
+ * Test email configuration
+ */
+const testEmail = async (req, res) => {
+    try {
+        const { testEmail } = req.body;
+        
+        if (!testEmail) {
+            return res.status(400).json({ message: "Test email address is required" });
+        }
+
+        // Check if email is configured
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+            return res.status(500).json({ 
+                message: "Email not configured. Please set EMAIL_USER and EMAIL_PASSWORD in .env file",
+                configured: false
+            });
+        }
+
+        // Diagnostic info (without exposing password)
+        const emailUser = process.env.EMAIL_USER.trim();
+        const emailPassword = process.env.EMAIL_PASSWORD.trim();
+        const diagnostics = {
+            emailUser: emailUser,
+            emailPasswordLength: emailPassword.length,
+            hasSpaces: emailPassword.includes(" "),
+            emailService: process.env.EMAIL_SERVICE || "gmail",
+            isValidFormat: emailPassword.length === 16 && !emailPassword.includes(" ")
+        };
+
+        // Send test email
+        const testOTP = "123456";
+        const emailResult = await sendOTPEmail(testEmail, testOTP, "signup");
+        
+        if (emailResult.success) {
+            res.status(200).json({ 
+                message: "Test email sent successfully! Check your inbox.",
+                configured: true,
+                diagnostics: diagnostics
+            });
+        } else {
+            res.status(500).json({ 
+                message: emailResult.error || "Failed to send test email",
+                configured: true,
+                error: emailResult.error,
+                diagnostics: diagnostics
+            });
+        }
+    } catch (err) {
+        console.error("Test email error:", err);
+        res.status(500).json({ 
+            message: "Error testing email configuration",
+            error: err.message
+        });
+    }
+};
+
+/**
+ * Check email configuration (diagnostic endpoint)
+ */
+const checkEmailConfig = (req, res) => {
+    try {
+        const emailUser = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
+        const emailPassword = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim() : null;
+        
+        const config = {
+            configured: !!(emailUser && emailPassword),
+            emailUser: emailUser || "NOT SET",
+            emailPasswordLength: emailPassword ? emailPassword.length : 0,
+            hasSpaces: emailPassword ? emailPassword.includes(" ") : false,
+            emailService: process.env.EMAIL_SERVICE || "gmail",
+            isValidFormat: emailPassword ? (emailPassword.length === 16 && !emailPassword.includes(" ")) : false,
+            issues: []
+        };
+
+        if (!emailUser) {
+            config.issues.push("EMAIL_USER is not set in .env file");
+        }
+        if (!emailPassword) {
+            config.issues.push("EMAIL_PASSWORD is not set in .env file");
+        }
+        if (emailPassword && emailPassword.includes(" ")) {
+            config.issues.push("EMAIL_PASSWORD contains spaces. App Passwords should have NO spaces.");
+        }
+        if (emailPassword && emailPassword.length !== 16) {
+            config.issues.push(`EMAIL_PASSWORD should be exactly 16 characters. Current length: ${emailPassword.length}`);
+        }
+
+        res.status(200).json(config);
+    } catch (err) {
+        res.status(500).json({ 
+            message: "Error checking email configuration",
+            error: err.message
+        });
+    }
+};
+
+module.exports = {
+    login,
+    sendSignupOTP,
+    verifySignupOTP,
+    logout,
+    checkAuth,
+    sendForgotPasswordOTP,
+    verifyForgotPasswordOTP,
+    resetPassword,
+    adminLogin,
+    adminDashboard,
+    adminCheckAuth,
+    testEmail,
+    checkEmailConfig
+};
+

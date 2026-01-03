@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/checkauth", {
+        fetch("/api/checkauth", {
             credentials: "include",
         })
         .then(res => {

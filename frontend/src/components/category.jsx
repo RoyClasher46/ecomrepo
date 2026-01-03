@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "./navbar";
+import Footer from "./Footer";
+import FloatingCart from "./FloatingCart";
 import { toast } from "react-toastify";
 
 export default function CategoryPage() {
@@ -14,7 +16,7 @@ export default function CategoryPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:5000/products")
+    fetch("/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -70,7 +72,7 @@ export default function CategoryPage() {
 
   const handleAddToCart = (productId) => {
     toast.error("Please sign in to add items to your cart.");
-    navigate("/login");
+    navigate(`/login?redirect=/product/${productId}&addToCart=${productId}`);
   };
 
   return (
@@ -132,7 +134,7 @@ export default function CategoryPage() {
                             {item.description}
                           </p>
                           <div className="flex items-center justify-between mt-auto">
-                            <p className="text-gray-900 font-bold text-lg">${item.price}</p>
+                            <p className="text-gray-900 font-bold text-lg">₹{item.price}</p>
                             <button 
                               onClick={() => handleAddToCart(item._id)}
                               className="text-xs font-semibold px-4 py-2 rounded-lg modern-button"
@@ -204,6 +206,8 @@ export default function CategoryPage() {
         )}
         </div>
       </div>
+      <FloatingCart />
+      <Footer />
     </>
   );
 }

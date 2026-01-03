@@ -1,46 +1,16 @@
   import React,{ useState,useEffect } from "react";
-  import { Link, useNavigate } from "react-router-dom";
-  import { ShoppingCart, User } from "lucide-react"; // replace LogIn with User icon
+  import { toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
-  const Dashboard = ( {setPage,setSelectedProduct }) => {
-  
-    const [products, setProducts] = useState([]);
+  const Dashboard = () => {
     const [stats, setStats] = useState(null);
-  
-    
-    useEffect(() => {
-      fetch("http://localhost:5000/products")   // or your deployed API URL
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.error(err));
-    }, []);
 
     useEffect(() => {
-      fetch("http://localhost:5000/api/admin/stats")
+      fetch("/api/admin/stats")
         .then((res) => res.json())
         .then((data) => setStats(data))
         .catch((err) => console.error(err));
     }, []);
-    
-    const [showDropdown, setShowDropdown] = useState(false);
-    
-    const navigate = useNavigate();
-    
-    const handleUserClick = () => {
-      setShowDropdown(!showDropdown);
-    };
-    
-    const handleLogout = async() => {
-      const res= await fetch("http://localhost:5000/api/logout", {
-        method: "GET",
-        credentials: "include"
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert("logout successfully!");
-        navigate("/"); // redirect to login page
-      }
-    }
     
     return (
       <div className="min-h-screen">
@@ -79,37 +49,30 @@
                 <div className="text-2xl font-bold text-gray-900">{stats.statusCounts?.Delivered || 0}</div>
               </div>
             </div>
+
+            {/* Return Policy Section */}
+            <ReturnPolicySection />
+            
+            {/* Return Statistics */}
+            {stats.returnCounts && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                <div className="modern-card p-5 rounded-lg border-l-4 border-orange-500">
+                  <div className="text-gray-600 text-sm">Return Requests</div>
+                  <div className="text-2xl font-bold text-orange-600">{stats.returnCounts?.requested || 0}</div>
+                </div>
+                <div className="modern-card p-5 rounded-lg border-l-4 border-blue-500">
+                  <div className="text-gray-600 text-sm">Approved Returns</div>
+                  <div className="text-2xl font-bold text-blue-600">{stats.returnCounts?.approved || 0}</div>
+                </div>
+                <div className="modern-card p-5 rounded-lg border-l-4 border-green-500">
+                  <div className="text-gray-600 text-sm">Completed Returns</div>
+                  <div className="text-2xl font-bold text-green-600">{stats.returnCounts?.completed || 0}</div>
+                </div>
+              </div>
+            )}
           </section>
         )}
 
-        {/* Product Highlights */}
-        <section className="px-6 md:px-10 py-8">
-        <h3 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900">
-          Listed Products
-        </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((item) => (
-            <div
-            key={item._id}
-            className="modern-card rounded-lg overflow-hidden cursor-pointer"
-            >
-          <img
-            src={`data:image/jpeg;base64,${item.image}`}
-            alt={item.name}
-            className="w-full h-48 object-cover"
-            />
-          <div className="p-4 text-center">
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">{item.name}</h4>
-            <p className="text-primary font-bold text-xl mb-2">${item.price}</p>
-            <p className="text-gray-600 text-sm mb-4">{item.description}</p>
-            <button onClick={() =>{setSelectedProduct(item); setPage("manage")}} className="px-4 py-2 modern-button rounded-lg text-sm">
-              Manage Product
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
 
 
         {/* Footer */}
@@ -120,6 +83,115 @@
     );
   };
 
+  // Return Policy Section Component
+  const ReturnPolicySection = () => {
+    const [returnPolicy, setReturnPolicy] = useState({ returnDays: 7 });
+    const [editMode, setEditMode] = useState(false);
+    const [newReturnDays, setNewReturnDays] = useState(7);
+    const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+      fetch("/api/admin/return-policy")
+        .then((res) => res.json())
+        .then((data) => {
+          setReturnPolicy(data);
+          setNewReturnDays(data.returnDays);
+        })
+        .catch((err) => console.error(err));
+    }, []);
+
+    const handleSave = async () => {
+      if (newReturnDays < 1 || newReturnDays > 365) {
+        toast.error("Return days must be between 1 and 365");
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await fetch("/api/admin/return-policy", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ returnDays: parseInt(newReturnDays) }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setReturnPolicy(data.returnPolicy);
+          setEditMode(false);
+          toast.success("Return policy updated successfully");
+        } else {
+          toast.error(data.message || "Failed to update return policy");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Error updating return policy");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <div className="modern-card p-6 rounded-lg mt-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Return Policy Settings</h3>
+            <p className="text-sm text-gray-600 mt-1">Configure how many days users can return products after delivery</p>
+          </div>
+          {!editMode && (
+            <button
+              onClick={() => setEditMode(true)}
+              className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+        {editMode ? (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Return Period (Days)
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="365"
+                value={newReturnDays}
+                onChange={(e) => setNewReturnDays(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900"
+              />
+              <p className="text-xs text-gray-500 mt-1">Users can return products within this many days after delivery</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSave}
+                disabled={loading}
+                className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={() => {
+                  setEditMode(false);
+                  setNewReturnDays(returnPolicy.returnDays);
+                }}
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-gray-700">
+              <span className="font-semibold">Current Return Period:</span>{" "}
+              <span className="text-primary font-bold">{returnPolicy.returnDays} days</span>
+            </p>
+            <p className="text-sm text-gray-600 mt-2">
+              Users can request returns within {returnPolicy.returnDays} days of delivery.
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   export default Dashboard;

@@ -8,8 +8,16 @@ const UploadProduct = () => {
     price: "",
     category: "Self",
     image: null,
+    images: [],
   });  
   const [preview, setPreview] = useState(null);
+  const [additionalPreviews, setAdditionalPreviews] = useState([]);
+  const [sizes, setSizes] = useState([
+    { size: "S", available: true },
+    { size: "M", available: true },
+    { size: "L", available: true },
+    { size: "XL", available: true },
+  ]);
 
   const handleChange = (e) =>
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -20,6 +28,32 @@ const UploadProduct = () => {
       setProduct({ ...product, image: file });
       setPreview(URL.createObjectURL(file));
     }
+  };
+
+  const handleAdditionalImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setProduct({ ...product, images: files });
+      setAdditionalPreviews(files.map(file => URL.createObjectURL(file)));
+    }
+  };
+
+  const handleSizeChange = (index, field, value) => {
+    const updatedSizes = [...sizes];
+    if (field === 'size') {
+      updatedSizes[index].size = value;
+    } else if (field === 'available') {
+      updatedSizes[index].available = value;
+    }
+    setSizes(updatedSizes);
+  };
+
+  const addSize = () => {
+    setSizes([...sizes, { size: "", available: true }]);
+  };
+
+  const removeSize = (index) => {
+    setSizes(sizes.filter((_, i) => i !== index));
   };
   const navigate = useNavigate();
 
@@ -43,8 +77,16 @@ const UploadProduct = () => {
         formData.append("price", product.price);
         formData.append("category", normalizedCategory || "Self");
         formData.append("image", product.image);
+        
+        // Append additional images
+        product.images.forEach((file) => {
+          formData.append("images", file);
+        });
+        
+        // Append sizes as JSON
+        formData.append("sizes", JSON.stringify(sizes.filter(s => s.size.trim() !== "")));
 
-    const res = await fetch("http://localhost:5000/api/uploadproduct", {
+    const res = await fetch("/api/uploadproduct", {
         method: "POST",
         body: formData,
         credentials: "include"
@@ -121,16 +163,17 @@ const UploadProduct = () => {
             <p className="text-xs text-gray-500 mt-1">If new, it will be created automatically.</p>
           </div>
 
-          {/* Image Upload */}
+          {/* Main Image Upload */}
           <div>
-            <label className="block text-white/90 font-medium mb-1">
-              Product Image
+            <label className="block text-gray-700 font-medium mb-1">
+              Main Product Image <span className="text-red-500">*</span>
             </label>
             <input
               type="file"
               name="image"
               accept="image/*"
               onChange={handleImageChange}
+              required
               className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
               file:rounded-lg file:border-0 file:text-sm file:font-semibold 
               file:bg-primary file:text-white 
@@ -145,6 +188,84 @@ const UploadProduct = () => {
                 />
               </div>
             )}
+          </div>
+
+          {/* Additional Images Upload */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Additional Product Images (Optional)
+            </label>
+            <input
+              type="file"
+              name="images"
+              accept="image/*"
+              multiple
+              onChange={handleAdditionalImagesChange}
+              className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+              file:rounded-lg file:border-0 file:text-sm file:font-semibold 
+              file:bg-primary file:text-white 
+              hover:file:bg-primary-dark cursor-pointer"
+            />
+            {additionalPreviews.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {additionalPreviews.map((preview, index) => (
+                  <img
+                    key={index}
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-24 h-24 object-cover rounded-lg border border-gray-200 shadow-medium"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sizes Management */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Product Sizes
+            </label>
+            <div className="space-y-2">
+              {sizes.map((sizeItem, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={sizeItem.size}
+                    onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
+                    placeholder="Size (e.g., S, M, L, XL, 10, 11)"
+                    className="flex-1 modern-input"
+                  />
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={sizeItem.available}
+                      onChange={(e) => handleSizeChange(index, 'available', e.target.checked)}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="text-sm text-gray-700">Available</span>
+                  </label>
+                  {sizes.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeSize(index)}
+                      className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addSize}
+                className="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium"
+              >
+                + Add Size
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Add sizes for your product. Uncheck "Available" if a size is currently out of stock.
+            </p>
           </div>
 
           {/* Submit Button */}

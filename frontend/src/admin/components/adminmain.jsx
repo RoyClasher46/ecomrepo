@@ -4,6 +4,7 @@ import Dashboard from "./dashboard";
 import Orders from "./order";
 import UploadProduct from "./uploadproduct";
 import ManageProducts from "./manageproduct";
+import ListedProducts from "./listedproducts";
 import AdminLogin from "../../components/adminlogin";
 
 
@@ -17,7 +18,8 @@ const App = () => {
       case "orders": return <Orders />;
       case "upload": return <UploadProduct />;
       case "manage": return <ManageProducts selectedProduct={selectedProduct}  />;
-      default: return <Dashboard setPage={setPage} setSelectedProduct={setSelectedProduct} />;
+      case "listed": return <ListedProducts setPage={setPage} setSelectedProduct={setSelectedProduct} />;
+      default: return <Dashboard />;
     }
   };
 

@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./navbar";
+import Footer from "./Footer";
+import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 const MyOrders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [returnPolicy, setReturnPolicy] = useState({ returnDays: 7 });
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/myorders", {
+        const res = await fetch("/api/myorders", {
           method: "GET",
           credentials: "include",
         });
         const data = await res.json();
         if (res.ok) {
           const validOrders = data.filter((order) => order.productId !== null);
-          setOrders(validOrders);
+          // Sort by createdAt descending (newest first) as a safety measure
+          const sortedOrders = validOrders.sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return dateB - dateA; // Descending order (newest first)
+          });
+          setOrders(sortedOrders);
         } else {
           toast.error(data.message || "Failed to load orders");
         }
@@ -28,8 +38,42 @@ const MyOrders = () => {
       }
     };
 
+    const fetchReturnPolicy = async () => {
+      try {
+        const res = await fetch("/api/return-policy");
+        const data = await res.json();
+        if (res.ok) {
+          setReturnPolicy(data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchOrders();
+    fetchReturnPolicy();
   }, []);
+
+  const canReturnOrder = (order) => {
+    if (order.status !== "Delivered") return false;
+    if (order.returnStatus && order.returnStatus !== "None") return false;
+    if (!order.deliveredDate) return false;
+    
+    const deliveredDate = new Date(order.deliveredDate);
+    const daysSinceDelivery = Math.floor((Date.now() - deliveredDate.getTime()) / (1000 * 60 * 60 * 24));
+    return daysSinceDelivery <= returnPolicy.returnDays;
+  };
+
+  const getDaysRemaining = (order) => {
+    if (!order.deliveredDate) return 0;
+    const deliveredDate = new Date(order.deliveredDate);
+    const daysSinceDelivery = Math.floor((Date.now() - deliveredDate.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, returnPolicy.returnDays - daysSinceDelivery);
+  };
+
+  const handleReturnClick = (order) => {
+    navigate(`/return-order/${order._id}`);
+  };
 
   if (loading) {
     return (
@@ -60,24 +104,42 @@ const MyOrders = () => {
               {orders.map((order) => (
                 <div
                   key={order._id}
-                  className="modern-card rounded-lg p-6 hover:shadow-medium transition"
+                  className="modern-card rounded-lg overflow-hidden hover:shadow-medium transition"
                 >
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {order.productId?.name}
-                  </h3>
+                  {/* Product Image */}
+                  {order.productId?.image && (
+                    <div className="w-full h-48 overflow-hidden bg-gray-100">
+                      <img
+                        src={`data:image/jpeg;base64,${order.productId.image}`}
+                        alt={order.productId?.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                      {order.productId?.name}
+                    </h3>
 
-                  <div className="space-y-2 mb-4">
+                    <div className="space-y-2 mb-4">
                     <p className="text-gray-600">
                       Price:{" "}
                       <span className="font-bold text-primary">
-                        ${order.productId?.price}
+                        ₹{order.productId?.price}
                       </span>
                     </p>
 
                     <p className="text-gray-600">Quantity: <span className="font-medium">{order.quantity}</span></p>
 
+                    {order.size && (
+                      <p className="text-gray-600">
+                        Size: <span className="font-medium">{order.size}</span>
+                      </p>
+                    )}
+
                     <p className="text-gray-600">
-                      Total: <span className="font-bold text-primary">${(order.productId?.price * order.quantity).toFixed(2)}</span>
+                      Total: <span className="font-bold text-primary">₹{(order.productId?.price * order.quantity).toFixed(2)}</span>
                     </p>
 
                     {order.deliveryAddress && (
@@ -112,7 +174,7 @@ const MyOrders = () => {
                   </div>
 
                   <div className="pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600">Status:</span>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -132,9 +194,48 @@ const MyOrders = () => {
                         {order.status}
                       </span>
                     </div>
+                    {order.returnStatus && order.returnStatus !== "None" && (
+                      <div className="mb-2">
+                        <span className="text-xs text-gray-600">Return Status: </span>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-semibold ${
+                            order.returnStatus === "Requested"
+                              ? "bg-orange-100 text-orange-700"
+                              : order.returnStatus === "Approved"
+                              ? "bg-blue-100 text-blue-700"
+                              : order.returnStatus === "Rejected"
+                              ? "bg-red-100 text-red-700"
+                              : order.returnStatus === "Completed"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {order.returnStatus}
+                        </span>
+                        {order.returnReason && (
+                          <p className="text-xs text-gray-600 mt-1">
+                            Reason: {order.returnReason}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    {canReturnOrder(order) && (
+                      <button
+                        onClick={() => handleReturnClick(order)}
+                        className="w-full mt-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition"
+                      >
+                        Request Return ({getDaysRemaining(order)} days left)
+                      </button>
+                    )}
+                    {order.status === "Delivered" && !canReturnOrder(order) && order.returnStatus === "None" && (
+                      <p className="text-xs text-red-600 mt-2">
+                        Return period expired ({returnPolicy.returnDays} days)
+                      </p>
+                    )}
                     <p className="text-xs text-gray-500 mt-3">
                       Ordered on: {new Date(order.createdAt).toLocaleDateString()}
                     </p>
+                  </div>
                   </div>
                 </div>
               ))}
@@ -142,6 +243,7 @@ const MyOrders = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

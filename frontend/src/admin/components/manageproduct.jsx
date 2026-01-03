@@ -16,9 +16,14 @@ const ManageProducts = ({ selectedProduct }) => {
     description: "",
     category: "",
     isPopular: false,
+    sizes: [],
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newImage, setNewImage] = useState(null);
+  const [newImagePreview, setNewImagePreview] = useState(null);
+  const [additionalImages, setAdditionalImages] = useState([]);
+  const [additionalImagePreviews, setAdditionalImagePreviews] = useState([]);
 
   // Search bar state
   const [searchText, setSearchText] = useState("");
@@ -29,7 +34,7 @@ const ManageProducts = ({ selectedProduct }) => {
 
   // Fetch products
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch("/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error(err));
@@ -118,7 +123,7 @@ const ManageProducts = ({ selectedProduct }) => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/products/${id}`,
+        `/products/${id}`,
         { method: "DELETE" }
       );
       const data = await res.json();
@@ -141,34 +146,96 @@ const ManageProducts = ({ selectedProduct }) => {
       description: product.description,
       category: normalizeCategory(product.category),
       isPopular: product.isPopular,
+      sizes: product.sizes || [],
     });
+    setNewImage(null);
+    setNewImagePreview(null);
+    setAdditionalImages([]);
+    setAdditionalImagePreviews([]);
     setIsModalOpen(true);
+  };
+
+  const handleSizeChange = (index, field, value) => {
+    const updatedSizes = [...formData.sizes];
+    if (field === 'size') {
+      updatedSizes[index].size = value;
+    } else if (field === 'available') {
+      updatedSizes[index].available = value;
+    }
+    setFormData({ ...formData, sizes: updatedSizes });
+  };
+
+  const addSize = () => {
+    setFormData({
+      ...formData,
+      sizes: [...formData.sizes, { size: "", available: true }],
+    });
+  };
+
+  const removeSize = (index) => {
+    setFormData({
+      ...formData,
+      sizes: formData.sizes.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleMainImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewImage(file);
+      setNewImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleAdditionalImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setAdditionalImages(files);
+      setAdditionalImagePreviews(files.map(file => URL.createObjectURL(file)));
+    }
   };
 
   const handleSave = async () => {
     try {
       setSaving(true);
 
-      const payload = { ...formData, category: normalizeCategory(formData.category) };
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("category", normalizeCategory(formData.category));
+      formDataToSend.append("isPopular", formData.isPopular);
+      formDataToSend.append("sizes", JSON.stringify(formData.sizes.filter(s => s.size.trim() !== "")));
 
-      const res = await fetch(`http://localhost:5000/products/${editingProduct._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      // Add new main image if provided
+      if (newImage) {
+        formDataToSend.append("image", newImage);
+      }
+
+      // Add additional images if provided
+      additionalImages.forEach((file) => {
+        formDataToSend.append("images", file);
       });
 
-      if (!res.ok) return alert("Update failed");
+      const res = await fetch(`/products/${editingProduct._id}`, {
+        method: "PUT",
+        body: formDataToSend,
+      });
 
-      // Update local UI
-      setProducts((prev) =>
-        prev.map((p) =>
-          p._id === editingProduct._id ? { ...p, ...payload } : p
-        )
-      );
+      if (!res.ok) {
+        const data = await res.json();
+        return alert(data.message || "Update failed");
+      }
+
+      // Refresh products list
+      const productsRes = await fetch("/products");
+      const updatedProducts = await productsRes.json();
+      setProducts(updatedProducts);
 
       alert("Updated successfully!");
       setIsModalOpen(false);
     } catch (err) {
+      console.error(err);
       alert("Error updating item");
     } finally {
       setSaving(false);
@@ -178,7 +245,7 @@ const ManageProducts = ({ selectedProduct }) => {
   const togglePopular = async (id, next) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/products/${id}/popular`,
+        `/products/${id}/popular`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -310,7 +377,7 @@ const ManageProducts = ({ selectedProduct }) => {
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="text-sm font-bold text-primary">${product.price}</span>
+                        <span className="text-sm font-bold text-primary">₹{product.price}</span>
                       </td>
                       <td className="py-3 px-4">
                         <label className="relative inline-flex items-center cursor-pointer">
@@ -412,98 +479,199 @@ const ManageProducts = ({ selectedProduct }) => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column - Image Preview */}
+            <div className="space-y-6">
+              {/* Images Section */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
-                  {editingProduct.image ? (
-                    <img
-                      src={`data:image/jpeg;base64,${editingProduct.image}`}
-                      alt="Product preview"
-                      className="max-w-full max-h-64 object-contain rounded-lg"
-                    />
-                  ) : (
-                    <div className="text-gray-400 text-sm">No image available</div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h4>
+                
+                {/* Main Image */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Main Product Image
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                    {newImagePreview ? (
+                      <img
+                        src={newImagePreview}
+                        alt="New preview"
+                        className="max-w-full max-h-48 object-contain rounded-lg mx-auto"
+                      />
+                    ) : editingProduct.image ? (
+                      <img
+                        src={`data:image/jpeg;base64,${editingProduct.image}`}
+                        alt="Current product"
+                        className="max-w-full max-h-48 object-contain rounded-lg mx-auto"
+                      />
+                    ) : (
+                      <div className="text-gray-400 text-sm text-center">No image available</div>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleMainImageChange}
+                    className="mt-2 w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                    file:rounded-lg file:border-0 file:text-sm file:font-semibold 
+                    file:bg-primary file:text-white 
+                    hover:file:bg-primary-dark cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current one</p>
+                </div>
+
+                {/* Additional Images */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Additional Product Images
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleAdditionalImagesChange}
+                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                    file:rounded-lg file:border-0 file:text-sm file:font-semibold 
+                    file:bg-primary file:text-white 
+                    hover:file:bg-primary-dark cursor-pointer"
+                  />
+                  {additionalImagePreviews.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {additionalImagePreviews.map((preview, index) => (
+                        <img
+                          key={index}
+                          src={preview}
+                          alt={`Additional ${index + 1}`}
+                          className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                        />
+                      ))}
+                    </div>
                   )}
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Note: Image cannot be changed here. Upload a new product to change the image.</p>
-              </div>
-
-              {/* Right Column - Form Fields */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    className="modern-input"
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price ($) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.price}
-                    className="modern-input"
-                    onChange={(e) =>
-                      setFormData({ ...formData, price: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    className="modern-input"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        category: e.target.value,
-                      })
-                    }
-                    placeholder="e.g., Electronics, Fashion"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
-                  <textarea
-                    value={formData.description}
-                    className="modern-input min-h-[100px] resize-none"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        description: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isPopular}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isPopular: e.target.checked })
-                    }
-                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                  />
-                  <label className="text-sm font-medium text-gray-700">Mark as Popular</label>
+                  <p className="text-xs text-gray-500 mt-1">Add more images to showcase the product (optional)</p>
                 </div>
               </div>
+
+              {/* Product Details */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Information</h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      className="modern-input"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹) *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={formData.price}
+                      className="modern-input"
+                      onChange={(e) =>
+                        setFormData({ ...formData, price: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                    <input
+                      type="text"
+                      value={formData.category}
+                      className="modern-input"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          category: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., Electronics, Fashion"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                    <textarea
+                      value={formData.description}
+                      className="modern-input min-h-[100px] resize-none"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.isPopular}
+                      onChange={(e) =>
+                        setFormData({ ...formData, isPopular: e.target.checked })
+                      }
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                    />
+                    <label className="text-sm font-medium text-gray-700">Mark as Popular</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sizes Management */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Sizes</h4>
+              <div className="space-y-3">
+                {formData.sizes.map((sizeItem, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={sizeItem.size}
+                      onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
+                      placeholder="Size (e.g., S, M, L, XL, 10, 11)"
+                      className="flex-1 modern-input"
+                    />
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sizeItem.available}
+                        onChange={(e) => handleSizeChange(index, 'available', e.target.checked)}
+                        className="w-4 h-4 text-primary"
+                      />
+                      <span className="text-sm text-gray-700">Available</span>
+                    </label>
+                    {formData.sizes.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeSize(index)}
+                        className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addSize}
+                  className="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium"
+                >
+                  + Add Size
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Manage product sizes. Uncheck "Available" to mark a size as out of stock.
+              </p>
             </div>
 
             <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">

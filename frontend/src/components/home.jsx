@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";   
+import "react-toastify/dist/ReactToastify.css";
+import Footer from "./Footer";   
 
 
 export default function Home() {
@@ -15,7 +16,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch("/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error(err));
@@ -106,9 +107,9 @@ export default function Home() {
     ? categoriesList
     : categoriesList.slice(0, 4);
 
-  const handleOrder = () => {
-    toast.error("Please sign in to add items to your cart.");
-    navigate("/login");
+  const handleOrder = (productId) => {
+    // Navigate to product page instead of directly adding to cart
+    navigate(`/product/${productId}`);
   };
   const goCatalog = () => navigate("/category/all");
 
@@ -317,6 +318,7 @@ export default function Home() {
           </aside>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
@@ -369,9 +371,9 @@ function Section({ id, title, description, products, handleOrder, badge }) {
                 {item.description || "No description available"}
               </p>
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                <p className="text-gray-900 font-bold text-xl">${item.price || "0.00"}</p>
+                <p className="text-gray-900 font-bold text-xl">₹{item.price || "0.00"}</p>
                 <button
-                  onClick={handleOrder}
+                  onClick={() => handleOrder(item._id)}
                   className="px-4 py-2 rounded-lg modern-button text-sm font-semibold"
                 >
                   Add to Cart
