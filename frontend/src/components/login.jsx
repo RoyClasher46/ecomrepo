@@ -76,12 +76,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300 dark:bg-gray-800 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-300 dark:bg-gray-800 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-300 dark:bg-gray-800 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 dark:bg-accent/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 dark:bg-accent/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary/10 dark:bg-accent/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-30 animate-blob animation-delay-4000"></div>
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -92,10 +92,10 @@ export default function Login() {
         
         {/* Logo/Brand Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4 shadow-lg transform hover:scale-105 transition-transform">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary dark:bg-accent rounded-2xl mb-4 shadow-lg transform hover:scale-105 transition-transform">
             <LogIn className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold gradient-text mb-2">
             Welcome Back
           </h1>
           <p className="text-gray-600 dark:text-gray-300">Sign in to your account to continue</p>
@@ -120,7 +120,7 @@ export default function Login() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-green-500 focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                     required
                   />
               </div>
@@ -142,7 +142,7 @@ export default function Login() {
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-green-500 focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                   required
                 />
                 <button
@@ -163,7 +163,7 @@ export default function Login() {
             <div className="flex items-center justify-end">
               <Link
                 to="/forgot-password"
-                className="text-sm font-medium text-blue-600 dark:text-green-400 hover:text-blue-700 dark:hover:text-green-300 transition-colors"
+                className="text-sm font-medium text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark transition-colors"
               >
                 Forgot password?
               </Link>
@@ -173,7 +173,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:bg-[#047857] dark:hover:bg-[#065f46] text-white font-semibold py-3.5 rounded-xl shadow-lg dark:shadow-[0_4px_14px_0_rgba(4,120,87,0.4)] hover:shadow-xl dark:hover:shadow-[0_8px_24px_0_rgba(4,120,87,0.6)] transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full modern-button font-semibold py-3.5 rounded-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <>
@@ -203,7 +203,7 @@ export default function Login() {
           <div className="text-center">
             <Link
               to={`/signup${redirectTo && redirectTo !== "/" ? `?redirect=${redirectTo}${addToCartRef.current ? `&addToCart=${addToCartRef.current}` : ""}` : ""}`}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-green-400 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-accent transition-colors"
             >
               Create an account
               <ArrowRight className="w-4 h-4" />

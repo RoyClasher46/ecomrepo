@@ -22,7 +22,7 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-600">Loading products...</div>
+        <div className="text-gray-700 dark:text-gray-300">Loading products...</div>
       </div>
     );
   }
@@ -30,23 +30,24 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
   return (
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-              <Package className="w-6 h-6 text-white" />
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg flex-shrink-0">
+              <Package className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold gradient-text">Listed Products</h1>
-              <p className="text-gray-600 mt-1">View and manage all your listed products</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">Listed Products</h1>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mt-1">View and manage all your listed products</p>
             </div>
           </div>
           <button
             onClick={() => setPage("upload")}
-            className="px-6 py-3 rounded-xl modern-button font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+            className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl modern-button font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all text-sm sm:text-base"
           >
-            <Plus className="w-5 h-5" />
-            Upload Product
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Upload Product</span>
+            <span className="sm:hidden">Upload</span>
           </button>
         </div>
       </div>
@@ -55,7 +56,7 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
         <div className="modern-card rounded-2xl p-12 text-center">
           <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-700 text-lg font-semibold mb-2">No products listed yet.</p>
-          <p className="text-gray-500 text-sm mb-6">Get started by uploading your first product</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">Get started by uploading your first product</p>
           <button
             onClick={() => setPage("upload")}
             className="px-8 py-4 rounded-xl modern-button text-base font-semibold flex items-center gap-2 mx-auto shadow-lg hover:shadow-xl transition-all"
@@ -84,19 +85,19 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
                 <div className="absolute top-4 right-4">
                   <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold shadow-lg ${
                     item.isPopular 
-                      ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-white" 
-                      : "bg-white/90 text-gray-700"
+                      ? "bg-warning text-white" 
+                      : "bg-white/90 dark:bg-gray-800/90 text-gray-700 dark:text-gray-300"
                   }`}>
                     {item.isPopular ? "⭐ Popular" : "Regular"}
                   </span>
                 </div>
               </div>
               <div className="p-5 space-y-3">
-                <h4 className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-indigo-600 transition-colors">{item.name}</h4>
+                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">{item.name}</h4>
                 <p className="text-2xl font-bold gradient-text">₹{item.price}</p>
-                <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">{item.description}</p>
                 <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                  <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200">
+                  <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-primary dark:text-accent border border-gray-200 dark:border-gray-700">
                     {item.category || "Self"}
                   </span>
                   <button

@@ -21,10 +21,10 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-900/30 flex transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex transition-colors duration-300">
       <Sidebar setPage={setPage} currentPage={page} />
-      <div className="flex-1 overflow-auto">
-        <div className="p-6 md:p-8">
+      <div className="flex-1 overflow-auto w-full lg:ml-0">
+        <div className="p-4 sm:p-6 md:p-8 pt-16 lg:pt-6">
           {renderPage()}
         </div>
       </div>

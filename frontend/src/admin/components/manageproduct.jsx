@@ -269,27 +269,27 @@ const ManageProducts = ({ selectedProduct }) => {
   return (
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <Settings className="w-6 h-6 text-white" />
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg flex-shrink-0">
+            <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold gradient-text">Manage Products</h1>
-            <p className="text-gray-600 mt-1">View, edit, and manage all your products</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">Manage Products</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">View, edit, and manage all your products</p>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="modern-card rounded-2xl p-6 shadow-lg">
-        <div className="flex items-center gap-2 mb-4">
-          <Filter className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Filters & Search</h3>
+      <div className="modern-card rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-primary dark:text-accent" />
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Filters & Search</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
               <Search className="w-4 h-4" />
               Search Products
             </label>
@@ -301,19 +301,19 @@ const ManageProducts = ({ selectedProduct }) => {
                 setSearchText(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+              className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Category</label>
             <select
               value={categoryFilter}
               onChange={(e) => {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+              className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>
@@ -324,14 +324,14 @@ const ManageProducts = ({ selectedProduct }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Sort By</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
             <select
               value={sortOption}
               onChange={(e) => {
                 setSortOption(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+              className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
             >
               <option value="none">Default</option>
               <option value="price_low">Price: Low to High</option>
@@ -345,56 +345,57 @@ const ManageProducts = ({ selectedProduct }) => {
       {/* Product Table */}
       {currentItems.length === 0 ? (
         <div className="modern-card rounded-2xl p-12 text-center">
-          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-700 text-lg font-semibold mb-2">No products found.</p>
-          <p className="text-gray-500 text-sm">Try adjusting your filters or add new products.</p>
+          <Package className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-700 dark:text-gray-300 text-lg font-semibold mb-2">No products found.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">Try adjusting your filters or add new products.</p>
         </div>
       ) : (
         <>
-          <div className="modern-card rounded-2xl overflow-hidden shadow-lg">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gradient-to-r from-indigo-50 to-purple-50">
+          <div className="modern-card rounded-xl sm:rounded-2xl overflow-hidden shadow-lg">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <div className="inline-block min-w-full align-middle sm:px-0">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-100 dark:bg-gray-800">
                   <tr>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Image</th>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Name</th>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Category</th>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Price</th>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Popular</th>
-                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Image</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell">Category</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Price</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Popular</th>
+                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                   {currentItems.map((product, index) => (
                     <tr
                       key={product._id}
                       className={
                         highlightedId === product._id
-                          ? "bg-indigo-50 border-l-4 border-indigo-600"
-                          : "hover:bg-indigo-50/50 transition-colors"
+                          ? "bg-gray-100 dark:bg-gray-800 border-l-4 border-primary dark:border-accent"
+                          : "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                       }
                     >
-                      <td className="py-4 px-4">
+                      <td className="py-3 sm:py-4 px-2 sm:px-4">
                         <img
                           src={`data:image/jpeg;base64,${product.image}`}
                           alt={product.name}
-                          className="w-20 h-20 object-cover rounded-xl border-2 border-gray-200 shadow-md"
+                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg sm:rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md"
                         />
                       </td>
-                      <td className="py-4 px-4">
-                        <div className="text-sm font-bold text-gray-900">{product.name}</div>
-                        <div className="text-xs text-gray-500 mt-1 line-clamp-2 max-w-xs">{product.description}</div>
+                      <td className="py-3 sm:py-4 px-2 sm:px-4 min-w-[150px]">
+                        <div className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100">{product.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 max-w-xs hidden sm:block">{product.description}</div>
                       </td>
-                      <td className="py-4 px-4">
-                        <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 rounded-lg border border-indigo-200">
+                      <td className="py-3 sm:py-4 px-2 sm:px-4 hidden sm:table-cell">
+                        <span className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-primary dark:text-accent rounded-lg border border-gray-200 dark:border-gray-700">
                           {normalizeCategory(product.category)}
                         </span>
                       </td>
-                      <td className="py-4 px-4">
-                        <span className="text-lg font-bold gradient-text">₹{product.price}</span>
+                      <td className="py-3 sm:py-4 px-2 sm:px-4">
+                        <span className="text-base sm:text-lg font-bold gradient-text">₹{product.price}</span>
                       </td>
-                      <td className="py-4 px-4">
+                      <td className="py-3 sm:py-4 px-2 sm:px-4 hidden md:table-cell">
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
@@ -402,27 +403,27 @@ const ManageProducts = ({ selectedProduct }) => {
                             onChange={(e) => togglePopular(product._id, e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-indigo-600 peer-checked:to-purple-600"></div>
+                          <div className="w-10 h-5 sm:w-11 sm:h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-primary dark:peer-checked:bg-accent"></div>
                           {product.isPopular && (
-                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 ml-2" />
+                            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400 ml-1 sm:ml-2" />
                           )}
                         </label>
                       </td>
-                      <td className="py-4 px-4">
-                        <div className="flex gap-2">
+                      <td className="py-3 sm:py-4 px-2 sm:px-4">
+                        <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                           <button
                             onClick={() => handleEdit(product)}
-                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-xl transition-all font-semibold flex items-center gap-1.5 shadow-md hover:shadow-lg"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 modern-button text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
                           >
-                            <Edit className="w-4 h-4" />
-                            Edit
+                            <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Edit</span>
                           </button>
                           <button
                             onClick={() => handleDelete(product._id)}
-                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded-xl transition-all font-semibold flex items-center gap-1.5 shadow-md hover:shadow-lg"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
                           >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
+                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Delete</span>
                           </button>
                         </div>
                       </td>
@@ -430,22 +431,23 @@ const ManageProducts = ({ selectedProduct }) => {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+              <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center sm:text-left">
                 Showing {indexOfFirst + 1} to {Math.min(indexOfLast, displayedProducts.length)} of {displayedProducts.length} products
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 sm:gap-2 flex-wrap justify-center">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg modern-button-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg modern-button-secondary text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  Prev
                 </button>
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
@@ -462,7 +464,7 @@ const ManageProducts = ({ selectedProduct }) => {
                     <button
                       key={i}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${
                         currentPage === pageNum
                           ? "modern-button"
                           : "modern-button-secondary"
@@ -475,7 +477,7 @@ const ManageProducts = ({ selectedProduct }) => {
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg modern-button-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg modern-button-secondary text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
@@ -487,13 +489,13 @@ const ManageProducts = ({ selectedProduct }) => {
 
       {/* Edit Modal */}
       {isModalOpen && editingProduct && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="modern-card p-6 rounded-lg shadow-large w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Edit Product</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="modern-card p-4 sm:p-6 rounded-lg shadow-large w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Edit Product</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-xl sm:text-2xl p-1"
               >
                 ×
               </button>
@@ -502,14 +504,14 @@ const ManageProducts = ({ selectedProduct }) => {
             <div className="space-y-6">
               {/* Images Section */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h4>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Product Images</h4>
                 
                 {/* Main Image */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Main Product Image
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4">
                     {newImagePreview ? (
                       <img
                         src={newImagePreview}
@@ -523,24 +525,24 @@ const ManageProducts = ({ selectedProduct }) => {
                         className="max-w-full max-h-48 object-contain rounded-lg mx-auto"
                       />
                     ) : (
-                      <div className="text-gray-400 text-sm text-center">No image available</div>
+                      <div className="text-gray-400 dark:text-gray-500 text-sm text-center">No image available</div>
                     )}
                   </div>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleMainImageChange}
-                    className="mt-2 w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                    className="mt-2 w-full text-sm text-gray-600 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 
                     file:rounded-lg file:border-0 file:text-sm file:font-semibold 
                     file:bg-primary file:text-white 
                     hover:file:bg-primary-dark cursor-pointer"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current one</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Upload a new image to replace the current one</p>
                 </div>
 
                 {/* Additional Images */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Additional Product Images
                   </label>
                   <input
@@ -548,7 +550,7 @@ const ManageProducts = ({ selectedProduct }) => {
                     accept="image/*"
                     multiple
                     onChange={handleAdditionalImagesChange}
-                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                    className="w-full text-sm text-gray-600 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 
                     file:rounded-lg file:border-0 file:text-sm file:font-semibold 
                     file:bg-primary file:text-white 
                     hover:file:bg-primary-dark cursor-pointer"
@@ -560,21 +562,21 @@ const ManageProducts = ({ selectedProduct }) => {
                           key={index}
                           src={preview}
                           alt={`Additional ${index + 1}`}
-                          className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                          className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                         />
                       ))}
                     </div>
                   )}
-                  <p className="text-xs text-gray-500 mt-1">Add more images to showcase the product (optional)</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Add more images to showcase the product (optional)</p>
                 </div>
               </div>
 
               {/* Product Details */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Information</h4>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Product Information</h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name *</label>
                     <input
                       type="text"
                       value={formData.name}
@@ -587,7 +589,7 @@ const ManageProducts = ({ selectedProduct }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹) *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price (₹) *</label>
                     <input
                       type="number"
                       step="0.01"
@@ -602,7 +604,7 @@ const ManageProducts = ({ selectedProduct }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category *</label>
                     <input
                       type="text"
                       value={formData.category}
@@ -619,7 +621,7 @@ const ManageProducts = ({ selectedProduct }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description *</label>
                     <textarea
                       value={formData.description}
                       className="modern-input min-h-[100px] resize-none"
@@ -642,15 +644,15 @@ const ManageProducts = ({ selectedProduct }) => {
                       }
                       className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
-                    <label className="text-sm font-medium text-gray-700">Mark as Popular</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Mark as Popular</label>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Sizes Management */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Product Sizes</h4>
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Product Sizes</h4>
               <div className="space-y-3">
                 {formData.sizes.map((sizeItem, index) => (
                   <div key={index} className="flex items-center gap-2">
@@ -668,7 +670,7 @@ const ManageProducts = ({ selectedProduct }) => {
                         onChange={(e) => handleSizeChange(index, 'available', e.target.checked)}
                         className="w-4 h-4 text-primary"
                       />
-                      <span className="text-sm text-gray-700">Available</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Available</span>
                     </label>
                     {formData.sizes.length > 1 && (
                       <button
@@ -684,17 +686,17 @@ const ManageProducts = ({ selectedProduct }) => {
                 <button
                   type="button"
                   onClick={addSize}
-                  className="w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium"
+                  className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm font-medium"
                 >
                   + Add Size
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 Manage product sizes. Uncheck "Available" to mark a size as out of stock.
               </p>
             </div>
 
-            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 className="flex-1 modern-button py-2.5 rounded-lg"
                 onClick={handleSave}

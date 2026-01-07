@@ -9,7 +9,16 @@ const reviewSchema = new mongoose.Schema({
 });
 
 const sizeSchema = new mongoose.Schema({
-  size: { type: String, required: true }, // e.g., "S", "M", "L", "XL", "10", "11", etc.
+  size: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        return v && v.trim().length > 0;
+      },
+      message: 'Size cannot be empty'
+    }
+  }, // e.g., "S", "M", "L", "XL", "10", "11", etc.
   available: { type: Boolean, default: true },
 });
 

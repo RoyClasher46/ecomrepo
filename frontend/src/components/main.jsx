@@ -104,25 +104,25 @@ export default function Main() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950 relative">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950 relative">
       <Navbar />
 
       {/* Hero Section */}
       <section id="hero" className="relative pt-24 pb-16 md:pt-28 md:pb-20 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 dark:bg-accent/10 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 dark:bg-accent/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 border border-indigo-200/50">
-                <Sparkles className="w-4 h-4 text-indigo-600 dark:text-black" />
-                <span className="text-sm font-semibold text-indigo-700 dark:text-black">Welcome Back!</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <Sparkles className="w-4 h-4 text-primary dark:text-accent" />
+                <span className="text-sm font-semibold text-primary dark:text-accent">Welcome Back!</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="gradient-text">
                   Discover
                 </span>
                 <br />
@@ -153,7 +153,7 @@ export default function Main() {
                   />
                   {newProducts.length > 0 && (
                     <div className="absolute top-6 left-6 z-20">
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-sm font-semibold text-indigo-600 shadow-lg">
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-sm font-semibold text-primary dark:text-accent shadow-lg">
                         <TrendingUp className="w-4 h-4" />
                         New Arrival
                       </span>
@@ -200,8 +200,8 @@ export default function Main() {
                   </div>
                 </div>
               ) : (
-                <div className="w-full h-[400px] rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
-                  <div className="text-gray-400">Loading...</div>
+                <div className="w-full h-[400px] rounded-3xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                  <div className="text-gray-400 dark:text-gray-500">Loading...</div>
                 </div>
               )}
             </div>
@@ -240,7 +240,7 @@ export default function Main() {
                 </h3>
                 <Link
                   to="/category/all"
-                  className="text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-medium transition-colors"
+                  className="text-sm text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark font-medium transition-colors"
                 >
                   View all
                 </Link>
@@ -270,7 +270,7 @@ export default function Main() {
               {categoriesList.length > 4 && (
                 <button
                   onClick={() => setCategoriesExpanded((s) => !s)}
-                  className="w-full text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-medium transition-colors py-2"
+                  className="w-full text-sm text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark font-medium transition-colors py-2"
                 >
                   {categoriesExpanded ? "Show less" : "View all categories"}
                 </button>
@@ -321,7 +321,7 @@ function MainSection({ id, title, description, products, onAdd, icon }) {
         </div>
         <Link
           to={`/category/${id === "popular" ? "popular" : "all"}`}
-          className="hidden md:flex items-center gap-2 text-sm text-indigo-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-gray-100 font-semibold transition-colors"
+          className="hidden md:flex items-center gap-2 text-sm text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark font-semibold transition-colors"
         >
           View all
           <ArrowRight className="w-4 h-4" />
@@ -360,7 +360,7 @@ function ProductCard({ item, onAdd, delay = 0 }) {
         </div>
       </div>
       <div className="p-5 space-y-3">
-        <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-green-400 transition-colors">
+        <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
           {item.name || "Unnamed Product"}
         </h4>
         <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">

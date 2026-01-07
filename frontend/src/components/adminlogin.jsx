@@ -67,13 +67,13 @@ export default function AdminLogin() {
         
         {/* Logo/Brand Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-green-600 dark:to-emerald-600 rounded-2xl mb-4 shadow-2xl transform hover:scale-105 transition-transform">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary dark:bg-accent rounded-2xl mb-4 shadow-2xl transform hover:scale-105 transition-transform">
             <Shield className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white dark:text-green-400 mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-white dark:text-accent mb-2">
             Admin Portal
           </h1>
-          <p className="text-indigo-200 dark:text-gray-300">Secure access to admin dashboard</p>
+          <p className="text-gray-300 dark:text-gray-400">Secure access to admin dashboard</p>
         </div>
 
         {/* Login Card */}
@@ -87,7 +87,7 @@ export default function AdminLogin() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="w-5 h-5 text-indigo-300 dark:text-gray-500" />
+                  <Mail className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   type="email"
@@ -95,7 +95,7 @@ export default function AdminLogin() {
                   placeholder="admin@shopease.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3 bg-white/20 dark:bg-gray-900 backdrop-blur-sm border border-white/30 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-400 dark:focus:ring-green-500 focus:border-transparent transition-all outline-none text-white dark:text-gray-100 placeholder-indigo-200 dark:placeholder-gray-500"
+                  className="w-full pl-12 pr-4 py-3 bg-white/20 dark:bg-gray-900 backdrop-blur-sm border border-white/30 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-white dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500"
                   required
                 />
               </div>
@@ -109,7 +109,7 @@ export default function AdminLogin() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-indigo-300 dark:text-gray-500" />
+                  <Lock className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}

@@ -79,8 +79,8 @@ const MyOrders = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
-          <div className="text-gray-600">Loading orders...</div>
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
+          <div className="text-gray-700 dark:text-gray-300">Loading orders...</div>
         </div>
       </>
     );
@@ -89,15 +89,15 @@ const MyOrders = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 p-6 pt-24 md:pt-28">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-6 pt-24 md:pt-28">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">My Orders</h2>
-          <p className="text-center text-gray-600 mb-8">View all your order history</p>
+          <h2 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-gray-100">My Orders</h2>
+          <p className="text-center text-gray-700 dark:text-gray-300 mb-8">View all your order history</p>
 
           {orders.length === 0 ? (
             <div className="modern-card p-12 rounded-lg text-center">
-              <p className="text-gray-600 text-lg mb-2">You have no orders yet.</p>
-              <p className="text-gray-500 text-sm">Start shopping to see your orders here!</p>
+              <p className="text-gray-700 dark:text-gray-300 text-lg mb-2">You have no orders yet.</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Start shopping to see your orders here!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -118,77 +118,77 @@ const MyOrders = () => {
                   )}
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
                       {order.productId?.name}
                     </h3>
 
                     <div className="space-y-2 mb-4">
-                    <p className="text-gray-600">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Price:{" "}
                       <span className="font-bold text-primary">
                         ₹{order.productId?.price}
                       </span>
                     </p>
 
-                    <p className="text-gray-600">Quantity: <span className="font-medium">{order.quantity}</span></p>
+                    <p className="text-gray-700 dark:text-gray-300">Quantity: <span className="font-medium">{order.quantity}</span></p>
 
                     {order.size && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Size: <span className="font-medium">{order.size}</span>
                       </p>
                     )}
 
-                    <p className="text-gray-600">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Total: <span className="font-bold text-primary">₹{(order.productId?.price * order.quantity).toFixed(2)}</span>
                     </p>
 
                     {order.deliveryAddress && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Address: <span className="font-medium">{order.deliveryAddress}</span>
                       </p>
                     )}
 
                     {order.deliveryPhone && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Mobile: <span className="font-medium">{order.deliveryPhone}</span>
                       </p>
                     )}
 
                     {(order.deliveryPartnerName || order.deliveryPartnerPhone) && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Delivery Guy: <span className="font-medium">{order.deliveryPartnerName} {order.deliveryPartnerPhone ? `(${order.deliveryPartnerPhone})` : ""}</span>
                       </p>
                     )}
 
                     {order.trackingId && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Tracking: <span className="font-medium">{order.trackingId}</span>
                       </p>
                     )}
 
                     {order.estimatedDelivery && (
-                      <p className="text-gray-600">
+                      <p className="text-gray-700 dark:text-gray-300">
                         Est. Delivery: <span className="font-medium">{new Date(order.estimatedDelivery).toLocaleDateString()}</span>
                       </p>
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-gray-200">
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">Status:</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Status:</span>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
                           order.status === "Pending"
-                            ? "bg-warning/20 text-warning-dark"
+                            ? "bg-warning/20 dark:bg-warning/30 text-warning dark:text-warning-light"
                             : order.status === "Accepted"
-                            ? "bg-success/20 text-success-dark"
+                            ? "bg-success/20 dark:bg-success/30 text-success dark:text-success-light"
                             : order.status === "Assigned"
-                            ? "bg-blue-100 text-blue-700"
+                            ? "bg-primary/20 dark:bg-accent/30 text-primary dark:text-accent"
                             : order.status === "Delivered"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-success/20 dark:bg-success/30 text-success dark:text-success-light"
                             : order.status === "Rejected"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-200 text-gray-700"
+                            ? "bg-error/20 dark:bg-error/30 text-error dark:text-error-light"
+                            : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         {order.status}
@@ -196,7 +196,7 @@ const MyOrders = () => {
                     </div>
                     {order.returnStatus && order.returnStatus !== "None" && (
                       <div className="mb-2">
-                        <span className="text-xs text-gray-600">Return Status: </span>
+                        <span className="text-xs text-gray-700 dark:text-gray-300">Return Status: </span>
                         <span
                           className={`px-2 py-1 rounded text-xs font-semibold ${
                             order.returnStatus === "Requested"

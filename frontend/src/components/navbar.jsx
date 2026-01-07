@@ -122,11 +122,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105">
               <span className="text-white text-xl md:text-2xl font-bold">S</span>
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-bold gradient-text dark:text-green-400">
+              <h1 className="text-xl md:text-2xl font-bold gradient-text">
                 ShopEase
               </h1>
               <p className="text-xs text-gray-500 dark:text-gray-400 hidden md:block">Premium Shopping</p>
@@ -137,28 +137,28 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium text-sm flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-sm flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
               Home
             </Link>
             <Link
               to="/category/all"
-              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium text-sm flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-sm flex items-center gap-2"
             >
               <Grid3x3 className="w-4 h-4" />
               Products
             </Link>
             <Link
               to="/about"
-              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium text-sm flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-sm flex items-center gap-2"
             >
               <Info className="w-4 h-4" />
               About
             </Link>
             <Link
               to="/contact"
-              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium text-sm flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-sm flex items-center gap-2"
             >
               <Mail className="w-4 h-4" />
               Contact
@@ -193,7 +193,7 @@ const Navbar = () => {
                   // Delay to allow click on results
                   setTimeout(() => setShowSearchDropdown(false), 200);
                 }}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-green-500 focus:border-indigo-500 dark:focus:border-green-500 transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-primary dark:focus:border-accent transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </form>
             {showSearchDropdown && searchResults.length > 0 && (
@@ -229,7 +229,7 @@ const Navbar = () => {
                         setSearchQuery("");
                         setShowSearchDropdown(false);
                       }}
-                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      className="text-sm text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark font-medium"
                     >
                       View all {searchResults.length} results
                     </Link>
@@ -248,11 +248,11 @@ const Navbar = () => {
             {isLoggedIn && (
               <Link
                 to="/usercart"
-                className="relative p-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all"
+                className="relative p-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-green-600 dark:to-emerald-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary dark:bg-accent text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg">
                     {cartCount}
                   </span>
                 )}
@@ -265,15 +265,15 @@ const Navbar = () => {
                 <>
                   <button
                     onClick={handleUserClick}
-                    className="p-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all"
+                    className="p-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all"
                   >
                     <User className="w-5 h-5" />
                   </button>
                   {showDropdown && (
                 <div className="absolute right-0 mt-2 w-64 modern-card dark:bg-gray-950 rounded-xl shadow-2xl z-50 overflow-hidden animate-fade-in-up border border-gray-200 dark:border-gray-800">
-                  <div className="p-3 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-green-900/40 dark:to-emerald-900/40">
+                  <div className="p-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-green-600 dark:to-emerald-600 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-primary dark:bg-accent flex items-center justify-center text-white font-bold">
                         {userName ? userName.charAt(0).toUpperCase() : "U"}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -284,7 +284,7 @@ const Navbar = () => {
                   </div>
                   <div className="p-2">
                     <button
-                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30 hover:text-indigo-600 dark:hover:text-green-400 transition-all rounded-lg flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
                       onClick={() => {
                         navigate("/profile");
                         setShowDropdown(false);
@@ -294,7 +294,7 @@ const Navbar = () => {
                       Edit Profile
                     </button>
                     <button
-                      className="w-full px-4 py-3 text-left text-gray-700 font-medium hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-600 transition-all rounded-lg flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
                       onClick={() => {
                         navigate("/myorders");
                         setShowDropdown(false);
@@ -304,7 +304,7 @@ const Navbar = () => {
                       My Orders
                     </button>
                     <button
-                      className="w-full px-4 py-3 text-left text-gray-700 font-medium hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-600 transition-all rounded-lg flex items-center gap-3 text-sm"
+                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
                       onClick={() => {
                         navigate("/usercart");
                         setShowDropdown(false);
@@ -328,7 +328,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 dark:!bg-[#047857] dark:from-[#047857] dark:to-[#047857] text-white hover:from-indigo-700 hover:to-purple-700 dark:hover:!bg-[#065f46] dark:hover:from-[#065f46] dark:hover:to-[#065f46] transition-all font-semibold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl"
+                  className="px-4 py-2 rounded-lg modern-button font-semibold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl"
                 >
                   <User className="w-4 h-4" />
                   Sign In
@@ -352,7 +352,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-950/98 backdrop-blur-xl animate-fade-in-up">
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 backdrop-blur-xl animate-fade-in-up">
           <div className="px-4 py-4 space-y-2">
             {/* Mobile Search */}
             <form onSubmit={handleSearchSubmit} className="mb-4">
@@ -371,11 +371,11 @@ const Navbar = () => {
                       setSearchResults([]);
                     }
                   }}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-green-500 focus:border-indigo-500 dark:focus:border-green-500 transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-primary dark:focus:border-accent transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
               {searchResults.length > 0 && (
-                <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-64 overflow-y-auto">
+                <div className="mt-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-64 overflow-y-auto">
                   {searchResults.slice(0, 5).map((product) => (
                     <Link
                       key={product._id}
@@ -384,7 +384,7 @@ const Navbar = () => {
                         setSearchQuery("");
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-b-0"
                     >
                       {product.image && (
                         <img
@@ -394,8 +394,8 @@ const Navbar = () => {
                         />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate text-sm">{product.name}</p>
-                        <p className="text-xs text-gray-600">₹{product.price}</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 truncate text-sm">{product.name}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">₹{product.price}</p>
                       </div>
                     </Link>
                   ))}
@@ -405,21 +405,21 @@ const Navbar = () => {
             <Link
               to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium"
+              className="block px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-base"
             >
               Home
             </Link>
             <Link
               to="/category/all"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium"
+              className="block px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-base"
             >
               Products
             </Link>
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium flex items-center gap-2"
+              className="block px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium flex items-center gap-2 text-base"
             >
               <Info className="w-4 h-4" />
               About
@@ -427,30 +427,29 @@ const Navbar = () => {
             <Link
               to="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-green-400 transition-all font-medium"
+              className="block px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium text-base"
             >
               Contact
             </Link>
             {isLoggedIn ? (
               <>
-                <div className="border-t border-gray-200 my-2"></div>
+                <div className="border-t border-gray-200 dark:border-gray-800 my-2"></div>
                 <button
                   onClick={() => {
                     navigate("/profile");
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full text-left px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-indigo-600 transition-all font-medium flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium flex items-center gap-3 text-base"
                 >
                   <UserCircle className="w-4 h-4" />
                   Edit Profile
                 </button>
-                <div className="border-t border-gray-200 my-2"></div>
                 <button
                   onClick={() => {
                     navigate("/myorders");
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full text-left px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-indigo-600 transition-all font-medium flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium flex items-center gap-3 text-base"
                 >
                   <Package className="w-4 h-4" />
                   My Orders
@@ -460,14 +459,15 @@ const Navbar = () => {
                     navigate("/usercart");
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full text-left px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-indigo-600 transition-all font-medium flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all font-medium flex items-center gap-3 text-base"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   View Cart
                 </button>
+                <div className="border-t border-gray-200 dark:border-gray-800 my-2"></div>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all font-medium flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all font-medium flex items-center gap-3 text-base"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -475,11 +475,11 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <div className="border-t border-gray-200 my-2"></div>
+                <div className="border-t border-gray-200 dark:border-gray-800 my-2"></div>
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 dark:!bg-[#047857] dark:from-[#047857] dark:to-[#047857] text-white hover:from-indigo-700 hover:to-purple-700 dark:hover:!bg-[#065f46] dark:hover:from-[#065f46] dark:hover:to-[#065f46] transition-all font-semibold text-center flex items-center justify-center gap-2"
+                  className="block px-4 py-3 rounded-lg modern-button font-semibold text-center flex items-center justify-center gap-2 text-base"
                 >
                   <User className="w-4 h-4" />
                   Sign In
@@ -487,7 +487,7 @@ const Navbar = () => {
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition-all font-semibold text-center"
+                  className="block px-4 py-3 rounded-lg border-2 border-primary dark:border-accent text-primary dark:text-accent hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-semibold text-center text-base"
                 >
                   Sign Up
                 </Link>

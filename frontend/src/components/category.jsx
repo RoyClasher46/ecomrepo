@@ -107,17 +107,17 @@ export default function CategoryPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950 pt-24 md:pt-28">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="text-sm text-indigo-600 dark:text-green-400 uppercase tracking-wider mb-2 font-semibold">Category</p>
-              <h1 className="text-4xl md:text-5xl font-bold gradient-text dark:text-green-400 mb-2">{heading}</h1>
-              <p className="text-gray-600 dark:text-gray-300">{subtext}</p>
+              <p className="text-sm text-primary dark:text-accent uppercase tracking-wider mb-2 font-semibold">Category</p>
+              <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">{heading}</h1>
+              <p className="text-gray-700 dark:text-gray-300">{subtext}</p>
             </div>
             <Link
               to="/"
-              className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-indigo-300 dark:hover:border-green-500 hover:text-indigo-600 dark:hover:text-green-400 font-semibold transition-all"
+              className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-primary dark:hover:border-accent hover:text-primary dark:hover:text-accent font-semibold transition-all"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
               Back to home
@@ -125,12 +125,12 @@ export default function CategoryPage() {
           </div>
 
         {loading ? (
-          <div className="text-sm text-gray-600 dark:text-gray-300 modern-card p-4 rounded-lg text-center">Loading products...</div>
+          <div className="text-sm text-gray-700 dark:text-gray-300 modern-card p-4 rounded-lg text-center">Loading products...</div>
         ) : searchQuery.trim().length > 0 ? (
           // Show search results
           filtered.length === 0 ? (
             <div className="modern-card rounded-lg p-6 text-center">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 No products found matching "{searchQuery}".
               </p>
             </div>
@@ -157,10 +157,10 @@ export default function CategoryPage() {
                     </div>
                   </div>
                   <div className="p-5 space-y-3">
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-green-400 transition-colors">
+                    <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
                       {item.name}
                     </h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
+                    <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">
                       {item.description}
                     </p>
                     <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
@@ -191,7 +191,7 @@ export default function CategoryPage() {
         ) : isAll ? (
           grouped.length === 0 ? (
             <div className="modern-card rounded-lg p-6 text-center">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-700 dark:text-gray-300">
                 No products found yet.
               </p>
             </div>
@@ -227,10 +227,10 @@ export default function CategoryPage() {
                           </div>
                         </div>
                         <div className="p-5 space-y-3">
-                          <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-green-400 transition-colors">
+                          <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
                             {item.name}
                           </h4>
-                          <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
+                          <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">
                             {item.description}
                           </p>
                           <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
@@ -323,7 +323,7 @@ export default function CategoryPage() {
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => setShowAll((s) => !s)}
-                className="text-xs text-gray-600 hover:text-primary transition modern-button-secondary px-4 py-2 rounded-lg"
+                className="text-xs text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition modern-button-secondary px-4 py-2 rounded-lg"
               >
                 {showAll ? "Show less" : "View all popular products"}
               </button>

@@ -121,23 +121,23 @@ const UploadProduct = () => {
   return (
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <Upload className="w-6 h-6 text-white" />
+      <div className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg flex-shrink-0">
+            <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold gradient-text">Upload Product</h1>
-            <p className="text-gray-600 mt-1">Add a new product to your store</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">Upload Product</h1>
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mt-1">Add a new product to your store</p>
           </div>
         </div>
       </div>
 
-      <div className="modern-card rounded-2xl p-8 shadow-lg max-w-4xl">
+      <div className="modern-card rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg max-w-4xl">
         <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
           {/* Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
               <Package className="w-4 h-4" />
               Product Name
             </label>
@@ -147,14 +147,14 @@ const UploadProduct = () => {
               value={product.name}
               onChange={handleChange}
               required
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+              className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
               placeholder="Enter product name"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Description
             </label>
             <textarea
@@ -163,7 +163,7 @@ const UploadProduct = () => {
               onChange={handleChange}
               required
               rows="4"
-              className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none resize-none"
+              className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none resize-none"
               placeholder="Enter product description"
             />
           </div>
@@ -171,7 +171,7 @@ const UploadProduct = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Price */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <DollarSign className="w-4 h-4" />
                 Price (₹)
               </label>
@@ -181,14 +181,14 @@ const UploadProduct = () => {
                 value={product.price}
                 onChange={handleChange}
                 required
-                className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
                 placeholder="Enter product price"
               />
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <Tag className="w-4 h-4" />
                 Category
               </label>
@@ -198,30 +198,30 @@ const UploadProduct = () => {
                 value={product.category}
                 onChange={handleChange}
                 required
-                className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
                 placeholder="e.g., Electronics, Fashion"
               />
-              <p className="text-xs text-gray-500 mt-1">If new, it will be created automatically.</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">If new, it will be created automatically.</p>
             </div>
           </div>
 
           {/* Main Image Upload */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
               <Image className="w-4 h-4" />
               Main Product Image <span className="text-red-500">*</span>
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-indigo-400 transition-colors">
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 text-center hover:border-primary dark:hover:border-accent transition-colors">
               <input
                 type="file"
                 name="image"
                 accept="image/*"
                 onChange={handleImageChange}
                 required
-                className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 
                 file:rounded-lg file:border-0 file:text-sm file:font-semibold 
-                file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white 
-                hover:file:from-indigo-700 hover:file:to-purple-700 cursor-pointer"
+                file:bg-primary file:dark:bg-accent file:text-white 
+                hover:file:bg-primary-dark hover:file:dark:bg-accent-dark cursor-pointer"
               />
               {preview && (
                 <div className="mt-4">
@@ -237,20 +237,20 @@ const UploadProduct = () => {
 
           {/* Additional Images Upload */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Additional Product Images (Optional)
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-indigo-400 transition-colors">
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 text-center hover:border-primary dark:hover:border-accent transition-colors">
               <input
                 type="file"
                 name="images"
                 accept="image/*"
                 multiple
                 onChange={handleAdditionalImagesChange}
-                className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 
                 file:rounded-lg file:border-0 file:text-sm file:font-semibold 
-                file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white 
-                hover:file:from-indigo-700 hover:file:to-purple-700 cursor-pointer"
+                file:bg-primary file:dark:bg-accent file:text-white 
+                hover:file:bg-primary-dark hover:file:dark:bg-accent-dark cursor-pointer"
               />
               {additionalPreviews.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-3 justify-center">
@@ -270,49 +270,79 @@ const UploadProduct = () => {
 
           {/* Sizes Management */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
               <Package className="w-4 h-4" />
               Product Sizes
             </label>
-            <div className="space-y-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-              {sizes.map((sizeItem, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <input
-                    type="text"
-                    value={sizeItem.size}
-                    onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
-                    placeholder="Size (e.g., S, M, L, XL)"
-                    className="flex-1 rounded-xl border-2 border-gray-300 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
-                  />
-                  <label className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-white rounded-xl border-2 border-gray-300 hover:border-indigo-400 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={sizeItem.available}
-                      onChange={(e) => handleSizeChange(index, 'available', e.target.checked)}
-                      className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                    />
-                    <span className="text-sm font-medium text-gray-700">Available</span>
-                  </label>
-                  {sizes.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeSize(index)}
-                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-semibold transition-all"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={addSize}
-                className="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl text-sm font-semibold transition-all border-2 border-gray-300 hover:border-gray-400"
-              >
-                + Add Size
-              </button>
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 dark:bg-gray-800/70">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Available</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {sizes.map((sizeItem, index) => (
+                      <tr key={index} className="hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors">
+                        <td className="px-4 py-3">
+                          <input
+                            type="text"
+                            value={sizeItem.size}
+                            onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
+                            placeholder="Size (e.g., S, M, L, XL)"
+                            className="w-full rounded-lg border-2 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
+                          />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={sizeItem.available}
+                                onChange={(e) => handleSizeChange(index, 'available', e.target.checked)}
+                                className="w-4 h-4 text-primary dark:text-accent rounded focus:ring-primary dark:focus:ring-accent"
+                              />
+                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {sizeItem.available ? "Yes" : "No"}
+                              </span>
+                            </label>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center">
+                            {sizes.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeSize(index)}
+                                className="px-3 py-1.5 bg-error hover:bg-error-dark text-white rounded-lg text-xs sm:text-sm font-semibold transition-all"
+                              >
+                                Remove
+                              </button>
+                            )}
+                            {sizes.length === 1 && (
+                              <span className="text-xs text-gray-400 dark:text-gray-500">Required</span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  type="button"
+                  onClick={addSize}
+                  className="w-full px-4 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm font-semibold transition-all border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                >
+                  + Add Size
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               Add sizes for your product. Uncheck "Available" if a size is currently out of stock.
             </p>
           </div>

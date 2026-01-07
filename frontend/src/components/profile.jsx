@@ -145,19 +145,19 @@ export default function Profile() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28 pb-16">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors mb-4"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors mb-4"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
             </button>
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 rounded-2xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg">
                 <User className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -171,8 +171,8 @@ export default function Profile() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="modern-card rounded-2xl p-6 space-y-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <User className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <User className="w-5 h-5 text-primary dark:text-accent" />
                 Basic Information
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
@@ -185,7 +185,7 @@ export default function Profile() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     required
                   />
                 </div>
@@ -211,7 +211,7 @@ export default function Profile() {
                     value={formData.mobile}
                     onChange={handleChange}
                     placeholder="+91 1234567890"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -219,8 +219,8 @@ export default function Profile() {
 
             {/* Home Address */}
             <div className="modern-card rounded-2xl p-6 space-y-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <Home className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <Home className="w-5 h-5 text-primary dark:text-accent" />
                 Home Address
               </h2>
               <div className="space-y-4">
@@ -234,7 +234,7 @@ export default function Profile() {
                     value={formData.homeAddress.street}
                     onChange={handleChange}
                     placeholder="123 Main Street"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -248,7 +248,7 @@ export default function Profile() {
                       value={formData.homeAddress.city}
                       onChange={handleChange}
                       placeholder="City"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -261,7 +261,7 @@ export default function Profile() {
                       value={formData.homeAddress.state}
                       onChange={handleChange}
                       placeholder="State"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function Profile() {
                       value={formData.homeAddress.zipCode}
                       onChange={handleChange}
                       placeholder="123456"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -289,7 +289,7 @@ export default function Profile() {
                       value={formData.homeAddress.country}
                       onChange={handleChange}
                       placeholder="Country"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -298,8 +298,8 @@ export default function Profile() {
 
             {/* Work Address */}
             <div className="modern-card rounded-2xl p-6 space-y-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-primary dark:text-accent" />
                 Work Address
               </h2>
               <div className="space-y-4">
@@ -313,7 +313,7 @@ export default function Profile() {
                     value={formData.workAddress.street}
                     onChange={handleChange}
                     placeholder="456 Business Avenue"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -327,7 +327,7 @@ export default function Profile() {
                       value={formData.workAddress.city}
                       onChange={handleChange}
                       placeholder="City"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -340,7 +340,7 @@ export default function Profile() {
                       value={formData.workAddress.state}
                       onChange={handleChange}
                       placeholder="State"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -355,7 +355,7 @@ export default function Profile() {
                       value={formData.workAddress.zipCode}
                       onChange={handleChange}
                       placeholder="123456"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -368,7 +368,7 @@ export default function Profile() {
                       value={formData.workAddress.country}
                       onChange={handleChange}
                       placeholder="Country"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export default function Profile() {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-6 py-4 rounded-xl bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-300 font-semibold transition-all"
+                className="px-6 py-4 rounded-xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 font-semibold transition-all"
               >
                 Cancel
               </button>

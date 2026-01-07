@@ -13,6 +13,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [similarProducts, setSimilarProducts] = useState([]);
+  const [categoryProducts, setCategoryProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [newReview, setNewReview] = useState({ 
@@ -34,7 +35,7 @@ export default function ProductPage() {
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
-        // Fetch similar products
+        // Fetch similar products (for similar products section)
         if (data.category) {
           fetch("/api/products")
             .then((res) => res.json())
@@ -47,6 +48,14 @@ export default function ProductPage() {
                 )
                 .slice(0, 4);
               setSimilarProducts(similar);
+              
+              // Fetch category products (for category products section)
+              const categoryProds = products
+                .filter(p => 
+                  p._id !== data._id && 
+                  (p.category || "Self").toLowerCase() === (data.category || "Self").toLowerCase()
+                );
+              setCategoryProducts(categoryProds);
             })
             .catch((err) => console.error(err));
         }
@@ -159,9 +168,9 @@ export default function ProductPage() {
   if (!product) return (
     <>
       <Navbar />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
         <div className="modern-card p-8 rounded-lg">
-          <p className="text-gray-600 text-center">Loading...</p>
+          <p className="text-gray-700 dark:text-gray-300 text-center">Loading...</p>
         </div>
       </div>
     </>
@@ -170,35 +179,35 @@ export default function ProductPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 py-8 pt-24 md:pt-28">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 py-6 sm:py-8 pt-20 sm:pt-24 md:pt-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Product Details Section */}
-          <div className="modern-card p-8 rounded-lg mb-8">
-            <div className="grid lg:grid-cols-2 gap-8">
+          <div className="modern-card p-4 sm:p-6 md:p-8 rounded-lg mb-6 sm:mb-8">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
               {/* Product Images */}
               <div>
                 {/* Main Image */}
-                <div className="mb-4">
+                <div className="mb-3 sm:mb-4">
                   {allImages[selectedImage] && (
                     <img
                       src={allImages[selectedImage]}
                       alt={product.name}
-                      className="w-full h-96 object-cover rounded-lg border border-gray-200"
+                      className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                     />
                   )}
                 </div>
                 
                 {/* Image Thumbnails */}
                 {allImages.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto">
+                  <div className="flex gap-2 overflow-x-auto pb-2">
                     {allImages.map((img, index) => (
                       <button
                         key={index}
                         onClick={() => setSelectedImage(index)}
-                        className={`flex-shrink-0 w-20 h-20 rounded-lg border-2 overflow-hidden ${
+                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all ${
                           selectedImage === index 
-                            ? "border-primary" 
-                            : "border-gray-200"
+                            ? "border-primary dark:border-accent ring-2 ring-primary dark:ring-accent" 
+                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                         }`}
                       >
                         <img
@@ -213,33 +222,33 @@ export default function ProductPage() {
               </div>
               
               {/* Product Info */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{product.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">{product.name}</h2>
                   
                   {/* Average Rating */}
                   {reviews.length > 0 && (
                     <div className="mb-4">
                       <StarRatingDisplay rating={averageRating} size="md" />
-                      <span className="ml-2 text-sm text-gray-600">
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                         ({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})
                       </span>
                     </div>
                   )}
                   
-                  <p className="text-2xl font-bold text-primary mb-4">
+                  <p className="text-xl sm:text-2xl font-bold text-primary dark:text-accent mb-4">
                     ₹{product.price}
                   </p>
-                  <p className="text-gray-600 leading-relaxed">{product.description}</p>
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed">{product.description}</p>
                 </div>
 
                 {/* Size Selection */}
                 {product.sizes && product.sizes.length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-3">
                       Select Size <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                       {product.sizes.map((sizeItem, index) => (
                         <button
                           key={index}
@@ -250,41 +259,48 @@ export default function ProductPage() {
                               toast.success(`Size ${sizeItem.size} selected`);
                             } else {
                               toast.error(
-                                `We're sorry, but size ${sizeItem.size} is currently out of stock. Please select another size or check back later.`,
-                                { autoClose: 5000 }
+                                `Size ${sizeItem.size} is currently out of stock. Please select another size.`,
+                                { autoClose: 4000 }
                               );
                             }
                           }}
                           disabled={!sizeItem.available}
-                          className={`px-4 py-2 rounded-lg border-2 font-medium transition ${
+                          className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border-2 font-medium transition text-sm sm:text-base ${
                             selectedSize === sizeItem.size
-                              ? "border-primary bg-primary text-white"
+                              ? "border-primary dark:border-accent bg-primary dark:bg-accent text-white shadow-lg"
                               : sizeItem.available
-                              ? "border-gray-300 hover:border-primary text-gray-700"
-                              : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed line-through"
+                              ? "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-accent text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800"
+                              : "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through"
                           }`}
                         >
                           {sizeItem.size}
-                          {!sizeItem.available && " (Out of Stock)"}
+                          {!sizeItem.available && (
+                            <span className="ml-1 text-xs">(Out of Stock)</span>
+                          )}
                         </button>
                       ))}
                     </div>
                     {!selectedSize && (
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2">
                         Please select a size to add this item to your cart.
+                      </p>
+                    )}
+                    {selectedSize && (
+                      <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 mt-2 font-medium">
+                        ✓ Size {selectedSize} selected
                       </p>
                     )}
                   </div>
                 )}
                 
-                <div className="pt-6 border-t border-gray-200">
+                <div className="pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-800">
                   <button 
                     onClick={handleAddToCart}
                     disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
-                    className={`w-full py-3 rounded-lg text-base font-semibold transition ${
+                    className={`w-full py-3 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold transition ${
                       product.sizes && product.sizes.length > 0 && !selectedSize
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "modern-button"
+                        ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        : "modern-button hover:scale-[1.02] active:scale-[0.98]"
                     }`}
                   >
                     Add to Cart
@@ -294,58 +310,106 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* Similar Products */}
-          {similarProducts.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Similar Products</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {similarProducts.map((item) => (
+          {/* Same Category Products Section */}
+          {categoryProducts.length > 0 && (
+            <div className="mb-6 sm:mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    More from {product.category || "This Category"}
+                  </h3>
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                    Explore other products in the same category
+                  </p>
+                </div>
+                {categoryProducts.length > 9 && (
+                  <Link
+                    to={`/category/${encodeURIComponent(product.category || "all")}`}
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-primary dark:text-accent hover:text-primary-dark dark:hover:text-accent-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-all self-start sm:self-auto"
+                  >
+                    View All
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {categoryProducts.slice(0, 9).map((item) => (
                   <Link
                     key={item._id}
                     to={`/product/${item._id}`}
-                    className="modern-card rounded-lg overflow-hidden hover:shadow-medium transition"
+                    className="group modern-card rounded-xl sm:rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer"
                   >
-                    <div className="w-full h-48 overflow-hidden bg-gray-100">
-                      <img
-                        src={`data:image/jpeg;base64,${item.image}`}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="relative h-48 sm:h-56 overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      {item.image && (
+                        <img
+                          src={`data:image/jpeg;base64,${item.image}`}
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    <div className="p-4">
-                      <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-1">{item.name}</h4>
-                      <p className="text-primary font-bold">₹{item.price}</p>
+                    <div className="p-4 sm:p-5">
+                      <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
+                        {item.name || "Unnamed Product"}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-3 hidden sm:block">
+                        {item.description || "No description available"}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-lg sm:text-xl font-bold gradient-text">
+                          ₹{item.price || "0.00"}
+                        </p>
+                        <span className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg modern-button text-xs sm:text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                          View
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 ))}
               </div>
+              {categoryProducts.length > 9 && (
+                <div className="mt-6 flex justify-center">
+                  <Link
+                    to={`/category/${encodeURIComponent(product.category || "all")}`}
+                    className="px-6 sm:px-8 py-3 sm:py-4 rounded-xl modern-button font-semibold flex items-center gap-2 text-sm sm:text-base hover:scale-105 transition-transform"
+                  >
+                    <span>View All {categoryProducts.length} Products</span>
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
           {/* Reviews Section - At the Bottom */}
-          <div className="modern-card p-8 rounded-lg">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-6">Customer Reviews</h3>
+          <div className="modern-card p-4 sm:p-6 md:p-8 rounded-lg">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Customer Reviews</h3>
             
             {/* Reviews List */}
             {reviews.length === 0 ? (
-              <p className="text-gray-600 mb-8">No reviews yet. Be the first to review!</p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-6 sm:mb-8">No reviews yet. Be the first to review!</p>
             ) : (
-              <div className="space-y-6 mb-8">
+              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
                 {reviews.map((r, i) => (
                   <div
                     key={i}
-                    className="bg-gray-50 border border-gray-200 p-6 rounded-lg"
+                    className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4 sm:p-6 rounded-lg"
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
                       <div>
-                        <p className="text-base font-semibold text-gray-900 mb-1">{r.user}</p>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">{r.user}</p>
                         <StarRatingDisplay rating={r.rating} size="sm" />
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
                         {new Date(r.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-gray-700 mb-3">{r.comment}</p>
+                    <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">{r.comment}</p>
                     
                     {/* Review Images */}
                     {r.reviewImages && r.reviewImages.length > 0 && (
@@ -355,7 +419,7 @@ export default function ProductPage() {
                             key={imgIndex}
                             src={img}
                             alt={`Review image ${imgIndex + 1}`}
-                            className="w-20 h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:scale-105 transition"
+                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:scale-105 transition"
                             onClick={() => window.open(img, '_blank')}
                           />
                         ))}
@@ -367,11 +431,11 @@ export default function ProductPage() {
             )}
 
             {/* Add Review Form */}
-            <div className="pt-6 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h4>
+            <div className="pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-800">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Write a Review</h4>
               <form onSubmit={handleReviewSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Your Name
                   </label>
                   <input
@@ -385,7 +449,7 @@ export default function ProductPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Rating <span className="text-red-500">*</span>
                   </label>
                   <StarRatingInput
@@ -396,20 +460,20 @@ export default function ProductPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Review
                   </label>
                   <textarea
                     placeholder="Write your review..."
                     value={newReview.comment}
                     onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                    className="modern-input min-h-[120px]"
+                    className="modern-input min-h-[100px] sm:min-h-[120px]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Upload Images (Optional, max 5)
                   </label>
                   <input
@@ -417,7 +481,7 @@ export default function ProductPage() {
                     accept="image/*"
                     multiple
                     onChange={handleReviewImageChange}
-                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 
+                    className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 
                     file:rounded-lg file:border-0 file:text-sm file:font-semibold 
                     file:bg-primary file:text-white 
                     hover:file:bg-primary-dark cursor-pointer"
@@ -429,7 +493,7 @@ export default function ProductPage() {
                           key={index}
                           src={URL.createObjectURL(file)}
                           alt={`Preview ${index + 1}`}
-                          className="w-16 h-16 object-cover rounded border border-gray-200"
+                          className="w-16 h-16 object-cover rounded border border-gray-200 dark:border-gray-700"
                         />
                       ))}
                     </div>
@@ -438,7 +502,7 @@ export default function ProductPage() {
                 
                 <button
                   type="submit"
-                  className="w-full modern-button py-3 rounded-lg font-semibold"
+                  className="w-full modern-button py-3 rounded-lg font-semibold text-sm sm:text-base"
                 >
                   Submit Review
                 </button>

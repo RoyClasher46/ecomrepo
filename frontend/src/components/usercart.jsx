@@ -56,7 +56,7 @@ export default function CartPage() {
   return (
     <>  
     <Navbar />
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 flex flex-col pt-24 md:pt-28">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex flex-col pt-24 md:pt-28">
       <div className="flex-grow p-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-10">
@@ -122,7 +122,7 @@ export default function CartPage() {
                             +
                           </button>
                         </div>
-                        <p className="text-primary font-bold text-lg">
+                        <p className="text-primary dark:text-accent font-bold text-lg">
                           ₹{(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
@@ -140,8 +140,8 @@ export default function CartPage() {
               {cartItems.length > 0 && (
                 <div className="space-y-4">
                   <div className="modern-card p-4 rounded-lg">
-                    <p className="text-right text-gray-900 font-bold text-2xl">
-                      Total Price: <span className="text-primary">₹{finalPrice.toFixed(2)}</span>
+                    <p className="text-right text-gray-900 dark:text-gray-100 font-bold text-2xl">
+                      Total Price: <span className="text-primary dark:text-accent">₹{finalPrice.toFixed(2)}</span>
                     </p>
                   </div>
                   <button

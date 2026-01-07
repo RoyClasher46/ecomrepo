@@ -218,7 +218,7 @@ export default function Checkout() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
           <div className="modern-card p-8 rounded-lg">Loading checkout...</div>
         </div>
       </>
@@ -228,10 +228,10 @@ export default function Checkout() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 p-6 pt-24 md:pt-28">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-6 pt-24 md:pt-28">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 modern-card rounded-lg p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Checkout</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Checkout</h1>
 
             <div className="space-y-6">
               {/* Address Section */}
@@ -239,7 +239,7 @@ export default function Checkout() {
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">Delivery Address</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
                     <input
                       name="addressLine"
                       value={form.addressLine}
@@ -327,7 +327,7 @@ export default function Checkout() {
                           }}
                           className="mr-2"
                         />
-                        <span className="text-gray-700">Cash on Delivery</span>
+                        <span className="text-gray-700 dark:text-gray-300">Cash on Delivery</span>
                       </label>
                       <label className="flex items-center cursor-pointer">
                         <input
@@ -338,7 +338,7 @@ export default function Checkout() {
                           onChange={(e) => setPaymentType(e.target.value)}
                           className="mr-2"
                         />
-                        <span className="text-gray-700">Online Payment</span>
+                        <span className="text-gray-700 dark:text-gray-300">Online Payment</span>
                       </label>
                     </div>
                   </div>
@@ -518,7 +518,7 @@ export default function Checkout() {
               )}
 
               {paymentMethod === "PhonePe" && (
-                <div className="p-4 bg-purple-50 rounded-lg text-center">
+                <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg text-center">
                   <div className="text-4xl mb-2">💳</div>
                   <p className="text-sm text-gray-700">Redirecting to PhonePe...</p>
                 </div>

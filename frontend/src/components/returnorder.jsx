@@ -117,8 +117,8 @@ const ReturnOrder = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
-          <div className="text-gray-600">Loading order details...</div>
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
+          <div className="text-gray-700 dark:text-gray-300">Loading order details...</div>
         </div>
       </>
     );
@@ -128,8 +128,8 @@ const ReturnOrder = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 pt-24 md:pt-28">
-          <div className="text-gray-600">Order not found</div>
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-24 md:pt-28">
+          <div className="text-gray-700 dark:text-gray-300">Order not found</div>
         </div>
       </>
     );
@@ -141,7 +141,7 @@ const ReturnOrder = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 p-6 pt-24 md:pt-28">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50/50 to-gray-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-6 pt-24 md:pt-28">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => navigate("/myorders")}
@@ -151,7 +151,7 @@ const ReturnOrder = () => {
           </button>
 
           <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">Return Order</h2>
-          <p className="text-center text-gray-600 mb-8">Request a return for your delivered order</p>
+          <p className="text-center text-gray-700 dark:text-gray-300 mb-8">Request a return for your delivered order</p>
 
           {/* Order Details Card */}
           <div className="modern-card rounded-lg p-6 mb-6">
@@ -168,7 +168,7 @@ const ReturnOrder = () => {
               </div>
               <div className="space-y-3">
                 <div>
-                  <span className="text-sm text-gray-600">Product:</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Product:</span>
                   <p className="text-lg font-semibold text-gray-900">{order.productId?.name}</p>
                 </div>
                 <div>
@@ -254,7 +254,7 @@ const ReturnOrder = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Why are you returning this product? <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -272,7 +272,7 @@ const ReturnOrder = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Detailed Reason <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -281,14 +281,14 @@ const ReturnOrder = () => {
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 min-h-[120px]"
                     placeholder="Please provide detailed information about why you want to return this product. Include any relevant details about defects, issues, or concerns..."
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                     {returnReason.length}/10 characters (minimum required)
                   </p>
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="text-sm font-semibold text-gray-900 mb-2">What happens next?</h4>
-                  <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+                  <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-decimal list-inside">
                     <li>Submit your return request</li>
                     <li>Our team will review your request (usually within 1-2 business days)</li>
                     <li>If approved, you'll receive return instructions and a return label</li>
@@ -309,7 +309,7 @@ const ReturnOrder = () => {
                     disabled={returnReason.trim().length < 10}
                     className={`flex-1 px-4 py-3 rounded-lg font-semibold transition ${
                       returnReason.trim().length < 10
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                         : "bg-orange-500 hover:bg-orange-600 text-white"
                     }`}
                   >
