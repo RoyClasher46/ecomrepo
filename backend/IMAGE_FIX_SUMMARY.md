@@ -98,3 +98,4 @@
 - Check file types (only images allowed)
 - Verify uploads directory exists and is writable
 
+

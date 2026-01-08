@@ -5,6 +5,7 @@ import FloatingCart from "./FloatingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { ArrowRight, Sparkles, TrendingUp, ShoppingBag, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Main() {
@@ -147,7 +148,7 @@ export default function Main() {
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
                   <img
-                    src={heroDisplay.image.startsWith('data:') ? heroDisplay.image : heroDisplay.image.startsWith('/uploads/') ? heroDisplay.image : `data:image/jpeg;base64,${heroDisplay.image}`}
+                    src={getImageSrc(heroDisplay.image)}
                     alt={heroDisplay.name}
                     className="w-full h-[400px] object-cover"
                   />
@@ -253,7 +254,7 @@ export default function Main() {
                     className="group relative rounded-xl overflow-hidden modern-card hover:shadow-xl transition-all"
                   >
                     <img
-                      src={`data:image/jpeg;base64,${item.image}`}
+                      src={getImageSrc(item.image)}
                       alt={item.name}
                       className="w-full h-24 object-cover group-hover:scale-110 transition-transform duration-300"
                     />
@@ -347,7 +348,7 @@ function ProductCard({ item, onAdd, delay = 0 }) {
       <div className="relative h-56 overflow-hidden">
         {item.image && (
           <img
-            src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
+            src={getImageSrc(item.image)}
             alt={item.name || "Product"}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />

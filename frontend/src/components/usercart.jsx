@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import Navbar from "./navbar";
 import Footer from "./Footer";
 import { toast } from 'react-toastify';
+import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function CartPage() {
@@ -79,7 +80,7 @@ export default function CartPage() {
                   className="modern-card rounded-lg p-4 flex items-center justify-between gap-4"
                   >
                     <img
-                      src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
+                      src={getImageSrc(item.image)}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                       />

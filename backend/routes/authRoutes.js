@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isLoggedIn } = require("../middleware/auth");
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const {
     login,
     sendSignupOTP,
@@ -31,8 +31,8 @@ router.get("/api/checkauth", isLoggedIn, checkAuth);
 
 // Admin authentication routes
 router.post("/api/adminlogin", adminLogin);
-router.get("/api/admin/dashboard", isLoggedIn, adminDashboard);
-router.get("/api/admin/checkauth", isLoggedIn, adminCheckAuth);
+router.get("/api/admin/dashboard", isLoggedIn, isAdmin, adminDashboard);
+router.get("/api/admin/checkauth", isLoggedIn, isAdmin, adminCheckAuth);
 
 // Test email configuration (for debugging)
 router.post("/api/test-email", testEmail);

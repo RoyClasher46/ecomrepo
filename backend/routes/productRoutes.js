@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../config/multer-config");
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const {
     getAllProducts,
     getProducts,
@@ -24,23 +25,23 @@ router.get("/api/products", getProducts);
 // Get single product by ID
 router.get("/api/products/:id", getProductById);
 
-// Create new product
-router.post("/api/uploadproduct", upload.fields([
+// Create new product - Admin only
+router.post("/api/uploadproduct", isLoggedIn, isAdmin, upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'images', maxCount: 10 }
 ]), createProduct);
 
-// Update product
-router.put("/products/:id", upload.fields([
+// Update product - Admin only
+router.put("/products/:id", isLoggedIn, isAdmin, upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'images', maxCount: 10 }
 ]), updateProduct);
 
-// Delete product
-router.delete("/products/:id", deleteProduct);
+// Delete product - Admin only
+router.delete("/products/:id", isLoggedIn, isAdmin, deleteProduct);
 
-// Toggle popular flag
-router.put("/products/:id/popular", togglePopular);
+// Toggle popular flag - Admin only
+router.put("/products/:id/popular", isLoggedIn, isAdmin, togglePopular);
 
 // Add review to product
 router.post("/api/products/:id/reviews", addReview);

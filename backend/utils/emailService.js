@@ -12,16 +12,9 @@ const createTransporter = () => {
   const emailUser = process.env.EMAIL_USER.trim();
   const emailPassword = process.env.EMAIL_PASSWORD.trim();
   
-  // Debug logging (without exposing full password)
-  console.log("Email Config Check:");
-  console.log("  EMAIL_USER:", emailUser);
-  console.log("  EMAIL_PASSWORD length:", emailPassword.length, "characters");
-  console.log("  EMAIL_SERVICE:", process.env.EMAIL_SERVICE || "gmail");
-  
   // Validate App Password format (should be 16 characters, no spaces)
   if (emailPassword.includes(" ")) {
     console.error("WARNING: EMAIL_PASSWORD contains spaces! App Passwords should have no spaces.");
-    console.error("Current password has", emailPassword.length, "characters including spaces");
   }
   
   if (emailPassword.length !== 16) {
@@ -91,7 +84,6 @@ const sendOTPEmail = async (email, otp, purpose) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error("Error sending email:", error);

@@ -1,13 +1,12 @@
 const productModel = require("../models/product-model");
 const userModel = require("../models/user-model");
 const { normalizeCategory } = require("../utils/categoryNormalizer");
-const path = require("path");
-const fs = require("fs");
+const cloudinary = require("../config/cloudinary");
 
 /**
  * Get all products (legacy endpoint)
  */
-// Helper function to get image URL (handles both Buffer and String paths)
+// Helper function to get image URL (handles Buffer, local paths, and Cloudinary URLs)
 const getImageUrl = (image) => {
     if (!image) return "";
     
@@ -16,25 +15,27 @@ const getImageUrl = (image) => {
         return `data:image/jpeg;base64,${image.toString("base64")}`;
     }
     
-    // If it's a string path (new format), return the path
+    // If it's a string
     if (typeof image === 'string') {
-        // If it already starts with /uploads, return as is
+        // If it's already a Cloudinary URL (http/https), return as is
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+            return image;
+        }
+        // If it's a data URL (base64), return as is
+        if (image.startsWith('data:')) {
+            return image;
+        }
+        // Legacy: If it starts with /uploads, return as is (for backward compatibility)
         if (image.startsWith('/uploads/')) {
             return image;
         }
-        // If it's a relative path like "uploads/products/filename.jpg", convert to absolute URL path
+        // Legacy: If it's a relative path, convert to absolute URL path
         if (image.startsWith('uploads/')) {
             return `/${image}`;
         }
-        // If it's just a filename, construct the full path
-        if (!image.includes('/') && !image.includes('\\')) {
-            return `/uploads/products/${image}`;
-        }
-        // Otherwise, try to extract filename and construct path
-        return `/uploads/products/${path.basename(image)}`;
     }
     
-    return "";
+    return image || "";
 };
 
 const getAllProducts = async (req, res) => {
@@ -105,13 +106,26 @@ const getProductById = async (req, res) => {
                     return `data:image/jpeg;base64,${img.toString("base64")}`;
                 }
                 if (typeof img === 'string') {
-                    return img.startsWith('/uploads/') ? img : `/uploads/products/${path.basename(img)}`;
+                    // If it's already a Cloudinary URL (http/https), return as is
+                    if (img.startsWith('http://') || img.startsWith('https://')) {
+                        return img;
+                    }
+                    // Legacy: If it starts with /uploads, return as is
+                    if (img.startsWith('/uploads/')) {
+                        return img;
+                    }
+                    // Legacy: If it's a relative path, convert to absolute URL path
+                    if (img.startsWith('uploads/')) {
+                        return `/${img}`;
+                    }
+                    // Otherwise, assume it's base64 or return as is
+                    return img;
                 }
                 return "";
             }).filter(img => img)
             : [];
 
-        res.json({
+        const productResponse = {
             _id: product._id,
             name: product.name,
             description: product.description,
@@ -121,7 +135,19 @@ const getProductById = async (req, res) => {
             image: getImageUrl(product.image),
             images: images,
             sizes: product.sizes || [],
-        });
+        };
+        
+        // Debug logging removed to prevent console spam
+        // Uncomment only when debugging image issues
+        // if (process.env.NODE_ENV === 'development') {
+        //     console.log('Product image URLs:', {
+        //         mainImage: productResponse.image,
+        //         additionalImages: productResponse.images,
+        //         originalImage: product.image
+        //     });
+        // }
+        
+        res.json(productResponse);
     } catch (err) {
         console.error("Fetch single product error:", err);
         res.status(500).json({ message: "Server error" });
@@ -144,13 +170,35 @@ const createProduct = async (req, res) => {
             }
         }
 
-        // Get file paths instead of buffers - convert to relative paths
-        const mainImage = req.files['image'] 
-            ? path.relative(path.join(__dirname, '..'), req.files['image'][0].path).replace(/\\/g, '/')
-            : null;
+        // Get Cloudinary URLs from uploaded files
+        // multer-storage-cloudinary returns the result in req.file/req.files
+        // The Cloudinary response is stored in the file object
+        let mainImage = null;
+        if (req.files['image'] && req.files['image'][0]) {
+            const file = req.files['image'][0];
+            // multer-storage-cloudinary stores Cloudinary result in the file object
+            // Check all possible properties where the URL might be stored
+            mainImage = file.secure_url || file.url || file.path || (file.cloudinary && file.cloudinary.secure_url) || (file.cloudinary && file.cloudinary.url);
+            
+            if (!mainImage) {
+                console.error('Could not extract Cloudinary URL from file');
+            }
+        }
+        
         const additionalImages = req.files['images']
-            ? req.files['images'].map(file => path.relative(path.join(__dirname, '..'), file.path).replace(/\\/g, '/'))
+            ? req.files['images'].map(file => {
+                const url = file.secure_url || file.url || file.path || (file.cloudinary && file.cloudinary.secure_url) || (file.cloudinary && file.cloudinary.url);
+                if (!url) {
+                    console.error('Could not extract Cloudinary URL from additional image');
+                }
+                return url;
+            }).filter(url => url) // Remove any null/undefined URLs
             : [];
+
+        // Validate that we have an image URL
+        if (!mainImage) {
+            return res.status(400).json({ message: "Failed to upload image. Please check Cloudinary configuration." });
+        }
 
         const newProduct = await productModel.create({
             name,
@@ -162,7 +210,8 @@ const createProduct = async (req, res) => {
             images: additionalImages,
             sizes: parsedSizes,
         });
-        res.status(200).json({ message: "product uploaded" });
+        
+        res.status(200).json({ message: "product uploaded", product: { _id: newProduct._id, image: mainImage } });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
@@ -199,21 +248,27 @@ const updateProduct = async (req, res) => {
         }
 
         if (req.files && req.files['image'] && req.files['image'][0]) {
-            // Delete old image file if it exists
-            if (product.image) {
-                const oldImagePath = path.join(__dirname, '..', product.image);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
+            // Delete old image from Cloudinary if it's a Cloudinary URL
+            if (product.image && (product.image.startsWith('http://') || product.image.startsWith('https://'))) {
+                try {
+                    // Extract public_id from Cloudinary URL
+                    const urlParts = product.image.split('/');
+                    const filename = urlParts[urlParts.length - 1];
+                    const publicId = `ecommerce/products/${filename.split('.')[0]}`;
+                    await cloudinary.uploader.destroy(publicId);
+                } catch (err) {
+                    console.error('Error deleting old image from Cloudinary:', err);
                 }
             }
-            // Convert to relative path
-            updateData.image = path.relative(path.join(__dirname, '..'), req.files['image'][0].path).replace(/\\/g, '/');
+            // Store Cloudinary URL - check all possible properties
+            const file = req.files['image'][0];
+            updateData.image = file.secure_url || file.url || file.path || (file.cloudinary && file.cloudinary.secure_url) || (file.cloudinary && file.cloudinary.url);
         }
 
         if (req.files && req.files['images'] && req.files['images'].length > 0) {
-            const newImages = req.files['images'].map(file => 
-                path.relative(path.join(__dirname, '..'), file.path).replace(/\\/g, '/')
-            );
+            const newImages = req.files['images'].map(file => {
+                return file.secure_url || file.url || file.path || (file.cloudinary && file.cloudinary.secure_url) || (file.cloudinary && file.cloudinary.url);
+            }).filter(url => url); // Remove any null/undefined URLs
             updateData.images = [...(product.images || []), ...newImages];
         }
 
@@ -233,6 +288,24 @@ const updateProduct = async (req, res) => {
 /**
  * Delete product
  */
+// Helper function to extract public_id from Cloudinary URL
+const extractPublicId = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    
+    // If it's a Cloudinary URL
+    if (url.includes('cloudinary.com')) {
+        const parts = url.split('/');
+        const uploadIndex = parts.findIndex(part => part === 'upload');
+        if (uploadIndex !== -1 && parts[uploadIndex + 2]) {
+            // Extract path after version (e.g., ecommerce/products/filename)
+            const pathAfterVersion = parts.slice(uploadIndex + 2).join('/');
+            // Remove file extension
+            return pathAfterVersion.replace(/\.[^/.]+$/, '');
+        }
+    }
+    return null;
+};
+
 const deleteProduct = async (req, res) => {
     try {
         const product = await productModel.findById(req.params.id);
@@ -240,22 +313,34 @@ const deleteProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        // Delete image files from filesystem
+        // Delete main image from Cloudinary if it's a Cloudinary URL
         if (product.image) {
-            const imagePath = path.join(__dirname, '..', product.image);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+            if (product.image.startsWith('http://') || product.image.startsWith('https://')) {
+                try {
+                    const publicId = extractPublicId(product.image);
+                    if (publicId) {
+                        await cloudinary.uploader.destroy(publicId);
+                    }
+                } catch (err) {
+                    console.error('Error deleting main image from Cloudinary:', err);
+                }
             }
         }
 
-        // Delete additional images
+        // Delete additional images from Cloudinary
         if (product.images && product.images.length > 0) {
-            product.images.forEach(imgPath => {
-                const fullPath = path.join(__dirname, '..', imgPath);
-                if (fs.existsSync(fullPath)) {
-                    fs.unlinkSync(fullPath);
+            for (const imgUrl of product.images) {
+                if (imgUrl && (imgUrl.startsWith('http://') || imgUrl.startsWith('https://'))) {
+                    try {
+                        const publicId = extractPublicId(imgUrl);
+                        if (publicId) {
+                            await cloudinary.uploader.destroy(publicId);
+                        }
+                    } catch (err) {
+                        console.error('Error deleting additional image from Cloudinary:', err);
+                    }
                 }
-            });
+            }
         }
 
         // Delete product from database

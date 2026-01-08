@@ -15,10 +15,19 @@ export default function HomeWrapper() {
     })
       .then((res) => {
         if (res.ok) {
-          setIsAuth(true);
+          return res.json();
         } else {
-          setIsAuth(false);
+          throw new Error("Not authenticated");
         }
+      })
+      .then((data) => {
+        // Check if user is admin - if so, redirect to admin page
+        if (data.user && data.user.isAdmin === true) {
+          navigate("/adminmain");
+          return;
+        }
+        // Regular user authenticated
+        setIsAuth(true);
       })
       .catch(() => {
         setIsAuth(false);

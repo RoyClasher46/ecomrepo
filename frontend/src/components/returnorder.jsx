@@ -3,6 +3,7 @@ import Navbar from "./navbar";
 import Footer from "./Footer";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";
 
 const ReturnOrder = () => {
@@ -160,7 +161,7 @@ const ReturnOrder = () => {
               <div>
                 {order.productId?.image && (
                   <img
-                    src={order.productId.image.startsWith('data:') ? order.productId.image : order.productId.image.startsWith('/uploads/') ? order.productId.image : `data:image/jpeg;base64,${order.productId.image}`}
+                    src={getImageSrc(order.productId.image)}
                     alt={order.productId?.name}
                     className="w-full h-64 object-cover rounded-lg mb-4"
                   />

@@ -72,7 +72,6 @@ export default function Checkout() {
         }
       } catch (err) {
         // Profile not loaded, user can fill manually
-        console.log("Profile not loaded, user can fill manually");
       }
     };
 

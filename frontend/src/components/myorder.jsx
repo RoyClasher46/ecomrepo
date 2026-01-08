@@ -3,6 +3,7 @@ import Navbar from "./navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";
 
 const MyOrders = () => {
@@ -110,7 +111,7 @@ const MyOrders = () => {
                   {order.productId?.image && (
                     <div className="w-full h-48 overflow-hidden bg-gray-100">
                       <img
-                        src={order.productId.image.startsWith('data:') ? order.productId.image : order.productId.image.startsWith('/uploads/') ? order.productId.image : `data:image/jpeg;base64,${order.productId.image}`}
+                        src={getImageSrc(order.productId.image)}
                         alt={order.productId?.name}
                         className="w-full h-full object-cover"
                       />

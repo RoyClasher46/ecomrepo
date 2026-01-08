@@ -1,34 +1,32 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children }) {
+export default function AdminProtectedRoute({ children }) {
     const [loading, setLoading] = useState(true);
     const [isAuth, setIsAuth] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("/api/checkauth", {
+        fetch("/api/admin/checkauth", {
             credentials: "include",
         })
         .then(res => {
             if (res.ok) {
                 return res.json();
             } else {
-                throw new Error("Not authenticated");
+                throw new Error("Not authenticated as admin");
             }
         })
         .then(data => {
-            // Check if user is admin - if so, redirect to admin page
-            if (data.user && data.user.isAdmin === true) {
-                navigate("/adminmain");
-                return;
+            if (data.isAdmin) {
+                setIsAuth(true);
+            } else {
+                navigate("/adminlogin");
             }
-            // Regular user authenticated
-            setIsAuth(true);
         })
         .catch(err => {
             console.error(err);
-            navigate("/login");
+            navigate("/adminlogin");
         })
         .finally(() => {
             setLoading(false);

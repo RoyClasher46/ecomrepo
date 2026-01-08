@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, ShoppingCart, Menu, X, Package, LogOut, Home, Grid3x3, UserCircle, Mail, Search, Info } from "lucide-react";
 import { toast } from 'react-toastify';
 import ThemeToggle from "./ThemeToggle";
+import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
@@ -210,7 +211,7 @@ const Navbar = () => {
                   >
                     {product.image && (
                       <img
-                        src={product.image.startsWith('data:') ? product.image : product.image.startsWith('/uploads/') ? product.image : `data:image/jpeg;base64,${product.image}`}
+                        src={getImageSrc(product.image)}
                         alt={product.name}
                         className="w-12 h-12 object-cover rounded-lg"
                       />
@@ -388,7 +389,7 @@ const Navbar = () => {
                     >
                       {product.image && (
                         <img
-                          src={`data:image/jpeg;base64,${product.image}`}
+                          src={getImageSrc(product.image)}
                           alt={product.name}
                           className="w-12 h-12 object-cover rounded-lg"
                         />

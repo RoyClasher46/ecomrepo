@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import FloatingCart from "./FloatingCart";
 import { ShoppingBag, Star, ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
+import { getImageSrc } from "../utils/imageUtils";
 
 export default function CategoryPage() {
   const navigate = useNavigate();
@@ -145,7 +146,7 @@ export default function CategoryPage() {
                 >
                   <div className="relative h-56 overflow-hidden">
                     <img
-                      src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
+                      src={getImageSrc(item.image)}
                       alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
@@ -215,7 +216,7 @@ export default function CategoryPage() {
                       >
                         <div className="relative h-56 overflow-hidden">
                           <img
-                            src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
+                            src={getImageSrc(item.image)}
                             alt={item.name}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
@@ -276,7 +277,7 @@ export default function CategoryPage() {
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
-                    src={`data:image/jpeg;base64,${item.image}`}
+                    src={getImageSrc(item.image)}
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />

@@ -21,9 +21,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: true, credentials: true }));
 
-// Serve uploaded product images
-app.use('/uploads/products', express.static(path.join(__dirname, 'uploads', 'products')));
-
 // Routes
 app.use("/", authRoutes);
 app.use("/", productRoutes);

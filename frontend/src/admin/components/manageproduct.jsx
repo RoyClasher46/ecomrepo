@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Settings, Search, Filter, Edit, Trash2, Star, Package } from "lucide-react";
+import { getImageSrc } from "../../utils/imageUtils";
 
 const ManageProducts = ({ selectedProduct }) => {
   const [products, setProducts] = useState([]);
@@ -378,7 +379,7 @@ const ManageProducts = ({ selectedProduct }) => {
                     >
                       <td className="py-3 sm:py-4 px-2 sm:px-4">
                         <img
-                          src={`data:image/jpeg;base64,${product.image}`}
+                          src={getImageSrc(product.image)}
                           alt={product.name}
                           className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg sm:rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md"
                         />
@@ -520,7 +521,7 @@ const ManageProducts = ({ selectedProduct }) => {
                       />
                     ) : editingProduct.image ? (
                       <img
-                        src={editingProduct.image.startsWith('data:') ? editingProduct.image : editingProduct.image.startsWith('/uploads/') ? editingProduct.image : `data:image/jpeg;base64,${editingProduct.image}`}
+                        src={getImageSrc(editingProduct.image)}
                         alt="Current product"
                         className="max-w-full max-h-48 object-contain rounded-lg mx-auto"
                       />

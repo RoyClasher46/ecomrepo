@@ -9,6 +9,8 @@ import Signup from "./components/signup";
 import ForgotPassword from "./components/forgotpassword";
 import Main from "./components/main";
 import ProtectedRoute from "./components/protectedroute";
+import AdminProtectedRoute from "./components/adminProtectedRoute";
+import UserRoute from "./components/userRoute";
 import AdminLogin from "./components/adminlogin";
 import AdminMain from "./admin/components/adminmain";
 import Dashboard from "./admin/components/dashboard";
@@ -30,22 +32,22 @@ root.render(
     <Router>
         <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
-      <Route path="/" element={<HomeWrapper />} />
-      <Route path="/adminmain" element={<ProtectedRoute><AdminMain /></ProtectedRoute>}  />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
+      <Route path="/" element={<UserRoute><HomeWrapper /></UserRoute>} />
+      <Route path="/adminmain" element={<AdminProtectedRoute><AdminMain /></AdminProtectedRoute>}  />
+      <Route path="/about" element={<UserRoute><About /></UserRoute>} />
+      <Route path="/contact" element={<UserRoute><Contact /></UserRoute>} />
       <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/login" element={<UserRoute><Login /></UserRoute>} />
+      <Route path="/signup" element={<UserRoute><Signup /></UserRoute>} />
+      <Route path="/forgot-password" element={<UserRoute><ForgotPassword /></UserRoute>} />
       <Route path="/adminlogin" element={<AdminLogin />} />
       {/* <Route path="/admindashboard" element={<Dashboard />} /> */}
       <Route path="/myorders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/return-order/:orderId" element={<ProtectedRoute><ReturnOrder /></ProtectedRoute>} />
       <Route path="/usercart" element={<ProtectedRoute><UserCart /></ProtectedRoute>} />
-      <Route path="/product/:id" element={<ProductPage />} />
-      <Route path="/category/:name" element={<CategoryPage />} />
+      <Route path="/product/:id" element={<UserRoute><ProductPage /></UserRoute>} />
+      <Route path="/category/:name" element={<UserRoute><CategoryPage /></UserRoute>} />
       
       </Routes>
     </Router>

@@ -48,12 +48,31 @@ const getCart = async (req, res) => {
                 return `data:image/jpeg;base64,${image.toString("base64")}`;
             }
             if (typeof image === 'string') {
+                if (image.startsWith('http://') || image.startsWith('https://')) {
+                    return image; // Cloudinary URL
+                }
+                if (image.startsWith('data:')) {
+                    return image; // Data URL
+                }
                 return image.startsWith('/uploads/') ? image : `/uploads/products/${path.basename(image)}`;
             }
             return "";
         };
 
-        const cartItems = user.cart.map(item => ({
+        // Filter out items where product is null (product was deleted)
+        const validCartItems = user.cart.filter(item => item.product !== null && item.product !== undefined);
+        
+        // If there are invalid items, clean up the cart
+        if (validCartItems.length !== user.cart.length) {
+            user.cart = validCartItems.map(item => ({
+                product: item.product._id,
+                quantity: item.quantity,
+                size: item.size || ""
+            }));
+            await user.save();
+        }
+
+        const cartItems = validCartItems.map(item => ({
             _id: item.product._id,
             name: item.product.name,
             price: item.product.price,

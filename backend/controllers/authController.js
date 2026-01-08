@@ -316,11 +316,16 @@ const logout = (req, res) => {
  */
 const checkAuth = async (req, res) => {
     try {
-        const user = await userModel.findById(req.user.userid).select("name email mobile");
+        const user = await userModel.findById(req.user.userid).select("name email mobile isAdmin");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        res.status(200).json({ message: 'User authenticated', user: { ...req.user, name: user.name, email: user.email, mobile: user.mobile } });
+        // Check if user is admin from token or database
+        const isAdmin = req.user.isAdmin === true || user.isAdmin === true;
+        res.status(200).json({ 
+            message: 'User authenticated', 
+            user: { ...req.user, name: user.name, email: user.email, mobile: user.mobile, isAdmin } 
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
@@ -340,7 +345,8 @@ const adminLogin = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
 
-        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
+        // Include isAdmin flag in JWT token
+        const token = jwt.sign({ email: user.email, userid: user._id, isAdmin: true }, process.env.JWT_SECRET);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -365,9 +371,10 @@ const adminDashboard = (req, res) => {
 
 /**
  * Admin check auth
+ * Note: This is called after isAdmin middleware, so user is already verified as admin
  */
 const adminCheckAuth = (req, res) => {
-    res.json({ authenticated: true });
+    res.json({ authenticated: true, isAdmin: true });
 };
 
 /**

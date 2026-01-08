@@ -6,13 +6,13 @@ import Footer from "./Footer";
 import FloatingCart from "./FloatingCart";
 import { toast } from "react-toastify";
 import { StarRatingDisplay, StarRatingInput } from "./StarRating";
+import { getImageSrc } from "../utils/imageUtils";
 
 export default function ProductPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [similarProducts, setSimilarProducts] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -23,7 +23,6 @@ export default function ProductPage() {
     reviewImages: []
   });
   const [reviewImageFiles, setReviewImageFiles] = useState([]);
-  const currentUser = JSON.parse(localStorage.getItem("user")) || null;
 
   // Scroll to top when component mounts or product ID changes
   useEffect(() => {
@@ -31,24 +30,24 @@ export default function ProductPage() {
   }, [id]);
 
   useEffect(() => {
+    let isMounted = true;
+    
+    // Get current user from localStorage once when component mounts
+    const currentUser = JSON.parse(localStorage.getItem("user")) || null;
+    
+    // Fetch product data
     fetch(`/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
+        if (!isMounted) return;
         setProduct(data);
         // Fetch similar products (for similar products section)
         if (data.category) {
           fetch("/api/products")
             .then((res) => res.json())
             .then((products) => {
+              if (!isMounted) return;
               // Filter by same category, exclude current product, limit to 4
-              const similar = products
-                .filter(p => 
-                  p._id !== data._id && 
-                  (p.category || "Self").toLowerCase() === (data.category || "Self").toLowerCase()
-                )
-                .slice(0, 4);
-              setSimilarProducts(similar);
-              
               // Fetch category products (for category products section)
               const categoryProds = products
                 .filter(p => 
@@ -57,20 +56,34 @@ export default function ProductPage() {
                 );
               setCategoryProducts(categoryProds);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+              if (isMounted) console.error(err);
+            });
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        if (isMounted) console.error(err);
+      });
 
+    // Fetch reviews
     fetch(`/api/products/${id}/reviews`)
       .then((res) => res.json())
-      .then((data) => setReviews(data))
-      .catch((err) => console.error(err));
+      .then((data) => {
+        if (isMounted) setReviews(data);
+      })
+      .catch((err) => {
+        if (isMounted) console.error(err);
+      });
 
     if (currentUser) {
       setNewReview((prev) => ({ ...prev, user: currentUser.name }));
     }
-  }, [id]);
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, [id]); // Only depend on id, not currentUser
 
   const handleReviewImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -110,6 +123,7 @@ export default function ProductPage() {
     if (res.ok) {
       toast.success("Review submitted successfully!");
       setReviews(data.reviews);
+      const currentUser = JSON.parse(localStorage.getItem("user")) || null;
       setNewReview({ user: currentUser?.name || "", rating: 0, comment: "", reviewImages: [] });
       setReviewImageFiles([]);
     } else {
@@ -155,19 +169,12 @@ export default function ProductPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  // Get all product images - handle both base64 and URL formats
+  // Get all product images - handle base64, local paths, and Cloudinary URLs
   const allImages = product 
     ? [
         product.image, 
         ...(product.images || [])
-      ].filter(Boolean).map(img => {
-        // If already a data URL or URL path, use as is
-        if (img.startsWith('data:') || img.startsWith('/uploads/')) {
-          return img;
-        }
-        // Otherwise, assume it's base64 and add prefix
-        return `data:image/jpeg;base64,${img}`;
-      })
+      ].filter(Boolean).map(img => getImageSrc(img)).filter(Boolean)
     : [];
 
   if (!product) return (
@@ -193,12 +200,19 @@ export default function ProductPage() {
               <div>
                 {/* Main Image */}
                 <div className="mb-3 sm:mb-4">
-                  {allImages[selectedImage] && (
+                  {allImages[selectedImage] ? (
                     <img
                       src={allImages[selectedImage]}
                       alt={product.name}
                       className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
                     />
+                  ) : (
+                    <div className="w-full h-64 sm:h-80 md:h-96 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <p className="text-gray-500 dark:text-gray-400">No image available</p>
+                    </div>
                   )}
                 </div>
                 
@@ -349,7 +363,7 @@ export default function ProductPage() {
                     <div className="relative h-48 sm:h-56 overflow-hidden bg-gray-100 dark:bg-gray-800">
                       {item.image && (
                         <img
-                          src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
+                          src={getImageSrc(item.image)}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
@@ -423,7 +437,7 @@ export default function ProductPage() {
                           <img
                             key={imgIndex}
                             src={img}
-                            alt={`Review image ${imgIndex + 1}`}
+                            alt={`Review ${imgIndex + 1}`}
                             className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:scale-105 transition"
                             onClick={() => window.open(img, '_blank')}
                           />
@@ -445,7 +459,7 @@ export default function ProductPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder={currentUser?.name || "Your Name"}
+                    placeholder={newReview.user || "Your Name"}
                     value={newReview.user}
                     onChange={(e) => setNewReview({ ...newReview, user: e.target.value })}
                     className="modern-input"
