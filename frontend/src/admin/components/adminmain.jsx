@@ -13,7 +13,7 @@ const App = () => {
   const renderPage = () => {
     switch(page) {
       case "orders": return <Orders />;
-      case "upload": return <UploadProduct />;
+      case "upload": return <UploadProduct setPage={setPage} />;
       case "manage": return <ManageProducts selectedProduct={selectedProduct} />;
       case "listed": return <ListedProducts setPage={setPage} setSelectedProduct={setSelectedProduct} />;
       default: return <Dashboard />;

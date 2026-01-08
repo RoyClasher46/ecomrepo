@@ -147,7 +147,7 @@ export default function Main() {
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
                   <img
-                    src={`data:image/jpeg;base64,${heroDisplay.image}`}
+                    src={heroDisplay.image.startsWith('data:') ? heroDisplay.image : heroDisplay.image.startsWith('/uploads/') ? heroDisplay.image : `data:image/jpeg;base64,${heroDisplay.image}`}
                     alt={heroDisplay.name}
                     className="w-full h-[400px] object-cover"
                   />
@@ -347,7 +347,7 @@ function ProductCard({ item, onAdd, delay = 0 }) {
       <div className="relative h-56 overflow-hidden">
         {item.image && (
           <img
-            src={`data:image/jpeg;base64,${item.image}`}
+            src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
             alt={item.name || "Product"}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />

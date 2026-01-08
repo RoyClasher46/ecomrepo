@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, Image, DollarSign, Tag, Package, Save } from "lucide-react";
+import { Upload, Image, DollarSign, Tag, Package, Save, Plus, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const UploadProduct = () => {
+const UploadProduct = ({ setPage }) => {
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -21,6 +21,26 @@ const UploadProduct = () => {
     { size: "L", available: true },
     { size: "XL", available: true },
   ]);
+  const [categories, setCategories] = useState([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [isNewCategory, setIsNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+
+  // Fetch existing categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        if (res.ok) {
+          const data = await res.json();
+          setCategories(data.categories || []);
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) =>
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -113,6 +133,12 @@ const UploadProduct = () => {
           { size: "L", available: true },
           { size: "XL", available: true },
         ]);
+        setIsNewCategory(false);
+        setNewCategoryName("");
+        // Redirect to listed products page
+        if (setPage) {
+          setPage("listed");
+        }
       } else {
         toast.error("Failed to upload product");
       }
@@ -192,16 +218,74 @@ const UploadProduct = () => {
                 <Tag className="w-4 h-4" />
                 Category
               </label>
-              <input
-                type="text"
-                name="category"
-                value={product.category}
-                onChange={handleChange}
-                required
-                className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
-                placeholder="e.g., Electronics, Fashion"
-              />
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">If new, it will be created automatically.</p>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsNewCategory(false);
+                      setNewCategoryName("");
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      !isNewCategory
+                        ? "bg-primary dark:bg-accent text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    Select Existing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsNewCategory(true);
+                      setProduct({ ...product, category: "" });
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1 ${
+                      isNewCategory
+                        ? "bg-primary dark:bg-accent text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Create New
+                  </button>
+                </div>
+                
+                {!isNewCategory ? (
+                  <div className="relative">
+                    <select
+                      name="category"
+                      value={product.category}
+                      onChange={(e) => setProduct({ ...product, category: e.target.value })}
+                      required
+                      className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="Self">Select a category...</option>
+                      {categories.map((cat, index) => (
+                        <option key={index} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    name="category"
+                    value={product.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none"
+                    placeholder="Enter new category name (e.g., Electronics, Fashion)"
+                  />
+                )}
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {!isNewCategory 
+                  ? "Select from existing categories or create a new one."
+                  : "New category will be created automatically when product is uploaded."}
+              </p>
             </div>
           </div>
 

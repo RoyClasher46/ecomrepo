@@ -155,14 +155,19 @@ export default function ProductPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  // Get all product images
+  // Get all product images - handle both base64 and URL formats
   const allImages = product 
     ? [
         product.image, 
         ...(product.images || [])
-      ].filter(Boolean).map(img => 
-        img.startsWith('data:') ? img : `data:image/jpeg;base64,${img}`
-      )
+      ].filter(Boolean).map(img => {
+        // If already a data URL or URL path, use as is
+        if (img.startsWith('data:') || img.startsWith('/uploads/')) {
+          return img;
+        }
+        // Otherwise, assume it's base64 and add prefix
+        return `data:image/jpeg;base64,${img}`;
+      })
     : [];
 
   if (!product) return (
@@ -344,7 +349,7 @@ export default function ProductPage() {
                     <div className="relative h-48 sm:h-56 overflow-hidden bg-gray-100 dark:bg-gray-800">
                       {item.image && (
                         <img
-                          src={`data:image/jpeg;base64,${item.image}`}
+                          src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />

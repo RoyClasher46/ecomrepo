@@ -210,7 +210,7 @@ const Navbar = () => {
                   >
                     {product.image && (
                       <img
-                        src={`data:image/jpeg;base64,${product.image}`}
+                        src={product.image.startsWith('data:') ? product.image : product.image.startsWith('/uploads/') ? product.image : `data:image/jpeg;base64,${product.image}`}
                         alt={product.name}
                         className="w-12 h-12 object-cover rounded-lg"
                       />

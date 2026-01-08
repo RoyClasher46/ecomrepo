@@ -1,0 +1,351 @@
+{
+  "products": [
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439011" },
+      "name": "Wireless Bluetooth Headphones",
+      "description": "Premium quality wireless headphones with noise cancellation, 30-hour battery life, and crystal clear sound quality. Perfect for music lovers and professionals.",
+      "price": 2999,
+      "category": "Electronics",
+      "isPopular": true,
+      "discount": 15,
+      "sizes": [
+        { "size": "One Size", "available": true }
+      ],
+      "reviews": [
+        {
+          "user": "John Doe",
+          "rating": 5,
+          "comment": "Excellent sound quality and comfortable to wear for long hours!",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-01-15T10:00:00Z" }
+        },
+        {
+          "user": "Jane Smith",
+          "rating": 4,
+          "comment": "Great headphones, battery life is amazing!",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-01-20T14:30:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439012" },
+      "name": "Running Sports Shoes",
+      "description": "Lightweight and breathable running shoes with cushioned sole for maximum comfort. Perfect for daily runs and gym workouts.",
+      "price": 4499,
+      "category": "Footwear",
+      "isPopular": true,
+      "discount": 20,
+      "sizes": [
+        { "size": "8", "available": true },
+        { "size": "9", "available": true },
+        { "size": "10", "available": true },
+        { "size": "11", "available": false }
+      ],
+      "reviews": [
+        {
+          "user": "Mike Johnson",
+          "rating": 5,
+          "comment": "Best running shoes I've ever owned! Very comfortable.",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-02-01T09:00:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-01-05T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439013" },
+      "name": "Smart Watch Pro",
+      "description": "Feature-rich smartwatch with heart rate monitor, GPS, sleep tracking, and 7-day battery life. Water-resistant and compatible with iOS and Android.",
+      "price": 8999,
+      "category": "Electronics",
+      "isPopular": true,
+      "discount": 10,
+      "sizes": [
+        { "size": "Small", "available": true },
+        { "size": "Medium", "available": true },
+        { "size": "Large", "available": true }
+      ],
+      "reviews": [
+        {
+          "user": "Sarah Williams",
+          "rating": 4,
+          "comment": "Love the fitness tracking features!",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-02-10T11:00:00Z" }
+        },
+        {
+          "user": "David Brown",
+          "rating": 5,
+          "comment": "Great value for money. Battery lasts a week!",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-02-15T16:00:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-01-10T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439014" },
+      "name": "Cotton T-Shirt",
+      "description": "100% premium cotton t-shirt, soft and comfortable. Available in multiple colors. Perfect for casual wear.",
+      "price": 799,
+      "category": "Clothing",
+      "isPopular": false,
+      "discount": 0,
+      "sizes": [
+        { "size": "S", "available": true },
+        { "size": "M", "available": true },
+        { "size": "L", "available": true },
+        { "size": "XL", "available": true }
+      ],
+      "reviews": [],
+      "createdAt": { "$date": "2024-01-15T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439015" },
+      "name": "Leather Wallet",
+      "description": "Genuine leather wallet with multiple card slots and cash compartment. Sleek design, perfect for everyday use.",
+      "price": 1299,
+      "category": "Accessories",
+      "isPopular": false,
+      "discount": 5,
+      "sizes": [
+        { "size": "One Size", "available": true }
+      ],
+      "reviews": [
+        {
+          "user": "Robert Taylor",
+          "rating": 4,
+          "comment": "Good quality leather, fits all my cards comfortably.",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-02-20T10:00:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-01-20T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439016" },
+      "name": "Backpack Laptop Bag",
+      "description": "Durable laptop backpack with padded compartment for 15.6 inch laptops. Multiple pockets for organization. Water-resistant material.",
+      "price": 2499,
+      "category": "Accessories",
+      "isPopular": true,
+      "discount": 12,
+      "sizes": [
+        { "size": "One Size", "available": true }
+      ],
+      "reviews": [
+        {
+          "user": "Emily Davis",
+          "rating": 5,
+          "comment": "Perfect for work! Fits my laptop and all accessories.",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-02-25T13:00:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-01-25T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439017" },
+      "name": "Wireless Mouse",
+      "description": "Ergonomic wireless mouse with 2.4GHz connectivity. Long battery life and precise tracking. Compatible with Windows, Mac, and Linux.",
+      "price": 899,
+      "category": "Electronics",
+      "isPopular": false,
+      "discount": 0,
+      "sizes": [
+        { "size": "One Size", "available": true }
+      ],
+      "reviews": [],
+      "createdAt": { "$date": "2024-02-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439018" },
+      "name": "Denim Jeans",
+      "description": "Classic fit denim jeans made from premium quality denim. Comfortable and stylish, perfect for casual occasions.",
+      "price": 1999,
+      "category": "Clothing",
+      "isPopular": true,
+      "discount": 25,
+      "sizes": [
+        { "size": "30", "available": true },
+        { "size": "32", "available": true },
+        { "size": "34", "available": true },
+        { "size": "36", "available": false }
+      ],
+      "reviews": [
+        {
+          "user": "Chris Anderson",
+          "rating": 4,
+          "comment": "Good fit and quality denim. Worth the price!",
+          "reviewImages": [],
+          "createdAt": { "$date": "2024-03-01T15:00:00Z" }
+        }
+      ],
+      "createdAt": { "$date": "2024-02-05T00:00:00Z" }
+    }
+  ],
+  "users": [
+    {
+      "_id": { "$oid": "507f191e810c19729de860ea" },
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq",
+      "picture": "",
+      "isAdmin": false,
+      "mobile": "+1234567890",
+      "homeAddress": {
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "workAddress": {
+        "street": "456 Business Ave",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10002",
+        "country": "USA"
+      },
+      "cart": [],
+      "orders": []
+    },
+    {
+      "_id": { "$oid": "507f191e810c19729de860eb" },
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "password": "$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq",
+      "picture": "",
+      "isAdmin": false,
+      "mobile": "+1234567891",
+      "homeAddress": {
+        "street": "789 Oak Lane",
+        "city": "Los Angeles",
+        "state": "CA",
+        "zipCode": "90001",
+        "country": "USA"
+      },
+      "workAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": ""
+      },
+      "cart": [],
+      "orders": []
+    },
+    {
+      "_id": { "$oid": "507f191e810c19729de860ec" },
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq",
+      "picture": "",
+      "isAdmin": true,
+      "mobile": "+1234567892",
+      "homeAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": ""
+      },
+      "workAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": ""
+      },
+      "cart": [],
+      "orders": []
+    }
+  ],
+  "orders": [
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439021" },
+      "productId": { "$oid": "507f1f77bcf86cd799439011" },
+      "userId": { "$oid": "507f191e810c19729de860ea" },
+      "quantity": 1,
+      "size": "One Size",
+      "status": "Delivered",
+      "addressLine": "123 Main Street",
+      "area": "Downtown",
+      "city": "New York",
+      "state": "NY",
+      "pincode": "10001",
+      "deliveryAddress": "123 Main Street, Downtown, New York, NY 10001",
+      "deliveryPhone": "+1234567890",
+      "deliveryPartnerName": "FastDelivery Inc",
+      "deliveryPartnerPhone": "+1987654321",
+      "trackingId": "TRK123456789",
+      "estimatedDelivery": { "$date": "2024-01-20T00:00:00Z" },
+      "deliveredDate": { "$date": "2024-01-19T14:30:00Z" },
+      "returnStatus": "None",
+      "returnReason": "",
+      "paymentType": "Online",
+      "paymentMethod": "Card",
+      "paymentStatus": "Paid",
+      "paymentId": "PAY123456789",
+      "paymentVerified": true,
+      "paymentVerifiedAt": { "$date": "2024-01-15T10:00:00Z" },
+      "paymentAmount": 2549.15,
+      "createdAt": { "$date": "2024-01-15T09:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439022" },
+      "productId": { "$oid": "507f1f77bcf86cd799439012" },
+      "userId": { "$oid": "507f191e810c19729de860eb" },
+      "quantity": 1,
+      "size": "9",
+      "status": "Accepted",
+      "addressLine": "789 Oak Lane",
+      "area": "Westside",
+      "city": "Los Angeles",
+      "state": "CA",
+      "pincode": "90001",
+      "deliveryAddress": "789 Oak Lane, Westside, Los Angeles, CA 90001",
+      "deliveryPhone": "+1234567891",
+      "deliveryPartnerName": "",
+      "deliveryPartnerPhone": "",
+      "trackingId": "",
+      "estimatedDelivery": { "$date": "2024-02-10T00:00:00Z" },
+      "returnStatus": "None",
+      "returnReason": "",
+      "paymentType": "Cash on Delivery",
+      "paymentMethod": "Cash",
+      "paymentStatus": "Pending",
+      "paymentId": "",
+      "paymentVerified": false,
+      "paymentAmount": 3599.2,
+      "createdAt": { "$date": "2024-02-05T11:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "507f1f77bcf86cd799439023" },
+      "productId": { "$oid": "507f1f77bcf86cd799439013" },
+      "userId": { "$oid": "507f191e810c19729de860ea" },
+      "quantity": 1,
+      "size": "Medium",
+      "status": "Pending",
+      "addressLine": "123 Main Street",
+      "area": "Downtown",
+      "city": "New York",
+      "state": "NY",
+      "pincode": "10001",
+      "deliveryAddress": "123 Main Street, Downtown, New York, NY 10001",
+      "deliveryPhone": "+1234567890",
+      "returnStatus": "None",
+      "returnReason": "",
+      "paymentType": "Online",
+      "paymentMethod": "UPI",
+      "paymentStatus": "Paid",
+      "paymentId": "UPI987654321",
+      "paymentVerified": false,
+      "paymentAmount": 8099.1,
+      "createdAt": { "$date": "2024-02-20T16:00:00Z" }
+    }
+  ]
+}
+

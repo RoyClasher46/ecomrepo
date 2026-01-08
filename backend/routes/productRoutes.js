@@ -11,6 +11,7 @@ const {
     togglePopular,
     addReview,
     getReviews,
+    getCategories,
     getHomeStats
 } = require("../controllers/productController");
 
@@ -46,6 +47,9 @@ router.post("/api/products/:id/reviews", addReview);
 
 // Get reviews for a product
 router.get("/api/products/:id/reviews", getReviews);
+
+// Get all categories
+router.get("/api/categories", getCategories);
 
 // Get homepage statistics
 router.get("/api/home-stats", getHomeStats);

@@ -110,7 +110,7 @@ const MyOrders = () => {
                   {order.productId?.image && (
                     <div className="w-full h-48 overflow-hidden bg-gray-100">
                       <img
-                        src={`data:image/jpeg;base64,${order.productId.image}`}
+                        src={order.productId.image.startsWith('data:') ? order.productId.image : order.productId.image.startsWith('/uploads/') ? order.productId.image : `data:image/jpeg;base64,${order.productId.image}`}
                         alt={order.productId?.name}
                         className="w-full h-full object-cover"
                       />

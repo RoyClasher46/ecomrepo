@@ -1,10 +1,42 @@
 const productModel = require("../models/product-model");
 const userModel = require("../models/user-model");
 const { normalizeCategory } = require("../utils/categoryNormalizer");
+const path = require("path");
+const fs = require("fs");
 
 /**
  * Get all products (legacy endpoint)
  */
+// Helper function to get image URL (handles both Buffer and String paths)
+const getImageUrl = (image) => {
+    if (!image) return "";
+    
+    // If it's a Buffer (old format), convert to base64
+    if (Buffer.isBuffer(image)) {
+        return `data:image/jpeg;base64,${image.toString("base64")}`;
+    }
+    
+    // If it's a string path (new format), return the path
+    if (typeof image === 'string') {
+        // If it already starts with /uploads, return as is
+        if (image.startsWith('/uploads/')) {
+            return image;
+        }
+        // If it's a relative path like "uploads/products/filename.jpg", convert to absolute URL path
+        if (image.startsWith('uploads/')) {
+            return `/${image}`;
+        }
+        // If it's just a filename, construct the full path
+        if (!image.includes('/') && !image.includes('\\')) {
+            return `/uploads/products/${image}`;
+        }
+        // Otherwise, try to extract filename and construct path
+        return `/uploads/products/${path.basename(image)}`;
+    }
+    
+    return "";
+};
+
 const getAllProducts = async (req, res) => {
     try {
         let products = await productModel.find();
@@ -16,7 +48,7 @@ const getAllProducts = async (req, res) => {
             category: p.category || "Self",
             isPopular: p.isPopular || false,
             createdAt: p.createdAt,
-            image: p.image ? p.image.toString("base64") : "",
+            image: getImageUrl(p.image),
             sizes: p.sizes || [],
         }));
         res.status(200).json(formattedProducts);
@@ -42,7 +74,7 @@ const getProducts = async (req, res) => {
 
         const updatedProducts = filteredProducts.map((p) => ({
             ...p._doc,
-            image: p.image ? p.image.toString("base64") : "",
+            image: getImageUrl(p.image),
             category: p.category || "Self",
             isPopular: p.isPopular || false,
             createdAt: p.createdAt,
@@ -68,7 +100,15 @@ const getProductById = async (req, res) => {
         }
 
         const images = product.images && product.images.length > 0
-            ? product.images.map(img => `data:image/jpeg;base64,${img.toString("base64")}`)
+            ? product.images.map(img => {
+                if (Buffer.isBuffer(img)) {
+                    return `data:image/jpeg;base64,${img.toString("base64")}`;
+                }
+                if (typeof img === 'string') {
+                    return img.startsWith('/uploads/') ? img : `/uploads/products/${path.basename(img)}`;
+                }
+                return "";
+            }).filter(img => img)
             : [];
 
         res.json({
@@ -78,7 +118,7 @@ const getProductById = async (req, res) => {
             price: product.price,
             category: product.category || "Self",
             isPopular: product.isPopular || false,
-            image: product.image ? `data:image/jpeg;base64,${product.image.toString("base64")}` : null,
+            image: getImageUrl(product.image),
             images: images,
             sizes: product.sizes || [],
         });
@@ -104,9 +144,12 @@ const createProduct = async (req, res) => {
             }
         }
 
-        const mainImage = req.files['image'] ? req.files['image'][0].buffer : null;
+        // Get file paths instead of buffers - convert to relative paths
+        const mainImage = req.files['image'] 
+            ? path.relative(path.join(__dirname, '..'), req.files['image'][0].path).replace(/\\/g, '/')
+            : null;
         const additionalImages = req.files['images']
-            ? req.files['images'].map(file => file.buffer)
+            ? req.files['images'].map(file => path.relative(path.join(__dirname, '..'), file.path).replace(/\\/g, '/'))
             : [];
 
         const newProduct = await productModel.create({
@@ -156,11 +199,21 @@ const updateProduct = async (req, res) => {
         }
 
         if (req.files && req.files['image'] && req.files['image'][0]) {
-            updateData.image = req.files['image'][0].buffer;
+            // Delete old image file if it exists
+            if (product.image) {
+                const oldImagePath = path.join(__dirname, '..', product.image);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+            // Convert to relative path
+            updateData.image = path.relative(path.join(__dirname, '..'), req.files['image'][0].path).replace(/\\/g, '/');
         }
 
         if (req.files && req.files['images'] && req.files['images'].length > 0) {
-            const newImages = req.files['images'].map(file => file.buffer);
+            const newImages = req.files['images'].map(file => 
+                path.relative(path.join(__dirname, '..'), file.path).replace(/\\/g, '/')
+            );
             updateData.images = [...(product.images || []), ...newImages];
         }
 
@@ -182,10 +235,31 @@ const updateProduct = async (req, res) => {
  */
 const deleteProduct = async (req, res) => {
     try {
-        const deleted = await productModel.findByIdAndDelete(req.params.id);
-        if (!deleted) {
+        const product = await productModel.findById(req.params.id);
+        if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }
+
+        // Delete image files from filesystem
+        if (product.image) {
+            const imagePath = path.join(__dirname, '..', product.image);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        // Delete additional images
+        if (product.images && product.images.length > 0) {
+            product.images.forEach(imgPath => {
+                const fullPath = path.join(__dirname, '..', imgPath);
+                if (fs.existsSync(fullPath)) {
+                    fs.unlinkSync(fullPath);
+                }
+            });
+        }
+
+        // Delete product from database
+        await productModel.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Product deleted successfully" });
     } catch (err) {
         console.error(err);
@@ -257,6 +331,22 @@ const getReviews = async (req, res) => {
 };
 
 /**
+ * Get all unique categories
+ */
+const getCategories = async (req, res) => {
+    try {
+        const products = await productModel.find({}, 'category');
+        const categories = [...new Set(products.map(p => p.category || "Self").filter(Boolean))];
+        // Sort categories alphabetically
+        categories.sort();
+        res.status(200).json({ categories });
+    } catch (err) {
+        console.error("Error fetching categories:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
+
+/**
  * Get homepage statistics
  */
 const getHomeStats = async (req, res) => {
@@ -320,6 +410,7 @@ module.exports = {
     togglePopular,
     addReview,
     getReviews,
+    getCategories,
     getHomeStats
 };
 

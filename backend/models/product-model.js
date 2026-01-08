@@ -24,8 +24,8 @@ const sizeSchema = new mongoose.Schema({
 
 const productSchema = new mongoose.Schema({
     name: String,
-    image : Buffer, // Main image
-    images: [Buffer], // Additional product images
+    image: String, // Path to main image file
+    images: [String], // Array of paths to additional product images
     description: String,
     price: Number,
     category: {

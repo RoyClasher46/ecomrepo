@@ -1,4 +1,5 @@
 const userModel = require("../models/user-model");
+const path = require("path");
 
 /**
  * Add item to cart
@@ -40,11 +41,23 @@ const getCart = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
+        // Helper to get image URL (handles both Buffer and String)
+        const getImageUrl = (image) => {
+            if (!image) return "";
+            if (Buffer.isBuffer(image)) {
+                return `data:image/jpeg;base64,${image.toString("base64")}`;
+            }
+            if (typeof image === 'string') {
+                return image.startsWith('/uploads/') ? image : `/uploads/products/${path.basename(image)}`;
+            }
+            return "";
+        };
+
         const cartItems = user.cart.map(item => ({
             _id: item.product._id,
             name: item.product.name,
             price: item.product.price,
-            image: item.product.image.toString("base64"),
+            image: getImageUrl(item.product.image),
             quantity: item.quantity,
             size: item.size || ""
         }));

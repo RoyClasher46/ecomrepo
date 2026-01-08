@@ -100,7 +100,15 @@ const getMyOrders = async (req, res) => {
         const formattedOrders = orders.map(order => {
             const orderObj = order.toObject();
             if (orderObj.productId && orderObj.productId.image) {
-                orderObj.productId.image = orderObj.productId.image.toString("base64");
+                const path = require("path");
+                // Handle both Buffer (old) and String (new) formats
+                if (Buffer.isBuffer(orderObj.productId.image)) {
+                    orderObj.productId.image = `data:image/jpeg;base64,${orderObj.productId.image.toString("base64")}`;
+                } else if (typeof orderObj.productId.image === 'string') {
+                    orderObj.productId.image = orderObj.productId.image.startsWith('/uploads/') 
+                        ? orderObj.productId.image 
+                        : `/uploads/products/${path.basename(orderObj.productId.image)}`;
+                }
             }
             return orderObj;
         });

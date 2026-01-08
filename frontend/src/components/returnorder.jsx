@@ -160,7 +160,7 @@ const ReturnOrder = () => {
               <div>
                 {order.productId?.image && (
                   <img
-                    src={`data:image/jpeg;base64,${order.productId.image}`}
+                    src={order.productId.image.startsWith('data:') ? order.productId.image : order.productId.image.startsWith('/uploads/') ? order.productId.image : `data:image/jpeg;base64,${order.productId.image}`}
                     alt={order.productId?.name}
                     className="w-full h-64 object-cover rounded-lg mb-4"
                   />

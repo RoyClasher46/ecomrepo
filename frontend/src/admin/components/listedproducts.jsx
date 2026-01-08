@@ -78,7 +78,7 @@ const ListedProducts = ({ setPage, setSelectedProduct }) => {
             >
               <div className="relative w-full h-56 overflow-hidden bg-gray-100">
                 <img
-                  src={`data:image/jpeg;base64,${item.image}`}
+                  src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
                   alt={item.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

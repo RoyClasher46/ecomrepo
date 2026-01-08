@@ -79,7 +79,7 @@ export default function CartPage() {
                   className="modern-card rounded-lg p-4 flex items-center justify-between gap-4"
                   >
                     <img
-                      src={`data:image/jpeg;base64,${item.image}`}
+                      src={item.image.startsWith('data:') ? item.image : item.image.startsWith('/uploads/') ? item.image : `data:image/jpeg;base64,${item.image}`}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                       />

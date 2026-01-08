@@ -520,7 +520,7 @@ const ManageProducts = ({ selectedProduct }) => {
                       />
                     ) : editingProduct.image ? (
                       <img
-                        src={`data:image/jpeg;base64,${editingProduct.image}`}
+                        src={editingProduct.image.startsWith('data:') ? editingProduct.image : editingProduct.image.startsWith('/uploads/') ? editingProduct.image : `data:image/jpeg;base64,${editingProduct.image}`}
                         alt="Current product"
                         className="max-w-full max-h-48 object-contain rounded-lg mx-auto"
                       />
