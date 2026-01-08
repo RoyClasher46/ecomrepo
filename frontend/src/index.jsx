@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import "./index.css";
+// Import API config to initialize fetch override in production
+import "./config/api";
 import HomeWrapper from "./components/homewrapper";
 import Login from "./components/login";
 import Signup from "./components/signup";

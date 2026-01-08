@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ecommerce-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Add your environment variables in Render dashboard:
+      # - MONGO_URI
+      # - JWT_SECRET
+      # - EMAIL_SERVICE
+      # - EMAIL_USER
+      # - EMAIL_PASSWORD
+      # - CLOUDINARY_CLOUD_NAME
+      # - CLOUDINARY_API_KEY
+      # - CLOUDINARY_API_SECRET
