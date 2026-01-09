@@ -7,7 +7,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 // In production, use your Render backend URL
 export const API_BASE_URL = isDevelopment 
   ? '' // Use proxy in development (see package.json)
-  : (process.env.REACT_APP_API_URL || 'https://your-backend-app.onrender.com');
+  : (process.env.REACT_APP_API_URL || 'https://ecommerce-lt30.onrender.com');
 
 // Helper function to build API URLs
 // Works with both relative paths (starting with /) and full URLs

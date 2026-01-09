@@ -219,7 +219,6 @@ const UploadProduct = ({ setPage }) => {
                     type="button"
                     onClick={() => {
                       setIsNewCategory(false);
-                      setNewCategoryName("");
                     }}
                     className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                       !isNewCategory

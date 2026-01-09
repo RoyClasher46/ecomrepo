@@ -40,9 +40,9 @@
 
 ## Frontend (Netlify) - 5 Steps
 
-1. **Update API Config** (optional - can use env var)
-   - Edit `frontend/src/config/api.js`
-   - Replace `your-backend-app.onrender.com` with your Render URL
+1. **Update API Config** (already done - defaults to your backend URL)
+   - The API config in `frontend/src/config/api.js` defaults to `https://ecommerce-lt30.onrender.com`
+   - You can also set `REACT_APP_API_URL` environment variable in Netlify for flexibility
 
 2. **Create Netlify Site**
    - Go to https://app.netlify.com
@@ -56,7 +56,7 @@
 4. **Add Environment Variable**
    - Site settings → Environment variables
    - Key: `REACT_APP_API_URL`
-   - Value: `https://your-backend.onrender.com`
+   - Value: `https://ecommerce-lt30.onrender.com`
 
 5. **Deploy**
    - Click "Deploy site"
