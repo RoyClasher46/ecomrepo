@@ -16,7 +16,7 @@ const Sidebar = ({ setPage, currentPage }) => {
     const data = await res.json();
     if (res.ok) {
       toast.success("Logout successful!");
-      navigate("/adminlogin", { replace: true });
+      navigate("/login", { replace: true });
     }
   }
 

@@ -43,6 +43,23 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successfully!");
         
+        // Check user role to determine redirect
+        try {
+          const authRes = await fetch("/api/checkauth", {
+            credentials: "include",
+          });
+          if (authRes.ok) {
+            const authData = await authRes.json();
+            // If user is admin, redirect to admin page
+            if (authData.user && authData.user.isAdmin === true) {
+              navigate("/adminmain");
+              return;
+            }
+          }
+        } catch (err) {
+          console.error("Failed to check user role:", err);
+        }
+        
         // Check if we need to add a product to cart after login
         if (addToCartRef.current) {
           // Add the product to cart
@@ -63,6 +80,7 @@ export default function Login() {
           }
         }
         
+        // Normal user - redirect to user pages
         navigate(redirectTo);
       } else {
         toast.error(data.message || "Something went wrong");
@@ -207,16 +225,6 @@ export default function Login() {
             >
               Create an account
               <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Admin Login */}
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
-            <Link
-              to="/adminlogin"
-              className="block text-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-            >
-              Admin Login
             </Link>
           </div>
         </div>

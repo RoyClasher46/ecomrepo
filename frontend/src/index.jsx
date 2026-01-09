@@ -13,7 +13,6 @@ import Main from "./components/main";
 import ProtectedRoute from "./components/protectedroute";
 import AdminProtectedRoute from "./components/adminProtectedRoute";
 import UserRoute from "./components/userRoute";
-import AdminLogin from "./components/adminlogin";
 import AdminMain from "./admin/components/adminmain";
 import Dashboard from "./admin/components/dashboard";
 import MyOrders from "./components/myorder";
@@ -42,7 +41,6 @@ root.render(
       <Route path="/login" element={<UserRoute><Login /></UserRoute>} />
       <Route path="/signup" element={<UserRoute><Signup /></UserRoute>} />
       <Route path="/forgot-password" element={<UserRoute><ForgotPassword /></UserRoute>} />
-      <Route path="/adminlogin" element={<AdminLogin />} />
       {/* <Route path="/admindashboard" element={<Dashboard />} /> */}
       <Route path="/myorders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

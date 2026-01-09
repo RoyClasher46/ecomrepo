@@ -17,7 +17,12 @@ const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Email or password is incorrect" });
 
-        const token = jwt.sign({ email: user.email, userid: user._id }, process.env.JWT_SECRET);
+        // Include isAdmin flag in token for both admin and normal users
+        const token = jwt.sign({ 
+            email: user.email, 
+            userid: user._id, 
+            isAdmin: user.isAdmin === true 
+        }, process.env.JWT_SECRET);
 
         res.cookie("token", token, {
             httpOnly: true,

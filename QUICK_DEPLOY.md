@@ -78,3 +78,4 @@
 - Frontend: `https://your-app.netlify.app`
 - MongoDB Atlas: Your connection string
 - Cloudinary: Your dashboard URL
+

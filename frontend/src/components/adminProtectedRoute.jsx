@@ -21,12 +21,14 @@ export default function AdminProtectedRoute({ children }) {
             if (data.isAdmin) {
                 setIsAuth(true);
             } else {
-                navigate("/adminlogin");
+                // Normal users should be redirected to main login page, not admin login
+                navigate("/login");
             }
         })
         .catch(err => {
             console.error(err);
-            navigate("/adminlogin");
+            // If not authenticated or not admin, redirect to main login
+            navigate("/login");
         })
         .finally(() => {
             setLoading(false);
@@ -43,3 +45,4 @@ export default function AdminProtectedRoute({ children }) {
 
     return isAuth ? children : null;
 }
+

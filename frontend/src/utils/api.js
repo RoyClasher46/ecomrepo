@@ -68,3 +68,4 @@ export const apiPut = async (endpoint, data, options = {}) => {
 export const apiDelete = async (endpoint, options = {}) => {
   return apiRequest(endpoint, { ...options, method: 'DELETE' });
 };
+

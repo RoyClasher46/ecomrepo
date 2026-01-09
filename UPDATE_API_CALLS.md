@@ -83,3 +83,4 @@ For **quick deployment**, the current setup will work if you:
 2. The config automatically handles relative paths
 
 For **better maintainability**, gradually update files to use `getApiUrl()` or the API utility functions.
+

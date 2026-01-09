@@ -114,3 +114,4 @@ After updating your `.env` file, verify you have:
 ### Error: "Cloudinary configuration error"
 - Verify all three Cloudinary variables are set
 - Check credentials in Cloudinary dashboard
+
