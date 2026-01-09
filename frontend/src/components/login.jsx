@@ -43,32 +43,11 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successfully!");
         
-        // Wait a bit for cookie to be set, then check user role
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        let shouldRedirect = true;
+        // Determine redirect path
         let redirectPath = redirectTo || "/";
         
-        // Check user role to determine redirect
-        try {
-          const authRes = await fetch("/api/checkauth", {
-            credentials: "include",
-          });
-          if (authRes.ok) {
-            const authData = await authRes.json();
-            // If user is admin, redirect to admin page
-            if (authData.user && authData.user.isAdmin === true) {
-              redirectPath = "/adminmain";
-              shouldRedirect = true;
-            }
-          }
-        } catch (err) {
-          console.error("Failed to check user role:", err);
-          // Continue with normal redirect even if check fails
-        }
-        
         // Check if we need to add a product to cart after login
-        if (addToCartRef.current && redirectPath !== "/adminmain") {
+        if (addToCartRef.current) {
           // Add the product to cart
           try {
             const addRes = await fetch("/api/add-to-cart", {
@@ -86,10 +65,32 @@ export default function Login() {
           }
         }
         
-        // Always redirect after successful login
-        if (shouldRedirect) {
-          navigate(redirectPath, { replace: true });
-        }
+        // Wait a moment for cookie to be set, then check user role and redirect
+        setTimeout(async () => {
+          try {
+            const authRes = await fetch("/api/checkauth", {
+              credentials: "include",
+            });
+            if (authRes.ok) {
+              const authData = await authRes.json();
+              // If user is admin, redirect to admin page
+              if (authData.user && authData.user.isAdmin === true) {
+                window.location.href = "/adminmain";
+                return;
+              }
+            }
+          } catch (err) {
+            console.error("Failed to check user role:", err);
+          }
+          
+          // Normal user - redirect to home or specified path
+          // Use window.location for reliable redirect
+          if (redirectPath === "/") {
+            window.location.href = "/";
+          } else {
+            window.location.href = redirectPath;
+          }
+        }, 500);
       } else {
         toast.error(data.message || "Something went wrong");
       }
