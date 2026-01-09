@@ -32,16 +32,26 @@ export const getApiUrl = (endpoint) => {
 
 // Override fetch to automatically use API_BASE_URL in production
 // This makes existing code work without changes
-if (!isDevelopment && API_BASE_URL && typeof window !== 'undefined') {
+if (typeof window !== 'undefined') {
   const originalFetch = window.fetch;
   window.fetch = function(url, options = {}) {
     // Only modify relative URLs that look like API calls
     if (typeof url === 'string' && 
         (url.startsWith('/api/') || url.startsWith('/products'))) {
-      url = getApiUrl(url);
+      const fullUrl = getApiUrl(url);
+      // Log in development to help debug
+      if (isDevelopment) {
+        console.log(`API call: ${url} -> ${fullUrl}`);
+      }
+      url = fullUrl;
     }
     return originalFetch.call(this, url, options);
   };
+  
+  // Log API configuration in development
+  if (isDevelopment) {
+    console.log('API Config:', { isDevelopment, API_BASE_URL });
+  }
 }
 
 export default API_BASE_URL;
