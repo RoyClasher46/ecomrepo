@@ -138,7 +138,9 @@ export default function Contact() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Follow Us</h3>
                   <div className="flex gap-4">
                     <a
-                      href="#"
+                      href="https://facebook.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
                       aria-label="Facebook"
                     >
@@ -147,7 +149,9 @@ export default function Contact() {
                       </svg>
                     </a>
                     <a
-                      href="#"
+                      href="https://twitter.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
                       aria-label="Twitter"
                     >
@@ -156,7 +160,9 @@ export default function Contact() {
                       </svg>
                     </a>
                     <a
-                      href="#"
+                      href="https://instagram.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
                       aria-label="Instagram"
                     >

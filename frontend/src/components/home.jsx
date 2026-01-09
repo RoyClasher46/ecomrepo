@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { ArrowRight, Sparkles, TrendingUp, Star, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "./navbar";
 import Footer from "./Footer";
@@ -14,7 +13,6 @@ export default function Home() {
     totalProducts: "0",
     averageRating: "4.5"
   });
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesExpanded, setCategoriesExpanded] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const navigate = useNavigate();

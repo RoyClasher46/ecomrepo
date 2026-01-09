@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart, Filter, Search, CheckCircle, XCircle, Truck, Clock, RotateCcw } from "lucide-react";
+import { ShoppingCart, Filter, CheckCircle, XCircle, Truck, Clock, RotateCcw } from "lucide-react";
 import { toast } from "react-toastify";
 
 const Orders = () => {

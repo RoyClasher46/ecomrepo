@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Main from "./main";
 import Home from "./home";
 
@@ -7,9 +7,8 @@ export default function HomeWrapper() {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const checkAuth = () => {
+  const checkAuth = useCallback(() => {
     fetch("/api/checkauth", {
       credentials: "include",
     })
@@ -35,7 +34,7 @@ export default function HomeWrapper() {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, [navigate]);
 
   useEffect(() => {
     checkAuth();
@@ -52,7 +51,7 @@ export default function HomeWrapper() {
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [checkAuth]);
 
   if (loading) {
     return (

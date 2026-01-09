@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Upload, Image, DollarSign, Tag, Package, Save, Plus, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,7 +21,6 @@ const UploadProduct = ({ setPage }) => {
     { size: "XL", available: true },
   ]);
   const [categories, setCategories] = useState([]);
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [isNewCategory, setIsNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
@@ -78,7 +76,6 @@ const UploadProduct = ({ setPage }) => {
   const removeSize = (index) => {
     setSizes(sizes.filter((_, i) => i !== index));
   };
-  const navigate = useNavigate();
 
   const handleSubmit = async(e) => {
     e.preventDefault();

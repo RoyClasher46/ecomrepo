@@ -3,7 +3,6 @@ import Navbar from "./navbar";
 import Footer from "./Footer";
 import FloatingCart from "./FloatingCart";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
 import { ArrowRight, Sparkles, TrendingUp, ShoppingBag, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { getImageSrc } from "../utils/imageUtils";
 import "react-toastify/dist/ReactToastify.css";

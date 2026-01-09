@@ -31,21 +31,27 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-white/10 hover:bg-primary dark:hover:bg-accent text-gray-300 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm"
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-white/10 hover:bg-primary dark:hover:bg-accent text-gray-300 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm"
                 aria-label="Twitter"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-white/10 hover:bg-primary dark:hover:bg-accent text-gray-300 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm"
                 aria-label="Instagram"
               >
@@ -90,34 +96,34 @@ const Footer = () => {
             <h4 className="text-white font-bold mb-6 text-lg">Customer Service</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
+                <button type="button" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-400 group-hover:bg-primary dark:group-hover:bg-accent transition-colors"></span>
                   Shipping Info
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
+                <button type="button" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-400 group-hover:bg-primary dark:group-hover:bg-accent transition-colors"></span>
                   Returns & Exchanges
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
+                <button type="button" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-400 group-hover:bg-primary dark:group-hover:bg-accent transition-colors"></span>
                   FAQ
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
+                <button type="button" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-400 group-hover:bg-primary dark:group-hover:bg-accent transition-colors"></span>
                   Privacy Policy
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
+                <button type="button" className="text-gray-400 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors text-sm flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-400 group-hover:bg-primary dark:group-hover:bg-accent transition-colors"></span>
                   Terms & Conditions
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -155,13 +161,13 @@ const Footer = () => {
               Made with <Heart className="w-4 h-4 text-red-400 fill-red-400" /> © {new Date().getFullYear()} ShopEase. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-primary dark:hover:text-accent transition-colors">
+              <button type="button" className="hover:text-primary dark:hover:text-accent transition-colors">
                 Privacy
-              </a>
-              <a href="#" className="hover:text-primary dark:hover:text-accent transition-colors">
+              </button>
+              <button type="button" className="hover:text-primary dark:hover:text-accent transition-colors">
                 Terms
-              </a>
-              <a href="#" className="hover:text-primary dark:hover:text-accent transition-colors">
+              </button>
+              <button type="button" className="hover:text-primary dark:hover:text-accent transition-colors">
                 Cookies
               </a>
             </div>

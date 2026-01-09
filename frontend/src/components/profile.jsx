@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./navbar";
 import Footer from "./Footer";
 import FloatingCart from "./FloatingCart";
-import { User, Phone, Home, Briefcase, Save, ArrowLeft, MapPin } from "lucide-react";
+import { User, Phone, Home, Briefcase, Save, ArrowLeft } from "lucide-react";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -33,6 +33,7 @@ export default function Profile() {
 
   useEffect(() => {
     loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadProfile = async () => {

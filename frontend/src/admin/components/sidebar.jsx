@@ -13,7 +13,6 @@ const Sidebar = ({ setPage, currentPage }) => {
       method: "GET",
       credentials: "include"
     });
-    const data = await res.json();
     if (res.ok) {
       toast.success("Logout successful!");
       navigate("/login", { replace: true });
