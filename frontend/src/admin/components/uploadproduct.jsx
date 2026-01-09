@@ -22,7 +22,6 @@ const UploadProduct = ({ setPage }) => {
   ]);
   const [categories, setCategories] = useState([]);
   const [isNewCategory, setIsNewCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState("");
 
   // Fetch existing categories on component mount
   useEffect(() => {
@@ -131,7 +130,6 @@ const UploadProduct = ({ setPage }) => {
           { size: "XL", available: true },
         ]);
         setIsNewCategory(false);
-        setNewCategoryName("");
         // Redirect to listed products page
         if (setPage) {
           setPage("listed");
