@@ -26,15 +26,23 @@ const login = async (req, res) => {
 
         // Cookie settings for production (HTTPS) and development
         const isProduction = process.env.NODE_ENV === 'production';
-        res.cookie("token", token, {
+        const cookieOptions = {
             httpOnly: true,
             secure: isProduction, // true for HTTPS in production
             sameSite: isProduction ? "none" : "lax", // "none" needed for cross-origin in production
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            domain: isProduction ? undefined : undefined, // Let browser set domain automatically
-        });
+        };
+        res.cookie("token", token, cookieOptions);
 
-        res.status(200).json({ message: "Login Successfully" });
+        // Return user info in response to avoid needing checkauth immediately
+        res.status(200).json({ 
+            message: "Login Successfully",
+            user: {
+                email: user.email,
+                name: user.name,
+                isAdmin: user.isAdmin === true
+            }
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });

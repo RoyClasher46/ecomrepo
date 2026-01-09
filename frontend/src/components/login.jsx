@@ -46,11 +46,24 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successfully!");
         
+        // Use user data from login response instead of calling checkauth
+        const userIsAdmin = data.user && data.user.isAdmin === true;
+        
         // Determine redirect path
         let redirectPath = redirectTo || "/";
         
+        // If admin, redirect immediately
+        if (userIsAdmin) {
+          // Wait a moment for cookie to be set
+          await new Promise(resolve => setTimeout(resolve, 500));
+          window.location.href = "/adminmain";
+          return;
+        }
+        
         // Check if we need to add a product to cart after login
         if (addToCartRef.current) {
+          // Wait for cookie to be set
+          await new Promise(resolve => setTimeout(resolve, 500));
           // Add the product to cart
           try {
             const addRes = await fetch("/api/add-to-cart", {
@@ -62,36 +75,17 @@ export default function Login() {
             if (addRes.ok) {
               toast.success("Item added to cart!");
               redirectPath = "/usercart";
-              navigate(redirectPath, { replace: true });
-              return;
             }
           } catch (err) {
             console.error("Failed to add product to cart:", err);
           }
         }
         
-        // Wait a moment for cookie to be set, then check user role
-        try {
-          await new Promise(resolve => setTimeout(resolve, 300));
-          
-          const authRes = await fetch("/api/checkauth", {
-            credentials: "include",
-          });
-          
-          if (authRes.ok) {
-            const authData = await authRes.json();
-            // If user is admin, redirect to admin page
-            if (authData.user && authData.user.isAdmin === true) {
-              navigate("/adminmain", { replace: true });
-              return;
-            }
-          }
-        } catch (err) {
-          console.error("Failed to check user role:", err);
-        }
+        // Wait for cookie to be set before redirecting
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Normal user - redirect to home or specified path
-        navigate(redirectPath, { replace: true });
+        window.location.href = redirectPath;
       } else {
         toast.error(data.message || "Something went wrong");
       }

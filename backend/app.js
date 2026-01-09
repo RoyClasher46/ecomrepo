@@ -38,16 +38,19 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // In production, only allow specified origins
-    if (allowedOrigins.includes(origin)) {
+    // In production, allow specified origins or any Netlify domain
+    if (allowedOrigins.includes(origin) || origin.includes('.netlify.app')) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie'],
 }));
 
 // Root route - API health check
