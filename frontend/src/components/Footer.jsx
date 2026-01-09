@@ -169,7 +169,7 @@ const Footer = () => {
               </button>
               <button type="button" className="hover:text-primary dark:hover:text-accent transition-colors">
                 Cookies
-              </a>
+              </button>
             </div>
           </div>
         </div>
