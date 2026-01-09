@@ -47,22 +47,27 @@ export default function Login() {
         
         // Use user data from login response instead of calling checkauth
         const userIsAdmin = data.user && data.user.isAdmin === true;
+        console.log("[Login] User is admin:", userIsAdmin);
+        console.log("[Login] User data:", data.user);
         
         // Determine redirect path
         let redirectPath = redirectTo || "/";
+        console.log("[Login] Redirect path:", redirectPath);
         
         // If admin, redirect immediately
         if (userIsAdmin) {
+          console.log("[Login] Redirecting admin to /adminmain");
           // Wait a moment for cookie to be set
-          await new Promise(resolve => setTimeout(resolve, 500));
-          window.location.href = "/adminmain";
+          setTimeout(() => {
+            window.location.href = "/adminmain";
+          }, 300);
           return;
         }
         
         // Check if we need to add a product to cart after login
         if (addToCartRef.current) {
           // Wait for cookie to be set
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 300));
           // Add the product to cart
           try {
             const addRes = await fetch("/api/add-to-cart", {
@@ -81,10 +86,10 @@ export default function Login() {
         }
         
         // Wait for cookie to be set before redirecting
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Normal user - redirect to home or specified path
-        window.location.href = redirectPath;
+        console.log("[Login] Redirecting normal user to:", redirectPath);
+        setTimeout(() => {
+          window.location.href = redirectPath;
+        }, 300);
       } else {
         toast.error(data.message || "Something went wrong");
       }
