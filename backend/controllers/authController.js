@@ -24,11 +24,14 @@ const login = async (req, res) => {
             isAdmin: user.isAdmin === true 
         }, process.env.JWT_SECRET);
 
+        // Cookie settings for production (HTTPS) and development
+        const isProduction = process.env.NODE_ENV === 'production';
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: isProduction, // true for HTTPS in production
+            sameSite: isProduction ? "none" : "lax", // "none" needed for cross-origin in production
             maxAge: 7 * 24 * 60 * 60 * 1000,
+            domain: isProduction ? undefined : undefined, // Let browser set domain automatically
         });
 
         res.status(200).json({ message: "Login Successfully" });
@@ -138,10 +141,12 @@ const verifySignupOTP = async (req, res) => {
 
                 const token = jwt.sign({ email: newUser.email, userid: newUser._id }, process.env.JWT_SECRET);
 
+                // Cookie settings for production (HTTPS) and development
+                const isProduction = process.env.NODE_ENV === 'production';
                 res.cookie("token", token, {
                     httpOnly: true,
-                    secure: false,
-                    sameSite: "lax",
+                    secure: isProduction, // true for HTTPS in production
+                    sameSite: isProduction ? "none" : "lax", // "none" needed for cross-origin in production
                     maxAge: 7 * 24 * 60 * 60 * 1000,
                 });
 
@@ -307,10 +312,11 @@ const resetPassword = async (req, res) => {
  * User logout
  */
 const logout = (req, res) => {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('token', '', {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         expires: new Date(0)
     });
     res.json({ message: 'Logged out successfully' });
@@ -353,11 +359,14 @@ const adminLogin = async (req, res) => {
         // Include isAdmin flag in JWT token
         const token = jwt.sign({ email: user.email, userid: user._id, isAdmin: true }, process.env.JWT_SECRET);
 
+        // Cookie settings for production (HTTPS) and development
+        const isProduction = process.env.NODE_ENV === 'production';
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: isProduction, // true for HTTPS in production
+            sameSite: isProduction ? "none" : "lax", // "none" needed for cross-origin in production
             maxAge: 7 * 24 * 60 * 60 * 1000,
+            domain: isProduction ? undefined : undefined, // Let browser set domain automatically
         });
 
         res.status(200).json({ message: "Login Successfully" });

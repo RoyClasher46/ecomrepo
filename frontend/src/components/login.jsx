@@ -31,6 +31,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      console.log("[Login] Attempting login...");
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,7 +39,9 @@ export default function Login() {
         credentials: "include",
       });
 
+      console.log("[Login] Response status:", res.status, res.ok);
       const data = await res.json();
+      console.log("[Login] Response data:", data);
       
       if (res.ok) {
         toast.success("Login successfully!");

@@ -39,14 +39,19 @@ if (typeof window !== 'undefined') {
     if (typeof url === 'string' && 
         (url.startsWith('/api/') || url.startsWith('/products'))) {
       const fullUrl = getApiUrl(url);
-      // Log in development to help debug
-      if (isDevelopment) {
-        console.log(`API call: ${url} -> ${fullUrl}`);
+      // Log API calls in production for debugging
+      if (!isDevelopment) {
+        console.log(`[API] ${url} -> ${fullUrl}`);
       }
       url = fullUrl;
     }
     return originalFetch.call(this, url, options);
   };
+  
+  // Log API configuration in production for debugging
+  if (!isDevelopment) {
+    console.log('[API Config]', { isDevelopment, API_BASE_URL });
+  }
   
   // Log API configuration in development
   if (isDevelopment) {
