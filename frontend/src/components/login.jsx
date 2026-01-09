@@ -43,6 +43,12 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successfully!");
         
+        // Wait a bit for cookie to be set, then check user role
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        let shouldRedirect = true;
+        let redirectPath = redirectTo || "/";
+        
         // Check user role to determine redirect
         try {
           const authRes = await fetch("/api/checkauth", {
@@ -52,16 +58,17 @@ export default function Login() {
             const authData = await authRes.json();
             // If user is admin, redirect to admin page
             if (authData.user && authData.user.isAdmin === true) {
-              navigate("/adminmain");
-              return;
+              redirectPath = "/adminmain";
+              shouldRedirect = true;
             }
           }
         } catch (err) {
           console.error("Failed to check user role:", err);
+          // Continue with normal redirect even if check fails
         }
         
         // Check if we need to add a product to cart after login
-        if (addToCartRef.current) {
+        if (addToCartRef.current && redirectPath !== "/adminmain") {
           // Add the product to cart
           try {
             const addRes = await fetch("/api/add-to-cart", {
@@ -72,16 +79,17 @@ export default function Login() {
             });
             if (addRes.ok) {
               toast.success("Item added to cart!");
-              navigate("/usercart");
-              return;
+              redirectPath = "/usercart";
             }
           } catch (err) {
             console.error("Failed to add product to cart:", err);
           }
         }
         
-        // Normal user - redirect to user pages
-        navigate(redirectTo);
+        // Always redirect after successful login
+        if (shouldRedirect) {
+          navigate(redirectPath, { replace: true });
+        }
       } else {
         toast.error(data.message || "Something went wrong");
       }
