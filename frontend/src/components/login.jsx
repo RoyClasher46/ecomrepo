@@ -50,6 +50,17 @@ export default function Login() {
         console.log("[Login] User is admin:", userIsAdmin);
         console.log("[Login] User data:", data.user);
         
+        // Store auth state in sessionStorage temporarily to help with redirect
+        // This ensures the redirected page knows user is logged in even if cookies aren't set yet
+        if (data.user) {
+          sessionStorage.setItem('tempAuth', JSON.stringify({
+            email: data.user.email,
+            name: data.user.name,
+            isAdmin: userIsAdmin,
+            timestamp: Date.now()
+          }));
+        }
+        
         // Determine redirect path
         let redirectPath = redirectTo || "/";
         console.log("[Login] Redirect path:", redirectPath);
@@ -60,14 +71,14 @@ export default function Login() {
           // Wait a moment for cookie to be set
           setTimeout(() => {
             window.location.href = "/adminmain";
-          }, 300);
+          }, 500);
           return;
         }
         
         // Check if we need to add a product to cart after login
         if (addToCartRef.current) {
           // Wait for cookie to be set
-          await new Promise(resolve => setTimeout(resolve, 300));
+          await new Promise(resolve => setTimeout(resolve, 500));
           // Add the product to cart
           try {
             const addRes = await fetch("/api/add-to-cart", {
@@ -89,7 +100,7 @@ export default function Login() {
         console.log("[Login] Redirecting normal user to:", redirectPath);
         setTimeout(() => {
           window.location.href = redirectPath;
-        }, 300);
+        }, 500);
       } else {
         toast.error(data.message || "Something went wrong");
       }

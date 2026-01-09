@@ -9,6 +9,38 @@ export default function HomeWrapper() {
   const navigate = useNavigate();
 
   const checkAuth = useCallback(() => {
+    // First check sessionStorage for temp auth (set after login)
+    const tempAuth = sessionStorage.getItem('tempAuth');
+    if (tempAuth) {
+      try {
+        const authData = JSON.parse(tempAuth);
+        // Check if temp auth is recent (within 5 seconds)
+        if (Date.now() - authData.timestamp < 5000) {
+          if (authData.isAdmin) {
+            navigate("/adminmain");
+            return;
+          }
+          setIsAuth(true);
+          setLoading(false);
+          // Still verify with backend, but don't wait
+          fetch("/api/checkauth", { credentials: "include" })
+            .then(res => {
+              if (res.ok) {
+                sessionStorage.removeItem('tempAuth'); // Remove temp auth once verified
+              }
+            })
+            .catch(() => {});
+          return;
+        } else {
+          // Temp auth expired, remove it
+          sessionStorage.removeItem('tempAuth');
+        }
+      } catch (err) {
+        sessionStorage.removeItem('tempAuth');
+      }
+    }
+    
+    // Normal auth check
     fetch("/api/checkauth", {
       credentials: "include",
     })
@@ -20,6 +52,8 @@ export default function HomeWrapper() {
         }
       })
       .then((data) => {
+        // Remove temp auth if backend auth succeeds
+        sessionStorage.removeItem('tempAuth');
         // Check if user is admin - if so, redirect to admin page
         if (data.user && data.user.isAdmin === true) {
           navigate("/adminmain");
