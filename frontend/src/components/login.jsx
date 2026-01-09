@@ -1,6 +1,6 @@
 // src/pages/Login.jsx
 import { useState, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
@@ -14,7 +14,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const redirectTo = searchParams.get("redirect") || "/";
