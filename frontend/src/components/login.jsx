@@ -59,38 +59,36 @@ export default function Login() {
             if (addRes.ok) {
               toast.success("Item added to cart!");
               redirectPath = "/usercart";
+              navigate(redirectPath, { replace: true });
+              return;
             }
           } catch (err) {
             console.error("Failed to add product to cart:", err);
           }
         }
         
-        // Wait a moment for cookie to be set, then check user role and redirect
-        setTimeout(async () => {
-          try {
-            const authRes = await fetch("/api/checkauth", {
-              credentials: "include",
-            });
-            if (authRes.ok) {
-              const authData = await authRes.json();
-              // If user is admin, redirect to admin page
-              if (authData.user && authData.user.isAdmin === true) {
-                window.location.href = "/adminmain";
-                return;
-              }
-            }
-          } catch (err) {
-            console.error("Failed to check user role:", err);
-          }
+        // Wait a moment for cookie to be set, then check user role
+        try {
+          await new Promise(resolve => setTimeout(resolve, 300));
           
-          // Normal user - redirect to home or specified path
-          // Use window.location for reliable redirect
-          if (redirectPath === "/") {
-            window.location.href = "/";
-          } else {
-            window.location.href = redirectPath;
+          const authRes = await fetch("/api/checkauth", {
+            credentials: "include",
+          });
+          
+          if (authRes.ok) {
+            const authData = await authRes.json();
+            // If user is admin, redirect to admin page
+            if (authData.user && authData.user.isAdmin === true) {
+              navigate("/adminmain", { replace: true });
+              return;
+            }
           }
-        }, 500);
+        } catch (err) {
+          console.error("Failed to check user role:", err);
+        }
+        
+        // Normal user - redirect to home or specified path
+        navigate(redirectPath, { replace: true });
       } else {
         toast.error(data.message || "Something went wrong");
       }
