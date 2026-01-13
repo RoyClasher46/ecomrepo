@@ -115,3 +115,5 @@ After updating your `.env` file, verify you have:
 - Verify all three Cloudinary variables are set
 - Check credentials in Cloudinary dashboard
 
+
+

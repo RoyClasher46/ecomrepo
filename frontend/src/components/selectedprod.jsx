@@ -23,6 +23,7 @@ export default function ProductPage() {
     reviewImages: []
   });
   const [reviewImageFiles, setReviewImageFiles] = useState([]);
+  const currentUser = JSON.parse(localStorage.getItem("user")) || null;
 
   // Scroll to top when component mounts or product ID changes
   useEffect(() => {
@@ -30,23 +31,18 @@ export default function ProductPage() {
   }, [id]);
 
   useEffect(() => {
-    let isMounted = true;
-    
-    // Get current user from localStorage once when component mounts
-    const currentUser = JSON.parse(localStorage.getItem("user")) || null;
-    
-    // Fetch product data
     fetch(`/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!isMounted) return;
+        console.log('Product data received:', data);
+        console.log('Product image URL:', data.image);
+        console.log('Product images array:', data.images);
         setProduct(data);
         // Fetch similar products (for similar products section)
         if (data.category) {
           fetch("/api/products")
             .then((res) => res.json())
             .then((products) => {
-              if (!isMounted) return;
               // Filter by same category, exclude current product, limit to 4
               // Fetch category products (for category products section)
               const categoryProds = products
@@ -56,34 +52,20 @@ export default function ProductPage() {
                 );
               setCategoryProducts(categoryProds);
             })
-            .catch((err) => {
-              if (isMounted) console.error(err);
-            });
+            .catch((err) => console.error(err));
         }
       })
-      .catch((err) => {
-        if (isMounted) console.error(err);
-      });
+      .catch((err) => console.error(err));
 
-    // Fetch reviews
     fetch(`/api/products/${id}/reviews`)
       .then((res) => res.json())
-      .then((data) => {
-        if (isMounted) setReviews(data);
-      })
-      .catch((err) => {
-        if (isMounted) console.error(err);
-      });
+      .then((data) => setReviews(data))
+      .catch((err) => console.error(err));
 
     if (currentUser) {
       setNewReview((prev) => ({ ...prev, user: currentUser.name }));
     }
-
-    // Cleanup function
-    return () => {
-      isMounted = false;
-    };
-  }, [id]); // Only depend on id, not currentUser
+  }, [id, currentUser]);
 
   const handleReviewImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -123,7 +105,6 @@ export default function ProductPage() {
     if (res.ok) {
       toast.success("Review submitted successfully!");
       setReviews(data.reviews);
-      const currentUser = JSON.parse(localStorage.getItem("user")) || null;
       setNewReview({ user: currentUser?.name || "", rating: 0, comment: "", reviewImages: [] });
       setReviewImageFiles([]);
     } else {
@@ -206,7 +187,11 @@ export default function ProductPage() {
                       alt={product.name}
                       className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                       onError={(e) => {
+                        console.error('Image failed to load:', allImages[selectedImage]);
                         e.target.style.display = 'none';
+                      }}
+                      onLoad={() => {
+                        console.log('Image loaded successfully:', allImages[selectedImage]);
                       }}
                     />
                   ) : (
@@ -459,7 +444,7 @@ export default function ProductPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder={newReview.user || "Your Name"}
+                    placeholder={currentUser?.name || "Your Name"}
                     value={newReview.user}
                     onChange={(e) => setNewReview({ ...newReview, user: e.target.value })}
                     className="modern-input"

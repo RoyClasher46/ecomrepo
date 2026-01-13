@@ -12,19 +12,10 @@ export default function ProtectedRoute({ children }) {
         })
         .then(res => {
             if (res.ok) {
-                return res.json();
+                setIsAuth(true);
             } else {
-                throw new Error("Not authenticated");
+                navigate("/login");
             }
-        })
-        .then(data => {
-            // Check if user is admin - if so, redirect to admin page
-            if (data.user && data.user.isAdmin === true) {
-                navigate("/adminmain");
-                return;
-            }
-            // Regular user authenticated
-            setIsAuth(true);
         })
         .catch(err => {
             console.error(err);
