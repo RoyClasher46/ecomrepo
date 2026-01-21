@@ -5,7 +5,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 // Backend API URL
 // In development, use proxy (localhost:5000) - relative paths work
 // In production, use your Render backend URL
-export const API_BASE_URL = isDevelopment 
+export const API_BASE_URL = isDevelopment
   ? '' // Use proxy in development (see package.json)
   : (process.env.REACT_APP_API_URL || 'https://ecommerce-lt30.onrender.com');
 
@@ -16,12 +16,12 @@ export const getApiUrl = (endpoint) => {
   if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
     return endpoint;
   }
-  
+
   // If in development or no API_BASE_URL, use relative path (works with proxy)
   if (!API_BASE_URL || isDevelopment) {
     return endpoint;
   }
-  
+
   // In production, prepend API_BASE_URL
   // Remove leading slash from endpoint to avoid double slashes
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
@@ -34,29 +34,21 @@ export const getApiUrl = (endpoint) => {
 // This makes existing code work without changes
 if (typeof window !== 'undefined') {
   const originalFetch = window.fetch;
-  window.fetch = function(url, options = {}) {
+  window.fetch = function (url, options = {}) {
     // Only modify relative URLs that look like API calls
-    if (typeof url === 'string' && 
-        (url.startsWith('/api/') || url.startsWith('/products'))) {
+    if (typeof url === 'string' &&
+      (url.startsWith('/api/') || url.startsWith('/products'))) {
       const fullUrl = getApiUrl(url);
-      // Log API calls in production for debugging
-      if (!isDevelopment) {
-        console.log(`[API] ${url} -> ${fullUrl}`);
-      }
+      // Log API calls in production for debugging (REMOVED)
+
       url = fullUrl;
     }
     return originalFetch.call(this, url, options);
   };
-  
-  // Log API configuration in production for debugging
-  if (!isDevelopment) {
-    console.log('[API Config]', { isDevelopment, API_BASE_URL });
-  }
-  
-  // Log API configuration in development
-  if (isDevelopment) {
-    console.log('API Config:', { isDevelopment, API_BASE_URL });
-  }
+
+
+
+
 }
 
 export default API_BASE_URL;

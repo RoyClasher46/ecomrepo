@@ -27,9 +27,6 @@ export default function FloatingCart() {
 
   useEffect(() => {
     loadCart();
-    // Refresh cart every 2 seconds
-    const interval = setInterval(loadCart, 2000);
-    return () => clearInterval(interval);
   }, []);
 
   const removeFromCart = async (id) => {
