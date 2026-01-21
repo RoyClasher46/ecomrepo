@@ -25,7 +25,8 @@ const login = async (req, res) => {
         }, process.env.JWT_SECRET);
 
         // Cookie settings for production (HTTPS) and development
-        const isProduction = process.env.NODE_ENV === 'production';
+        // Render sets RENDER environment variable
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
         const cookieOptions = {
             httpOnly: true,
             secure: isProduction, // true for HTTPS in production
@@ -150,7 +151,7 @@ const verifySignupOTP = async (req, res) => {
                 const token = jwt.sign({ email: newUser.email, userid: newUser._id }, process.env.JWT_SECRET);
 
                 // Cookie settings for production (HTTPS) and development
-                const isProduction = process.env.NODE_ENV === 'production';
+                const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
                 res.cookie("token", token, {
                     httpOnly: true,
                     secure: isProduction, // true for HTTPS in production
@@ -320,7 +321,7 @@ const resetPassword = async (req, res) => {
  * User logout
  */
 const logout = (req, res) => {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
     res.cookie('token', '', {
         httpOnly: true,
         secure: isProduction,
@@ -368,7 +369,7 @@ const adminLogin = async (req, res) => {
         const token = jwt.sign({ email: user.email, userid: user._id, isAdmin: true }, process.env.JWT_SECRET);
 
         // Cookie settings for production (HTTPS) and development
-        const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction, // true for HTTPS in production
