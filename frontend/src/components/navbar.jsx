@@ -39,7 +39,7 @@ const Navbar = () => {
         // User not logged in
       }
     };
-    
+
     const loadUser = async () => {
       try {
         const res = await fetch("/api/checkauth", { credentials: "include" });
@@ -59,11 +59,9 @@ const Navbar = () => {
         setIsLoggedIn(false);
       }
     };
-    
+
     loadCart();
     loadUser();
-    const interval = setInterval(loadCart, 3000);
-    return () => clearInterval(interval);
   }, []);
 
   const performSearch = async (query) => {
@@ -114,11 +112,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled 
-        ? 'bg-white/80 dark:bg-gray-950/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' 
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+        ? 'bg-white/80 dark:bg-gray-950/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50'
         : 'bg-white/60 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-800/30'
-    }`}>
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
@@ -194,7 +191,7 @@ const Navbar = () => {
                   // Delay to allow click on results
                   setTimeout(() => setShowSearchDropdown(false), 200);
                 }}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-primary dark:focus:border-accent transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-primary dark:focus:border-accent transition-all outline-none text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </form>
             {showSearchDropdown && searchResults.length > 0 && (
@@ -244,7 +241,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             {/* Theme Toggle */}
             <ThemeToggle className="hidden md:flex" />
-            
+
             {/* Cart Icon - Only show when logged in */}
             {isLoggedIn && (
               <Link
@@ -271,59 +268,59 @@ const Navbar = () => {
                     <User className="w-5 h-5" />
                   </button>
                   {showDropdown && (
-                <div className="absolute right-0 mt-2 w-64 modern-card dark:bg-gray-950 rounded-xl shadow-2xl z-50 overflow-hidden animate-fade-in-up border border-gray-200 dark:border-gray-800">
-                  <div className="p-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary dark:bg-accent flex items-center justify-center text-white font-bold">
-                        {userName ? userName.charAt(0).toUpperCase() : "U"}
+                    <div className="absolute right-0 mt-2 w-64 modern-card dark:bg-gray-950 rounded-xl shadow-2xl z-50 overflow-hidden animate-fade-in-up border border-gray-200 dark:border-gray-800">
+                      <div className="p-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary dark:bg-accent flex items-center justify-center text-white font-bold">
+                            {userName ? userName.charAt(0).toUpperCase() : "U"}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">{userName || "User"}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">My Account</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">{userName || "User"}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">My Account</p>
+                      <div className="p-2">
+                        <button
+                          className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
+                          onClick={() => {
+                            navigate("/profile");
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <UserCircle className="w-4 h-4" />
+                          Edit Profile
+                        </button>
+                        <button
+                          className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
+                          onClick={() => {
+                            navigate("/myorders");
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <Package className="w-4 h-4" />
+                          My Orders
+                        </button>
+                        <button
+                          className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
+                          onClick={() => {
+                            navigate("/usercart");
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          View Cart
+                        </button>
+                        <div className="border-t border-gray-200 my-1"></div>
+                        <button
+                          className="w-full px-4 py-3 text-left text-red-600 font-medium hover:bg-red-50 transition-all rounded-lg flex items-center gap-3 text-sm"
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
                       </div>
                     </div>
-                  </div>
-                  <div className="p-2">
-                    <button
-                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        navigate("/profile");
-                        setShowDropdown(false);
-                      }}
-                    >
-                      <UserCircle className="w-4 h-4" />
-                      Edit Profile
-                    </button>
-                    <button
-                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        navigate("/myorders");
-                        setShowDropdown(false);
-                      }}
-                    >
-                      <Package className="w-4 h-4" />
-                      My Orders
-                    </button>
-                    <button
-                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-accent transition-all rounded-lg flex items-center gap-3 text-sm"
-                      onClick={() => {
-                        navigate("/usercart");
-                        setShowDropdown(false);
-                      }}
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      View Cart
-                    </button>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <button
-                      className="w-full px-4 py-3 text-left text-red-600 font-medium hover:bg-red-50 transition-all rounded-lg flex items-center gap-3 text-sm"
-                      onClick={handleLogout}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Logout
-                    </button>
-                  </div>
-                </div>
                   )}
                 </>
               ) : (
@@ -339,7 +336,7 @@ const Navbar = () => {
 
             {/* Theme Toggle - Mobile */}
             <ThemeToggle className="md:hidden" />
-            
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
