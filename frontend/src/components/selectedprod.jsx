@@ -16,9 +16,9 @@ export default function ProductPage() {
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [newReview, setNewReview] = useState({ 
-    user: "", 
-    rating: 0, 
+  const [newReview, setNewReview] = useState({
+    user: "",
+    rating: 0,
     comment: "",
     reviewImages: []
   });
@@ -34,9 +34,6 @@ export default function ProductPage() {
     fetch(`/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log('Product data received:', data);
-        console.log('Product image URL:', data.image);
-        console.log('Product images array:', data.images);
         setProduct(data);
         // Fetch similar products (for similar products section)
         if (data.category) {
@@ -46,8 +43,8 @@ export default function ProductPage() {
               // Filter by same category, exclude current product, limit to 4
               // Fetch category products (for category products section)
               const categoryProds = products
-                .filter(p => 
-                  p._id !== data._id && 
+                .filter(p =>
+                  p._id !== data._id &&
                   (p.category || "Self").toLowerCase() === (data.category || "Self").toLowerCase()
                 );
               setCategoryProducts(categoryProds);
@@ -74,7 +71,7 @@ export default function ProductPage() {
       return;
     }
     setReviewImageFiles(files);
-    
+
     // Convert to base64 for preview and submission
     const imagePromises = files.map(file => {
       return new Promise((resolve) => {
@@ -83,7 +80,7 @@ export default function ProductPage() {
         reader.readAsDataURL(file);
       });
     });
-    
+
     Promise.all(imagePromises).then(base64Images => {
       setNewReview(prev => ({ ...prev, reviewImages: base64Images }));
     });
@@ -95,7 +92,7 @@ export default function ProductPage() {
       toast.error("Please select a rating");
       return;
     }
-    
+
     const res = await fetch(`/api/products/${id}/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -117,15 +114,15 @@ export default function ProductPage() {
       toast.error("Please select a size");
       return;
     }
-    
+
     try {
       const res = await fetch("/api/add-to-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           productId: product._id,
-          size: selectedSize 
+          size: selectedSize
         }),
       });
       if (res.ok) {
@@ -151,11 +148,11 @@ export default function ProductPage() {
     : 0;
 
   // Get all product images - handle base64, local paths, and Cloudinary URLs
-  const allImages = product 
+  const allImages = product
     ? [
-        product.image, 
-        ...(product.images || [])
-      ].filter(Boolean).map(img => getImageSrc(img)).filter(Boolean)
+      product.image,
+      ...(product.images || [])
+    ].filter(Boolean).map(img => getImageSrc(img)).filter(Boolean)
     : [];
 
   if (!product) return (
@@ -191,7 +188,7 @@ export default function ProductPage() {
                         e.target.style.display = 'none';
                       }}
                       onLoad={() => {
-                        console.log('Image loaded successfully:', allImages[selectedImage]);
+
                       }}
                     />
                   ) : (
@@ -200,7 +197,7 @@ export default function ProductPage() {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Image Thumbnails */}
                 {allImages.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
@@ -208,11 +205,10 @@ export default function ProductPage() {
                       <button
                         key={index}
                         onClick={() => setSelectedImage(index)}
-                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all ${
-                          selectedImage === index 
-                            ? "border-primary dark:border-accent ring-2 ring-primary dark:ring-accent" 
+                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all ${selectedImage === index
+                            ? "border-primary dark:border-accent ring-2 ring-primary dark:ring-accent"
                             : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                        }`}
+                          }`}
                       >
                         <img
                           src={img}
@@ -224,12 +220,12 @@ export default function ProductPage() {
                   </div>
                 )}
               </div>
-              
+
               {/* Product Info */}
               <div className="space-y-4 sm:space-y-6">
                 <div>
                   <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">{product.name}</h2>
-                  
+
                   {/* Average Rating */}
                   {reviews.length > 0 && (
                     <div className="mb-4">
@@ -239,7 +235,7 @@ export default function ProductPage() {
                       </span>
                     </div>
                   )}
-                  
+
                   <p className="text-xl sm:text-2xl font-bold text-primary dark:text-accent mb-4">
                     ₹{product.price}
                   </p>
@@ -269,13 +265,12 @@ export default function ProductPage() {
                             }
                           }}
                           disabled={!sizeItem.available}
-                          className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border-2 font-medium transition text-sm sm:text-base ${
-                            selectedSize === sizeItem.size
+                          className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border-2 font-medium transition text-sm sm:text-base ${selectedSize === sizeItem.size
                               ? "border-primary dark:border-accent bg-primary dark:bg-accent text-white shadow-lg"
                               : sizeItem.available
-                              ? "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-accent text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800"
-                              : "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through"
-                          }`}
+                                ? "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-accent text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                : "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through"
+                            }`}
                         >
                           {sizeItem.size}
                           {!sizeItem.available && (
@@ -296,16 +291,15 @@ export default function ProductPage() {
                     )}
                   </div>
                 )}
-                
+
                 <div className="pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-800">
-                  <button 
+                  <button
                     onClick={handleAddToCart}
                     disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
-                    className={`w-full py-3 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold transition ${
-                      product.sizes && product.sizes.length > 0 && !selectedSize
+                    className={`w-full py-3 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold transition ${product.sizes && product.sizes.length > 0 && !selectedSize
                         ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                         : "modern-button hover:scale-[1.02] active:scale-[0.98]"
-                    }`}
+                      }`}
                   >
                     Add to Cart
                   </button>
@@ -393,7 +387,7 @@ export default function ProductPage() {
           {/* Reviews Section - At the Bottom */}
           <div className="modern-card p-4 sm:p-6 md:p-8 rounded-lg">
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Customer Reviews</h3>
-            
+
             {/* Reviews List */}
             {reviews.length === 0 ? (
               <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-6 sm:mb-8">No reviews yet. Be the first to review!</p>
@@ -414,7 +408,7 @@ export default function ProductPage() {
                       </span>
                     </div>
                     <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">{r.comment}</p>
-                    
+
                     {/* Review Images */}
                     {r.reviewImages && r.reviewImages.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-3">
@@ -451,7 +445,7 @@ export default function ProductPage() {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Rating <span className="text-red-500">*</span>
@@ -462,7 +456,7 @@ export default function ProductPage() {
                     size="lg"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Review
@@ -503,7 +497,7 @@ export default function ProductPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <button
                   type="submit"
                   className="w-full modern-button py-3 rounded-lg font-semibold text-sm sm:text-base"

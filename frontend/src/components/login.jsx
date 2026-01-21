@@ -30,7 +30,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("[Login] Attempting login...");
+
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,18 +38,14 @@ export default function Login() {
         credentials: "include",
       });
 
-      console.log("[Login] Response status:", res.status, res.ok);
       const data = await res.json();
-      console.log("[Login] Response data:", data);
-      
+
       if (res.ok) {
         toast.success("Login successfully!");
-        
+
         // Use user data from login response instead of calling checkauth
         const userIsAdmin = data.user && data.user.isAdmin === true;
-        console.log("[Login] User is admin:", userIsAdmin);
-        console.log("[Login] User data:", data.user);
-        
+
         // Store auth state in sessionStorage temporarily to help with redirect
         // This ensures the redirected page knows user is logged in even if cookies aren't set yet
         if (data.user) {
@@ -60,21 +56,19 @@ export default function Login() {
             timestamp: Date.now()
           }));
         }
-        
+
         // Determine redirect path
         let redirectPath = redirectTo || "/";
-        console.log("[Login] Redirect path:", redirectPath);
-        
+
         // If admin, redirect immediately
         if (userIsAdmin) {
-          console.log("[Login] Redirecting admin to /adminmain");
           // Wait a moment for cookie to be set
           setTimeout(() => {
             window.location.href = "/adminmain";
           }, 500);
           return;
         }
-        
+
         // Check if we need to add a product to cart after login
         if (addToCartRef.current) {
           // Wait for cookie to be set
@@ -95,9 +89,8 @@ export default function Login() {
             console.error("Failed to add product to cart:", err);
           }
         }
-        
+
         // Wait for cookie to be set before redirecting
-        console.log("[Login] Redirecting normal user to:", redirectPath);
         setTimeout(() => {
           window.location.href = redirectPath;
         }, 500);
@@ -126,7 +119,7 @@ export default function Login() {
         <div className="absolute top-4 right-4 z-20">
           <ThemeToggle />
         </div>
-        
+
         {/* Logo/Brand Section */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary dark:bg-accent rounded-2xl mb-4 shadow-lg transform hover:scale-105 transition-transform">
@@ -144,22 +137,22 @@ export default function Login() {
             {/* Email Input */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-                    required
-                  />
+                <Mail className="w-4 h-4" />
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                </div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-accent focus:border-transparent transition-all outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  required
+                />
               </div>
             </div>
 
