@@ -126,7 +126,10 @@ const ManageProducts = ({ selectedProduct }) => {
     try {
       const res = await fetch(
         `/products/${id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+          credentials: "include"
+        }
       );
       const data = await res.json();
 
@@ -221,6 +224,7 @@ const ManageProducts = ({ selectedProduct }) => {
 
       const res = await fetch(`/products/${editingProduct._id}`, {
         method: "PUT",
+        credentials: "include",
         body: formDataToSend,
       });
 
@@ -251,6 +255,7 @@ const ManageProducts = ({ selectedProduct }) => {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ isPopular: next }),
         }
       );
@@ -356,82 +361,82 @@ const ManageProducts = ({ selectedProduct }) => {
             <div className="overflow-x-auto -mx-4 sm:mx-0">
               <div className="inline-block min-w-full align-middle sm:px-0">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Image</th>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell">Category</th>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Price</th>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Popular</th>
-                    <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                  {currentItems.map((product, index) => (
-                    <tr
-                      key={product._id}
-                      className={
-                        highlightedId === product._id
-                          ? "bg-gray-100 dark:bg-gray-800 border-l-4 border-primary dark:border-accent"
-                          : "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                      }
-                    >
-                      <td className="py-3 sm:py-4 px-2 sm:px-4">
-                        <img
-                          src={getImageSrc(product.image)}
-                          alt={product.name}
-                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg sm:rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md"
-                        />
-                      </td>
-                      <td className="py-3 sm:py-4 px-2 sm:px-4 min-w-[150px]">
-                        <div className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100">{product.name}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 max-w-xs hidden sm:block">{product.description}</div>
-                      </td>
-                      <td className="py-3 sm:py-4 px-2 sm:px-4 hidden sm:table-cell">
-                        <span className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-primary dark:text-accent rounded-lg border border-gray-200 dark:border-gray-700">
-                          {normalizeCategory(product.category)}
-                        </span>
-                      </td>
-                      <td className="py-3 sm:py-4 px-2 sm:px-4">
-                        <span className="text-base sm:text-lg font-bold gradient-text">₹{product.price}</span>
-                      </td>
-                      <td className="py-3 sm:py-4 px-2 sm:px-4 hidden md:table-cell">
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={product.isPopular}
-                            onChange={(e) => togglePopular(product._id, e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-10 h-5 sm:w-11 sm:h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-primary dark:peer-checked:bg-accent"></div>
-                          {product.isPopular && (
-                            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400 ml-1 sm:ml-2" />
-                          )}
-                        </label>
-                      </td>
-                      <td className="py-3 sm:py-4 px-2 sm:px-4">
-                        <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="px-3 sm:px-4 py-1.5 sm:py-2 modern-button text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
-                          >
-                            <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span className="hidden sm:inline">Edit</span>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(product._id)}
-                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
-                          >
-                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span className="hidden sm:inline">Delete</span>
-                          </button>
-                        </div>
-                      </td>
+                  <thead className="bg-gray-100 dark:bg-gray-800">
+                    <tr>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Image</th>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell">Category</th>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Price</th>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Popular</th>
+                      <th className="py-3 sm:py-4 px-2 sm:px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+
+                  <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    {currentItems.map((product, index) => (
+                      <tr
+                        key={product._id}
+                        className={
+                          highlightedId === product._id
+                            ? "bg-gray-100 dark:bg-gray-800 border-l-4 border-primary dark:border-accent"
+                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        }
+                      >
+                        <td className="py-3 sm:py-4 px-2 sm:px-4">
+                          <img
+                            src={getImageSrc(product.image)}
+                            alt={product.name}
+                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg sm:rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md"
+                          />
+                        </td>
+                        <td className="py-3 sm:py-4 px-2 sm:px-4 min-w-[150px]">
+                          <div className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100">{product.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 max-w-xs hidden sm:block">{product.description}</div>
+                        </td>
+                        <td className="py-3 sm:py-4 px-2 sm:px-4 hidden sm:table-cell">
+                          <span className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-primary dark:text-accent rounded-lg border border-gray-200 dark:border-gray-700">
+                            {normalizeCategory(product.category)}
+                          </span>
+                        </td>
+                        <td className="py-3 sm:py-4 px-2 sm:px-4">
+                          <span className="text-base sm:text-lg font-bold gradient-text">₹{product.price}</span>
+                        </td>
+                        <td className="py-3 sm:py-4 px-2 sm:px-4 hidden md:table-cell">
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={product.isPopular}
+                              onChange={(e) => togglePopular(product._id, e.target.checked)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-10 h-5 sm:w-11 sm:h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-primary dark:peer-checked:bg-accent"></div>
+                            {product.isPopular && (
+                              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400 ml-1 sm:ml-2" />
+                            )}
+                          </label>
+                        </td>
+                        <td className="py-3 sm:py-4 px-2 sm:px-4">
+                          <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
+                            <button
+                              onClick={() => handleEdit(product)}
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 modern-button text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
+                            >
+                              <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                              <span className="hidden sm:inline">Edit</span>
+                            </button>
+                            <button
+                              onClick={() => handleDelete(product._id)}
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded-lg sm:rounded-xl transition-all font-semibold flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                              <span className="hidden sm:inline">Delete</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -465,11 +470,10 @@ const ManageProducts = ({ selectedProduct }) => {
                     <button
                       key={i}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${
-                        currentPage === pageNum
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${currentPage === pageNum
                           ? "modern-button"
                           : "modern-button-secondary"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -506,7 +510,7 @@ const ManageProducts = ({ selectedProduct }) => {
               {/* Images Section */}
               <div>
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Product Images</h4>
-                
+
                 {/* Main Image */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
