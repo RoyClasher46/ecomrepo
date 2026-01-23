@@ -11,7 +11,7 @@ const UploadProduct = ({ setPage }) => {
     category: "Self",
     image: null,
     images: [],
-  });  
+  });
   const [preview, setPreview] = useState(null);
   const [additionalPreviews, setAdditionalPreviews] = useState([]);
   const [sizes, setSizes] = useState([
@@ -27,7 +27,7 @@ const UploadProduct = ({ setPage }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("/api/categories");
+        const res = await fetch("/api/categories", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
           setCategories(data.categories || []);
@@ -76,7 +76,7 @@ const UploadProduct = ({ setPage }) => {
     setSizes(sizes.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Normalize category: first letter capital, rest lowercase
     const normalizeCategory = (c) => {
@@ -91,59 +91,59 @@ const UploadProduct = ({ setPage }) => {
     setProduct((prev) => ({ ...prev, category: normalizedCategory }));
 
     const formData = new FormData();
-        formData.append("name", product.name);
-        formData.append("description", product.description);
-        formData.append("price", product.price);
-        formData.append("category", normalizedCategory || "Self");
-        formData.append("image", product.image);
-        
-        // Append additional images
-        product.images.forEach((file) => {
-          formData.append("images", file);
-        });
-        
-        // Append sizes as JSON
-        formData.append("sizes", JSON.stringify(sizes.filter(s => s.size.trim() !== "")));
+    formData.append("name", product.name);
+    formData.append("description", product.description);
+    formData.append("price", product.price);
+    formData.append("category", normalizedCategory || "Self");
+    formData.append("image", product.image);
+
+    // Append additional images
+    product.images.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    // Append sizes as JSON
+    formData.append("sizes", JSON.stringify(sizes.filter(s => s.size.trim() !== "")));
 
     const res = await fetch("/api/uploadproduct", {
-        method: "POST",
-        body: formData,
-        credentials: "include"
+      method: "POST",
+      body: formData,
+      credentials: "include"
+    });
+    if (res.ok) {
+      toast.success("Product uploaded successfully!");
+      // Reset form
+      setProduct({
+        name: "",
+        description: "",
+        price: "",
+        category: "Self",
+        image: null,
+        images: [],
       });
-      if (res.ok) {
-        toast.success("Product uploaded successfully!");
-        // Reset form
-        setProduct({
-          name: "",
-          description: "",
-          price: "",
-          category: "Self",
-          image: null,
-          images: [],
-        });
-        setPreview(null);
-        setAdditionalPreviews([]);
-        setSizes([
-          { size: "S", available: true },
-          { size: "M", available: true },
-          { size: "L", available: true },
-          { size: "XL", available: true },
-        ]);
-        setIsNewCategory(false);
-        // Redirect to listed products page
-        if (setPage) {
-          setPage("listed");
-        }
-      } else {
-        toast.error("Failed to upload product");
+      setPreview(null);
+      setAdditionalPreviews([]);
+      setSizes([
+        { size: "S", available: true },
+        { size: "M", available: true },
+        { size: "L", available: true },
+        { size: "XL", available: true },
+      ]);
+      setIsNewCategory(false);
+      // Redirect to listed products page
+      if (setPage) {
+        setPage("listed");
       }
+    } else {
+      toast.error("Failed to upload product");
+    }
   };
 
   return (
     <div className="w-full space-y-6">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary dark:bg-accent flex items-center justify-center shadow-lg flex-shrink-0">
             <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
@@ -220,11 +220,10 @@ const UploadProduct = ({ setPage }) => {
                     onClick={() => {
                       setIsNewCategory(false);
                     }}
-                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                      !isNewCategory
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${!isNewCategory
                         ? "bg-primary dark:bg-accent text-white"
                         : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                    }`}
+                      }`}
                   >
                     Select Existing
                   </button>
@@ -234,17 +233,16 @@ const UploadProduct = ({ setPage }) => {
                       setIsNewCategory(true);
                       setProduct({ ...product, category: "" });
                     }}
-                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1 ${
-                      isNewCategory
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1 ${isNewCategory
                         ? "bg-primary dark:bg-accent text-white"
                         : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                    }`}
+                      }`}
                   >
                     <Plus className="w-4 h-4" />
                     Create New
                   </button>
                 </div>
-                
+
                 {!isNewCategory ? (
                   <div className="relative">
                     <select
@@ -276,7 +274,7 @@ const UploadProduct = ({ setPage }) => {
                 )}
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {!isNewCategory 
+                {!isNewCategory
                   ? "Select from existing categories or create a new one."
                   : "New category will be created automatically when product is uploaded."}
               </p>

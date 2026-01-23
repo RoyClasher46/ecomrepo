@@ -24,7 +24,7 @@ const Orders = () => {
     setLoading(true);
     setError("");
 
-    fetch("/api/orders")
+    fetch("/api/orders", { credentials: "include" })
       .then(async (res) => {
         const data = await res.json().catch(() => null);
         if (!res.ok) {
@@ -58,6 +58,7 @@ const Orders = () => {
       const res = await fetch(`/api/orders/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -125,6 +126,7 @@ const Orders = () => {
       const res = await fetch(`/api/orders/${assignOrderId}/assign-delivery`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ deliveryPartnerName, deliveryPartnerPhone, estimatedDelivery }),
       });
       const updatedOrder = await res.json();
@@ -146,6 +148,7 @@ const Orders = () => {
       const res = await fetch(`/api/orders/${orderId}/return-status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ returnStatus }),
       });
       const data = await res.json();
@@ -166,6 +169,7 @@ const Orders = () => {
       const res = await fetch(`/api/orders/${orderId}/verify-payment`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ paymentStatus }),
       });
       const data = await res.json();
@@ -398,10 +402,10 @@ const Orders = () => {
                       </td>
                       <td className="py-3 px-4">
                         <span className={`font-semibold ${order.status === "Delivered" ? "text-emerald-600 dark:text-emerald-400" :
-                            order.status === "Assigned" ? "text-blue-600 dark:text-blue-400" :
-                              order.status === "Accepted" ? "text-success" :
-                                order.status === "Rejected" ? "text-red-600 dark:text-red-400" :
-                                  "text-yellow-600 dark:text-yellow-400"
+                          order.status === "Assigned" ? "text-blue-600 dark:text-blue-400" :
+                            order.status === "Accepted" ? "text-success" :
+                              order.status === "Rejected" ? "text-red-600 dark:text-red-400" :
+                                "text-yellow-600 dark:text-yellow-400"
                           }`}>
                           {order.status}
                         </span>
@@ -410,9 +414,9 @@ const Orders = () => {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className={`px-2 py-1 rounded text-xs font-semibold ${order.paymentStatus === "Paid" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                                order.paymentStatus === "Pending" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
-                                  order.paymentStatus === "Failed" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
-                                    "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                              order.paymentStatus === "Pending" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
+                                order.paymentStatus === "Failed" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+                                  "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                               }`}>
                               {order.paymentStatus || "Pending"}
                             </span>
@@ -460,10 +464,10 @@ const Orders = () => {
                         {order.returnStatus && order.returnStatus !== "None" ? (
                           <div className="space-y-1">
                             <span className={`px-2 py-1 rounded text-xs font-semibold ${order.returnStatus === "Requested" ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
-                                order.returnStatus === "Approved" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
-                                  order.returnStatus === "Rejected" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
-                                    order.returnStatus === "Completed" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                                      "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                              order.returnStatus === "Approved" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
+                                order.returnStatus === "Rejected" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+                                  order.returnStatus === "Completed" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+                                    "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                               }`}>
                               {order.returnStatus}
                             </span>
