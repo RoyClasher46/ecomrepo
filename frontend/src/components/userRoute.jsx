@@ -41,7 +41,7 @@ export default function UserRoute({ children }) {
                                 sessionStorage.removeItem('tempAuth');
                             }
                         })
-                        .catch(() => {});
+                        .catch(() => { });
                     return;
                 } else {
                     sessionStorage.removeItem('tempAuth');
@@ -50,45 +50,45 @@ export default function UserRoute({ children }) {
                 sessionStorage.removeItem('tempAuth');
             }
         }
-        
+
         // Check if user is authenticated and if they're an admin
         fetch("/api/checkauth", {
             credentials: "include",
         })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            } else {
-                // Not authenticated - allow access (public routes)
-                return { user: { isAdmin: false } };
-            }
-        })
-        .then(data => {
-            if (!isMounted) return;
-            
-            // Remove temp auth if backend auth succeeds
-            sessionStorage.removeItem('tempAuth');
-            
-            // If user is admin, redirect to admin panel
-            if (data.user && data.user.isAdmin === true) {
-                setIsAdmin(true);
-                navigate("/adminmain", { replace: true });
-            } else {
-                // Regular user or guest - allow access
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    // Not authenticated - allow access (public routes)
+                    return { user: { isAdmin: false } };
+                }
+            })
+            .then(data => {
+                if (!isMounted) return;
+
+                // Remove temp auth if backend auth succeeds
+                sessionStorage.removeItem('tempAuth');
+
+                // If user is admin, redirect to admin panel
+                if (data.user && data.user.isAdmin === true) {
+                    setIsAdmin(true);
+                    navigate("/adminmain", { replace: true });
+                } else {
+                    // Regular user or guest - allow access
+                    setIsAdmin(false);
+                }
+            })
+            .catch(err => {
+                // Error checking auth - allow access (public routes)
+                if (!isMounted) return;
+                console.error("Auth check error:", err);
                 setIsAdmin(false);
-            }
-        })
-        .catch(err => {
-            // Error checking auth - allow access (public routes)
-            if (!isMounted) return;
-            console.error("Auth check error:", err);
-            setIsAdmin(false);
-        })
-        .finally(() => {
-            if (isMounted) {
-                setLoading(false);
-            }
-        });
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            });
 
         return () => {
             isMounted = false;

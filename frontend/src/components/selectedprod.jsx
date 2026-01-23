@@ -7,6 +7,7 @@ import FloatingCart from "./FloatingCart";
 import { toast } from "react-toastify";
 import { StarRatingDisplay, StarRatingInput } from "./StarRating";
 import { getImageSrc } from "../utils/imageUtils";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function ProductPage() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function ProductPage() {
     reviewImages: []
   });
   const [reviewImageFiles, setReviewImageFiles] = useState([]);
-  const currentUser = JSON.parse(localStorage.getItem("user")) || null;
+  const { user: currentUser, isAuthenticated } = useAuth();
 
   // Scroll to top when component mounts or product ID changes
   useEffect(() => {
@@ -112,6 +113,14 @@ export default function ProductPage() {
   const handleAddToCart = async () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       toast.error("Please select a size");
+      return;
+    }
+
+    if (!isAuthenticated) {
+      toast.error("Please sign in to add items to cart");
+      const productId = product._id || id;
+      const redirectUrl = `/login?redirect=/product/${productId}&addToCart=${productId}`;
+      navigate(redirectUrl);
       return;
     }
 
@@ -206,8 +215,8 @@ export default function ProductPage() {
                         key={index}
                         onClick={() => setSelectedImage(index)}
                         className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 overflow-hidden transition-all ${selectedImage === index
-                            ? "border-primary dark:border-accent ring-2 ring-primary dark:ring-accent"
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                          ? "border-primary dark:border-accent ring-2 ring-primary dark:ring-accent"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                           }`}
                       >
                         <img
@@ -266,10 +275,10 @@ export default function ProductPage() {
                           }}
                           disabled={!sizeItem.available}
                           className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border-2 font-medium transition text-sm sm:text-base ${selectedSize === sizeItem.size
-                              ? "border-primary dark:border-accent bg-primary dark:bg-accent text-white shadow-lg"
-                              : sizeItem.available
-                                ? "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-accent text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800"
-                                : "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through"
+                            ? "border-primary dark:border-accent bg-primary dark:bg-accent text-white shadow-lg"
+                            : sizeItem.available
+                              ? "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-accent text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800"
+                              : "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through"
                             }`}
                         >
                           {sizeItem.size}
@@ -297,8 +306,8 @@ export default function ProductPage() {
                     onClick={handleAddToCart}
                     disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
                     className={`w-full py-3 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold transition ${product.sizes && product.sizes.length > 0 && !selectedSize
-                        ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                        : "modern-button hover:scale-[1.02] active:scale-[0.98]"
+                      ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      : "modern-button hover:scale-[1.02] active:scale-[0.98]"
                       }`}
                   >
                     Add to Cart

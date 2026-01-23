@@ -1,91 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import Main from "./main";
 import Home from "./home";
 
 export default function HomeWrapper() {
-  const [isAuth, setIsAuth] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  const checkAuth = useCallback(() => {
-    // First check sessionStorage for temp auth (set after login)
-    const tempAuth = sessionStorage.getItem('tempAuth');
-    if (tempAuth) {
-      try {
-        const authData = JSON.parse(tempAuth);
-        // Check if temp auth is recent (within 5 seconds)
-        if (Date.now() - authData.timestamp < 5000) {
-          if (authData.isAdmin) {
-            navigate("/adminmain");
-            return;
-          }
-          setIsAuth(true);
-          setLoading(false);
-          // Still verify with backend, but don't wait
-          fetch("/api/checkauth", { credentials: "include" })
-            .then(res => {
-              if (res.ok) {
-                sessionStorage.removeItem('tempAuth'); // Remove temp auth once verified
-              }
-            })
-            .catch(() => {});
-          return;
-        } else {
-          // Temp auth expired, remove it
-          sessionStorage.removeItem('tempAuth');
-        }
-      } catch (err) {
-        sessionStorage.removeItem('tempAuth');
-      }
-    }
-    
-    // Normal auth check
-    fetch("/api/checkauth", {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Not authenticated");
-        }
-      })
-      .then((data) => {
-        // Remove temp auth if backend auth succeeds
-        sessionStorage.removeItem('tempAuth');
-        // Check if user is admin - if so, redirect to admin page
-        if (data.user && data.user.isAdmin === true) {
-          navigate("/adminmain");
-          return;
-        }
-        // Regular user authenticated
-        setIsAuth(true);
-      })
-      .catch(() => {
-        setIsAuth(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [navigate]);
-
   useEffect(() => {
-    checkAuth();
-
-    // Re-check auth when window gains focus or page becomes visible (handles logout from other tab)
-    const handleFocus = () => checkAuth();
-    const handleVisibilityChange = () => {
-      if (!document.hidden) checkAuth();
-    };
-
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [checkAuth]);
+    // If user is admin, they shouldn't be here - redirect to admin dashboard
+    if (!loading && user && user.isAdmin === true) {
+      navigate("/adminmain");
+    }
+  }, [user, loading, navigate]);
 
   if (loading) {
     return (
@@ -97,5 +25,7 @@ export default function HomeWrapper() {
     );
   }
 
-  return isAuth ? <Main /> : <Home />;
+  // If we have a user (and not admin), show Main (Logged in home)
+  // Otherwise show Home (Public landing page)
+  return user ? <Main /> : <Home />;
 }

@@ -10,20 +10,20 @@ export default function ProtectedRoute({ children }) {
         fetch("/api/checkauth", {
             credentials: "include",
         })
-        .then(res => {
-            if (res.ok) {
-                setIsAuth(true);
-            } else {
+            .then(res => {
+                if (res.ok) {
+                    setIsAuth(true);
+                } else {
+                    navigate("/login");
+                }
+            })
+            .catch(err => {
+                console.error(err);
                 navigate("/login");
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            navigate("/login");
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [navigate]);
 
     if (loading) return (

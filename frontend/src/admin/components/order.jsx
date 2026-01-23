@@ -292,235 +292,232 @@ const Orders = () => {
           <div className="overflow-x-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
             <div className="inline-block min-w-full align-middle">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-100 dark:bg-gray-800">
-                <tr>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">#</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Order ID</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Customer</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Product</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Qty</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Size</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Address</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Delivery</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Payment</th>
-                  <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Return</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                {filteredOrders.map((order, index) => (
-                  <tr key={order._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="py-4 px-4 text-gray-900 dark:text-gray-100 font-semibold">{index + 1}</td>
-                    <td className="py-3 px-4">
-                      <div className="text-xs font-mono text-gray-600 dark:text-gray-400">
-                        {order._id.toString().slice(-8).toUpperCase()}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="text-gray-900 dark:text-gray-100 font-semibold">{order.userId?.name}</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {order.userId?.email}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-gray-800 dark:text-gray-200">{order.productId?.name}</td>
-                    <td className="py-3 px-4 text-blue-600 dark:text-blue-400 font-bold">{order.quantity}</td>
-                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
-                      {order.size ? (
-                        <span className="font-medium">{order.size}</span>
-                      ) : (
-                        <span className="text-gray-400 dark:text-gray-500">-</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
-                      <div>{order.deliveryAddress || "-"}</div>
-                      <div className="text-gray-500 dark:text-gray-400">{order.deliveryPhone || ""}</div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex flex-col gap-2">
-                        {order.status === "Pending" && (
-                          <>
+                <thead className="bg-gray-100 dark:bg-gray-800">
+                  <tr>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">#</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Order ID</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Customer</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Product</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Qty</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Address</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Delivery</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider min-w-[200px]">Payment</th>
+                    <th className="py-4 px-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Return</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                  {filteredOrders.map((order, index) => (
+                    <tr key={order._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                      <td className="py-4 px-4 text-gray-900 dark:text-gray-100 font-semibold">{index + 1}</td>
+                      <td className="py-3 px-4">
+                        <div className="text-xs font-mono text-gray-600 dark:text-gray-400">
+                          {order._id.toString().slice(-8).toUpperCase()}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="text-gray-900 dark:text-gray-100 font-semibold">{order.userId?.name}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          {order.userId?.email}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-gray-800 dark:text-gray-200">{order.productId?.name}</td>
+                      <td className="py-3 px-4 text-blue-600 dark:text-blue-400 font-bold">{order.quantity}</td>
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
+                        {order.size ? (
+                          <span className="font-medium">{order.size}</span>
+                        ) : (
+                          <span className="text-gray-400 dark:text-gray-500">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
+                        <div>{order.deliveryAddress || "-"}</div>
+                        <div className="text-gray-500 dark:text-gray-400">{order.deliveryPhone || ""}</div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex flex-col gap-2">
+                          {order.status === "Pending" && (
+                            <>
+                              <button
+                                className="px-3 py-1.5 rounded-lg transition text-xs font-semibold bg-success hover:bg-success-dark text-white flex items-center gap-1"
+                                onClick={() => {
+                                  const ok = window.confirm("Accept this order?");
+                                  if (!ok) return;
+                                  updateStatus(order._id, "Accepted");
+                                  toast.success("Order accepted!");
+                                }}
+                              >
+                                <CheckCircle className="w-3 h-3" />
+                                Accept
+                              </button>
+                              <button
+                                className="px-3 py-1.5 rounded-lg transition text-xs font-semibold bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
+                                onClick={() => {
+                                  const ok = window.confirm("Reject this order?");
+                                  if (!ok) return;
+                                  updateStatus(order._id, "Rejected");
+                                  toast.error("Order rejected!");
+                                }}
+                              >
+                                <XCircle className="w-3 h-3" />
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          {order.status === "Accepted" && !order.deliveryPartnerName && (
                             <button
-                              className="px-3 py-1.5 rounded-lg transition text-xs font-semibold bg-success hover:bg-success-dark text-white flex items-center gap-1"
+                              className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition text-xs font-semibold flex items-center gap-1"
+                              onClick={() => openAssign(order)}
+                            >
+                              <Truck className="w-3 h-3" />
+                              Assign
+                            </button>
+                          )}
+                          {order.status === "Assigned" && (
+                            <button
+                              className="px-3 py-1.5 bg-primary dark:bg-accent hover:bg-primary-dark dark:hover:bg-accent-dark text-white rounded-lg transition text-xs font-semibold flex items-center gap-1"
                               onClick={() => {
-                                const ok = window.confirm("Accept this order?");
+                                const ok = window.confirm("Mark this order as Delivered?");
                                 if (!ok) return;
-                                updateStatus(order._id, "Accepted");
-                                toast.success("Order accepted!");
+                                updateStatus(order._id, "Delivered");
+                                toast.success("Order marked as delivered!");
                               }}
                             >
                               <CheckCircle className="w-3 h-3" />
-                              Accept
+                              Delivered
                             </button>
-                            <button
-                              className="px-3 py-1.5 rounded-lg transition text-xs font-semibold bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
-                              onClick={() => {
-                                const ok = window.confirm("Reject this order?");
-                                if (!ok) return;
-                                updateStatus(order._id, "Rejected");
-                                toast.error("Order rejected!");
-                              }}
-                            >
-                              <XCircle className="w-3 h-3" />
-                              Reject
-                            </button>
-                          </>
-                        )}
-                        {order.status === "Accepted" && !order.deliveryPartnerName && (
-                          <button
-                            className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition text-xs font-semibold flex items-center gap-1"
-                            onClick={() => openAssign(order)}
-                          >
-                            <Truck className="w-3 h-3" />
-                            Assign
-                          </button>
-                        )}
-                        {order.status === "Assigned" && (
-                          <button
-                            className="px-3 py-1.5 bg-primary dark:bg-accent hover:bg-primary-dark dark:hover:bg-accent-dark text-white rounded-lg transition text-xs font-semibold flex items-center gap-1"
-                            onClick={() => {
-                              const ok = window.confirm("Mark this order as Delivered?");
-                              if (!ok) return;
-                              updateStatus(order._id, "Delivered");
-                              toast.success("Order marked as delivered!");
-                            }}
-                          >
-                            <CheckCircle className="w-3 h-3" />
-                            Delivered
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
-                      <div>{order.deliveryPartnerName || "Not assigned"}</div>
-                      <div className="text-gray-500 dark:text-gray-400">{order.deliveryPartnerPhone || ""}</div>
-                      <div className="text-gray-500 dark:text-gray-400 text-xs">{order.trackingId || ""}</div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`font-semibold ${
-                        order.status === "Delivered" ? "text-emerald-600 dark:text-emerald-400" :
-                        order.status === "Assigned" ? "text-blue-600 dark:text-blue-400" :
-                        order.status === "Accepted" ? "text-success" :
-                        order.status === "Rejected" ? "text-red-600 dark:text-red-400" :
-                        "text-yellow-600 dark:text-yellow-400"
-                      }`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                            order.paymentStatus === "Paid" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                            order.paymentStatus === "Pending" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
-                            order.paymentStatus === "Failed" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
-                            "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300 text-sm">
+                        <div>{order.deliveryPartnerName || "Not assigned"}</div>
+                        <div className="text-gray-500 dark:text-gray-400">{order.deliveryPartnerPhone || ""}</div>
+                        <div className="text-gray-500 dark:text-gray-400 text-xs">{order.trackingId || ""}</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`font-semibold ${order.status === "Delivered" ? "text-emerald-600 dark:text-emerald-400" :
+                            order.status === "Assigned" ? "text-blue-600 dark:text-blue-400" :
+                              order.status === "Accepted" ? "text-success" :
+                                order.status === "Rejected" ? "text-red-600 dark:text-red-400" :
+                                  "text-yellow-600 dark:text-yellow-400"
                           }`}>
-                            {order.paymentStatus || "Pending"}
-                          </span>
-                          {order.paymentVerified && (
-                            <span className="text-xs text-success font-semibold">✓ Verified</span>
-                          )}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
-                          <div><span className="font-medium">Type:</span> {order.paymentType || "Cash on Delivery"}</div>
-                          <div><span className="font-medium">Method:</span> {order.paymentMethod || "Cash"}</div>
-                          {order.paymentId && (
-                            <div className="text-xs font-mono text-gray-500 dark:text-gray-400">ID: {order.paymentId}</div>
-                          )}
-                          {order.paymentAmount > 0 && (
-                            <div className="font-semibold text-gray-900 dark:text-gray-100">₹{order.paymentAmount.toFixed(2)}</div>
-                          )}
-                        </div>
-                        {order.paymentType === "Online" && !order.paymentVerified && (
-                          <div className="flex gap-1 mt-1">
-                            <button
-                              onClick={() => {
-                                const ok = window.confirm("Verify this payment as Paid?");
-                                if (!ok) return;
-                                handlePaymentVerification(order._id, "Paid");
-                              }}
-                              className="px-2 py-1 bg-success hover:bg-success-dark text-white rounded text-xs"
-                            >
-                              Verify Paid
-                            </button>
-                            <button
-                              onClick={() => {
-                                const ok = window.confirm("Mark this payment as Failed?");
-                                if (!ok) return;
-                                handlePaymentVerification(order._id, "Failed");
-                              }}
-                              className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs"
-                            >
-                              Mark Failed
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      {order.returnStatus && order.returnStatus !== "None" ? (
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
                         <div className="space-y-1">
-                          <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                            order.returnStatus === "Requested" ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
-                            order.returnStatus === "Approved" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
-                            order.returnStatus === "Rejected" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
-                            order.returnStatus === "Completed" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                            "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
-                          }`}>
-                            {order.returnStatus}
-                          </span>
-                          {order.returnReason && (
-                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 max-w-xs">
-                              <span className="font-medium">Reason:</span> {order.returnReason}
-                            </div>
-                          )}
-                          {order.returnStatus === "Requested" && (
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${order.paymentStatus === "Paid" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+                                order.paymentStatus === "Pending" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
+                                  order.paymentStatus === "Failed" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+                                    "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                              }`}>
+                              {order.paymentStatus || "Pending"}
+                            </span>
+                            {order.paymentVerified && (
+                              <span className="text-xs text-success font-semibold">✓ Verified</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
+                            <div><span className="font-medium">Type:</span> {order.paymentType || "Cash on Delivery"}</div>
+                            <div><span className="font-medium">Method:</span> {order.paymentMethod || "Cash"}</div>
+                            {order.paymentId && (
+                              <div className="text-xs font-mono text-gray-500 dark:text-gray-400">ID: {order.paymentId}</div>
+                            )}
+                            {order.paymentAmount > 0 && (
+                              <div className="font-semibold text-gray-900 dark:text-gray-100">₹{order.paymentAmount.toFixed(2)}</div>
+                            )}
+                          </div>
+                          {order.paymentType === "Online" && !order.paymentVerified && (
                             <div className="flex gap-1 mt-1">
                               <button
                                 onClick={() => {
-                                  const ok = window.confirm("Approve this return request?");
+                                  const ok = window.confirm("Verify this payment as Paid?");
                                   if (!ok) return;
-                                  handleReturnStatus(order._id, "Approved");
+                                  handlePaymentVerification(order._id, "Paid");
                                 }}
                                 className="px-2 py-1 bg-success hover:bg-success-dark text-white rounded text-xs"
                               >
-                                Approve
+                                Verify Paid
                               </button>
                               <button
                                 onClick={() => {
-                                  const ok = window.confirm("Reject this return request?");
+                                  const ok = window.confirm("Mark this payment as Failed?");
                                   if (!ok) return;
-                                  handleReturnStatus(order._id, "Rejected");
+                                  handlePaymentVerification(order._id, "Failed");
                                 }}
                                 className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs"
                               >
-                                Reject
-                              </button>
-                            </div>
-                          )}
-                          {order.returnStatus === "Approved" && (
-                            <div className="flex gap-1 mt-1">
-                              <button
-                                onClick={() => {
-                                  const ok = window.confirm("Mark this return as completed? This means the refund has been processed and the return is finished.");
-                                  if (!ok) return;
-                                  handleReturnStatus(order._id, "Completed");
-                                }}
-                                className="px-2 py-1 bg-success hover:bg-success-dark text-white rounded text-xs font-semibold"
-                              >
-                                Complete Return
+                                Mark Failed
                               </button>
                             </div>
                           )}
                         </div>
-                      ) : (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                      </td>
+                      <td className="py-3 px-4">
+                        {order.returnStatus && order.returnStatus !== "None" ? (
+                          <div className="space-y-1">
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${order.returnStatus === "Requested" ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
+                                order.returnStatus === "Approved" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
+                                  order.returnStatus === "Rejected" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+                                    order.returnStatus === "Completed" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+                                      "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                              }`}>
+                              {order.returnStatus}
+                            </span>
+                            {order.returnReason && (
+                              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 max-w-xs">
+                                <span className="font-medium">Reason:</span> {order.returnReason}
+                              </div>
+                            )}
+                            {order.returnStatus === "Requested" && (
+                              <div className="flex gap-1 mt-1">
+                                <button
+                                  onClick={() => {
+                                    const ok = window.confirm("Approve this return request?");
+                                    if (!ok) return;
+                                    handleReturnStatus(order._id, "Approved");
+                                  }}
+                                  className="px-2 py-1 bg-success hover:bg-success-dark text-white rounded text-xs"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    const ok = window.confirm("Reject this return request?");
+                                    if (!ok) return;
+                                    handleReturnStatus(order._id, "Rejected");
+                                  }}
+                                  className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            )}
+                            {order.returnStatus === "Approved" && (
+                              <div className="flex gap-1 mt-1">
+                                <button
+                                  onClick={() => {
+                                    const ok = window.confirm("Mark this return as completed? This means the refund has been processed and the return is finished.");
+                                    if (!ok) return;
+                                    handleReturnStatus(order._id, "Completed");
+                                  }}
+                                  className="px-2 py-1 bg-success hover:bg-success-dark text-white rounded text-xs font-semibold"
+                                >
+                                  Complete Return
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>

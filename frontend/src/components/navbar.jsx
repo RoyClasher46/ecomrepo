@@ -4,19 +4,22 @@ import { User, ShoppingCart, Menu, X, Package, LogOut, Home, Grid3x3, UserCircle
 import { toast } from 'react-toastify';
 import ThemeToggle from "./ThemeToggle";
 import { getImageSrc } from "../utils/imageUtils";
+import { useAuth } from "../contexts/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [userName, setUserName] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
+
+  const isLoggedIn = !!user;
+  const userName = user?.name || "";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,33 +39,14 @@ const Navbar = () => {
           setCartCount(total);
         }
       } catch (err) {
-        // User not logged in
+        // User not logged in or error
       }
     };
 
-    const loadUser = async () => {
-      try {
-        const res = await fetch("/api/checkauth", { credentials: "include" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user && data.user.name) {
-            setUserName(data.user.name);
-            setIsLoggedIn(true);
-          } else {
-            setIsLoggedIn(false);
-          }
-        } else {
-          setIsLoggedIn(false);
-        }
-      } catch (err) {
-        // User not logged in
-        setIsLoggedIn(false);
-      }
-    };
-
-    loadCart();
-    loadUser();
-  }, []);
+    if (isLoggedIn) {
+      loadCart();
+    }
+  }, [isLoggedIn]);
 
   const performSearch = async (query) => {
     try {
@@ -96,25 +80,25 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     setShowDropdown(false);
-    const res = await fetch("/api/logout", {
-      method: "GET",
-      credentials: "include",
-    });
-    if (res.ok) {
-      toast.success("Logout successfully!");
-      setIsLoggedIn(false);
-      setUserName("");
-      navigate("/");
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+    try {
+      const res = await fetch("/api/logout", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.ok) {
+        toast.success("Logout successfully!");
+        logout(); // Build-in logout from context
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Logout failed", err);
     }
   };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-white/80 dark:bg-gray-950/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50'
-        : 'bg-white/60 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-800/30'
+      ? 'bg-white/80 dark:bg-gray-950/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50'
+      : 'bg-white/60 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-800/30'
       }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">

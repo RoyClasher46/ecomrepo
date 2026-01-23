@@ -4,9 +4,11 @@ import { Link, useLocation } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import { useAuth } from "../contexts/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
+  const { refreshAuth } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -43,19 +45,11 @@ export default function Login() {
       if (res.ok) {
         toast.success("Login successfully!");
 
+        // Refresh auth context with new user data
+        await refreshAuth();
+
         // Use user data from login response instead of calling checkauth
         const userIsAdmin = data.user && data.user.isAdmin === true;
-
-        // Store auth state in sessionStorage temporarily to help with redirect
-        // This ensures the redirected page knows user is logged in even if cookies aren't set yet
-        if (data.user) {
-          sessionStorage.setItem('tempAuth', JSON.stringify({
-            email: data.user.email,
-            name: data.user.name,
-            isAdmin: userIsAdmin,
-            timestamp: Date.now()
-          }));
-        }
 
         // Determine redirect path
         let redirectPath = redirectTo || "/";
